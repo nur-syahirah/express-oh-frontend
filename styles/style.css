@@ -1,12 +1,27 @@
 .top-nav-bar{
-    background-color: #004777;
-}
-.bot-nav-bar{
-    background-color: #00aeb5;
+    background-color: #2A2A2A;
 }
 .footer-col{
-    background-color: #00aeb5;
+    background-color: #2A2A2A;
 }
 .main-content-bg{
     background-color: #f7ede1;
+}
+.logo{
+    font-family: "Rock Salt", cursive;
+    font-weight: 400;
+    font-style: normal;
+}
+.nav-text{
+    font-family: "Ceviche One", system-ui;
+    font-weight: 400;
+    font-style: normal;
+}
+.foot-text{
+    font-family: "Mali", cursive;
+    font-weight: 400;
+    font-style: normal;
+}
+.top-logo{
+    font-size: 48px;
 }
