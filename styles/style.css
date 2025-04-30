@@ -38,7 +38,8 @@ nav {
     font-family: "Ceviche One", cursive;
     /* font-weight: 400; */
     font-style: normal;
-    font-size: x-large;
+    font-size: 2rem;
+    padding-bottom: 1rem;
 }
   
 .nav-icon a{
