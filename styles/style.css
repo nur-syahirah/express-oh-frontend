@@ -1,0 +1,149 @@
+/*******  universal settings *******/
+*{
+    margin: 0%;
+    padding: 0%;
+    background-color: #2A2A2A;
+}
+/*******  Logo styles *******/
+.logo{
+    font-family: "Rock Salt", cursive;
+    color: white;
+    font-size: 1.2rem;
+}
+#nav-logo{
+    font-size: 3rem;
+    text-align: left;
+}
+/*******  End of Logo styles *******/
+
+/*******  Start of nav bar *******/
+#container{
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.right-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+nav {
+    display: flex;
+    gap: 20px;
+}
+.right-section a {
+    text-decoration: none;
+    color: white;
+    font-family: "Ceviche One", cursive;
+    /* font-weight: 400; */
+    font-style: normal;
+    font-size: 2rem;
+    padding-bottom: 1rem;
+}
+  
+.nav-icon a{
+    /* gap: 120px; */
+    padding-left: 0.8rem;
+    margin: 0.2rem;
+    border: solid white 1 px;
+}
+
+/*******  End of nav bar */
+
+/******* Start of main body *******/
+#main{
+    background-color: #f7ede1;
+
+ }
+#main h1{
+    background-color: #f7ede1;
+}
+.nav-item-icon a {
+    color: white;
+    padding: 4% 0 0 1rem;
+    border: solid 1px;
+    display:inline;
+    margin-bottom: 0;
+    
+}
+#container{
+    justify-content:center;
+}
+#nav-item-icon{
+    border: solid 1px;
+    position:fixed;
+}
+
+/******* End of main body *******/
+
+/******* Start of footer *******/
+.footer-container{
+    width: 100%;
+    padding-top: 30px;
+    text-align: center;
+    align-items: center;
+
+}
+.foot-text{
+    font-family: "Mali", cursive;
+    font-weight: 400;
+    font-style: normal;
+    color: white;
+}
+.top-logo{
+    font-size: 48px;
+}
+.socialIcons a i {
+    font-size: 2em;
+    text-decoration: none;
+    color: white;
+    margin: 5px 15px 0 10px;
+}
+#foot-left-col {
+    text-align: left;
+}
+
+h5{
+    color: white;
+    font-family: "Mali", cursive;
+    text-decoration: underline;
+}
+#foot-mid-col  {
+    max-width: fit-content;
+}
+
+#foot-mid-col ul {
+    list-style-type:none;
+}
+#foot-right-col {
+    max-width: max-content;
+}
+#foot-right-col ul{
+    list-style-type:none;
+}
+#foot-right-col a{
+    width: max-content;
+    text-align: right; 
+    text-decoration: none;
+    color: white;
+}
+#nav-link{
+    margin-top: 0;
+}
+/******* End of footer *******/
+
+/******* Start of Media Query for responsive display *******/
+@media (max-width: 822px){
+    #foot-left-col {
+        text-align: center;
+    }
+    #foot-mid-col #foot-right-col {
+        text-align: center;
+    }
+    #foot-right-col #foot-right-col {
+        text-align: center;
+    }
+
+}
+/******* End of Media Query for responsive display *******/
