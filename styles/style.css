@@ -17,36 +17,42 @@
 /*******  End of Logo styles *******/
 
 /*******  Start of nav bar *******/
-#container{
+.navContainer{
     margin: 0 auto;
     display: flex;
+    width: 100dvw;
     justify-content: space-between;
     align-items: center;
+    padding: 0 2rem;
 }
+
+#navbar-header {
+    display: flex;
+    gap: 20px;
+}
+
 .right-section {
     display: flex;
     align-items: center;
     gap: 10px;
 }
-nav {
+
+.right-section ul{
     display: flex;
-    gap: 20px;
+    list-style: none;
 }
-.right-section a {
+
+.right-section li a, .nav-icon li a {
     text-decoration: none;
     color: white;
     font-family: "Ceviche One", cursive;
-    /* font-weight: 400; */
     font-style: normal;
     font-size: 2rem;
-    padding-bottom: 1rem;
+    padding: 0 1rem;
 }
-  
-.nav-icon a{
-    /* gap: 120px; */
-    padding-left: 0.8rem;
-    margin: 0.2rem;
-    border: solid white 1 px;
+
+ion-icon {
+    padding-top: 0.5rem;
 }
 
 /*******  End of nav bar */
@@ -134,7 +140,8 @@ h5{
 /******* End of footer *******/
 
 /******* Start of Media Query for responsive display *******/
-@media (max-width: 822px){
+@media screen and (max-width: 822px){
+
     #foot-left-col {
         text-align: center;
     }
@@ -144,6 +151,31 @@ h5{
     #foot-right-col #foot-right-col {
         text-align: center;
     }
+
+    /* Set the navigation container in mobile view */
+    .navContainer{
+        display: block;
+        margin: 0 auto;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 0 2rem;
+    }
+    
+    /* Set the navigation links' block in mobile view */
+    .right-section {
+        display: block;
+        align-items: center;
+        padding-top: 1rem;
+        gap: 10px;
+    }
+
+    /* Set the navigation unorder list of links in mobile view */
+    .right-section ul{
+        display: flex;
+        justify-content: center;
+    }
+    
 
 }
 /******* End of Media Query for responsive display *******/
