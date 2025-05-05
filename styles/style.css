@@ -60,7 +60,6 @@ ion-icon {
 /******* Start of main body *******/
 #main{
     background-color: #f7ede1;
-
  }
 #main h1{
     background-color: #f7ede1;
@@ -71,7 +70,6 @@ ion-icon {
     border: solid 1px;
     display:inline;
     margin-bottom: 0;
-    
 }
 #container{
     justify-content:center;
