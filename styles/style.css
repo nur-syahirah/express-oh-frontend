@@ -2,6 +2,7 @@
 *{
     margin: 0%;
     padding: 0%;
+    
 }
 /*******  Logo styles *******/
 .logo{
@@ -26,13 +27,13 @@
     padding: 0 2rem;
 }
 
-#navBar{
-    background-color: #2A2A2A;
-}
+
 
 #navbar-header {
     display: flex;
     gap: 20px;
+    background-color: #2A2A2A;
+    
 }
 
 .right-section {
@@ -77,18 +78,17 @@ ion-icon {
     margin-bottom: 0;
     
 }
-
+#container{
+    justify-content:center;
+}
 
 #nav-item-icon{
     border: solid 1px;
     position:fixed;
 }
 
-html, body {
-    height: 100%; /* Ensures full viewport height */
-    margin: 0;
-    padding: 0;
-  }
+
+
   
   body {
     display: flex;
@@ -183,7 +183,6 @@ html, body {
 
    /* ---- Container for Evenly Spaced Cards ---- */
    .coffee-container {
-    display: flex;
     padding: 100px;
     flex-wrap: wrap;
     gap: 50px;
@@ -191,8 +190,8 @@ html, body {
    
   }
   .card{
-    width: 500px;
-
+    width: 100%;
+    max-width: 100%;
   }
  
   

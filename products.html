@@ -31,30 +31,37 @@
 
     <!-- Top Nav Bar -->
    <header>  
-    <nav id = "navBar" class="navbar top-nav-bar">
-      <div class="container-fluid px-0">
+    <div id = "navbar-header" class="navbar top-nav-bar">
+      <div class="navContainer">
         <a id = "nav-logo" class="navbar-brand text-white logo top-logo" href="#">
           Express-Oh!
         </a>
 
-            <!-- Right side: Links & Logos -->
-        <div class = "right-section"> 
-          <nav>
-            <a href="#">Shop</a>
-            <a href="#">About</a>
+          <!-- Right side: Links & Logos -->
+        <div class = "nav-icon right-section"> 
+        
+          
+            <!-- Dynamic Navigation -->
+            <nav>
+            <ul>
+              <li>
+                <a href="./shop.html">Shop</a>
+              </li>
+              <li><a href="./about.html">About</a></li>
+              <li><a href="./login.html"><ion-icon name="person-outline" role="img" class="md hydrated"></ion-icon></a>
+              </li>
+              <li><a href="./cart.html"><ion-icon name="cart-outline" role="img" class="md hydrated"></ion-icon>
+                </a>
+              </li>
+            </ul>
           </nav>
-
-          <div class = "nav-icon">
-            <a href="#" class="nav-cart"> 
-              <ion-icon name="person-outline"></ion-icon>
-            </a>
-            <a href="#" class="nav-cart">
-              <ion-icon name="cart-outline"></ion-icon>
-            </a>
+  
+          </div>
         </div>
+
       </div>
-    </nav>
- </header>  
+    </div>
+  </header>  
 
 
     <!-- Main Page Body -->
@@ -72,123 +79,14 @@
       </div>
     </div>
     <!-- End of hero banner -->
-    
-    <div class="coffee-container">
-      <!-- Card 1 -->
-      <div class="col">
-        <div class="card h-100">
-          <img src="./images/cuphead.png" class="card-img-top" alt="Product1">
-          <div class="card-body">
-            <h5 class="card-title">Product Name</h5>
-            <p class="card-text">Description of trump winning against china</p>
-            <p class="card-text fw-semibold">Price: $66.66</p>
-            <div class="mb-2">
-              <button class="btn btn-outline-secondary btn-sm me-1 flavor-btn">Vanilla</button>
-              <button class="btn btn-outline-secondary btn-sm me-1 flavor-btn">Chocolate</button>
-              <button class="btn btn-outline-secondary btn-sm me-1 flavor-btn">Caramel</button>
-              <button class="btn btn-outline-secondary btn-sm me-1 flavor-btn">Hazelnut</button>
-            </div>
-            <button class="btn btn-primary w-100" type="button">Add</button>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Card 2 -->
-      <div class="col">
-        <div class="card h-100">
-          <img src="./images/cuphead.png" class="card-img-top" alt="Product2">
-          <div class="card-body">
-            <h5 class="card-title">Product Name</h5>
-            <p class="card-text">Description of trump winning against china</p>
-            <p class="card-text fw-semibold">Price: $66.66</p>
-            <div class="mb-2">
-              <button class="btn btn-outline-secondary btn-sm me-1 flavor-btn">Vanilla</button>
-              <button class="btn btn-outline-secondary btn-sm me-1 flavor-btn">Chocolate</button>
-              <button class="btn btn-outline-secondary btn-sm me-1 flavor-btn">Caramel</button>
-              <button class="btn btn-outline-secondary btn-sm me-1 flavor-btn">Hazelnut</button>
-            </div>
-            <button class="btn btn-primary w-100" type="button">Add</button>
-          </div>
-        </div>
-      </div>
-    
-      <!-- Card 3 -->
-      <div class="col">
-        <div class="card h-100">
-          <img src="./images/cuphead.png" class="card-img-top" alt="Product3">
-          <div class="card-body">
-            <h5 class="card-title">Product Name</h5>
-            <p class="card-text">Description of trump winning against china</p>
-            <p class="card-text fw-semibold">Price: $66.66</p>
-            <div class="mb-2">
-              <button class="btn btn-outline-secondary btn-sm me-1 flavor-btn">Vanilla</button>
-              <button class="btn btn-outline-secondary btn-sm me-1 flavor-btn">Chocolate</button>
-              <button class="btn btn-outline-secondary btn-sm me-1 flavor-btn">Caramel</button>
-              <button class="btn btn-outline-secondary btn-sm me-1 flavor-btn">Hazelnut</button>
-            </div>
-            <button class="btn btn-primary w-100" type="button">Add</button>
-          </div>
-        </div>
-      </div>
-    
-      <!-- Card 4 -->
-      <div class="col">
-        <div class="card h-100">
-          <img src="./images/cuphead.png" class="card-img-top" alt="Product4">
-          <div class="card-body">
-            <h5 class="card-title">Product Name</h5>
-            <p class="card-text">Description of trump winning against china</p>
-            <p class="card-text fw-semibold">Price: $66.66</p>
-            <div class="mb-2">
-              <button class="btn btn-outline-secondary btn-sm me-1 flavor-btn">Vanilla</button>
-              <button class="btn btn-outline-secondary btn-sm me-1 flavor-btn">Chocolate</button>
-              <button class="btn btn-outline-secondary btn-sm me-1 flavor-btn">Caramel</button>
-              <button class="btn btn-outline-secondary btn-sm me-1 flavor-btn">Hazelnut</button>
-            </div>
-            <button class="btn btn-primary w-100" type="button">Add</button>
-          </div>
-        </div>
-      </div>
-    
-      <!-- Card 5 -->
-      <div class="col">
-        <div class="card h-100">
-          <img src="./images/cuphead.png" class="card-img-top" alt="Product5">
-          <div class="card-body">
-            <h5 class="card-title">Product Name</h5>
-            <p class="card-text">Description of trump winning against china</p>
-            <p class="card-text fw-semibold">Price: $66.66</p>
-            <div class="mb-2">
-              <button class="btn btn-outline-secondary btn-sm me-1 flavor-btn">Vanilla</button>
-              <button class="btn btn-outline-secondary btn-sm me-1 flavor-btn">Chocolate</button>
-              <button class="btn btn-outline-secondary btn-sm me-1 flavor-btn">Caramel</button>
-              <button class="btn btn-outline-secondary btn-sm me-1 flavor-btn">Hazelnut</button>
-            </div>
-            <button class="btn btn-primary w-100" type="button">Add</button>
-          </div>
-        </div>
-      </div>
-    
-      <!-- Card 6 -->
-      <div class="col">
-        <div class="card h-100">
-          <img src="./images/cuphead.png" class="card-img-top" alt="Product6">
-          <div class="card-body">
-            <h5 class="card-title">Product Name</h5>
-            <p class="card-text">Description of trump winning against china</p>
-            <p class="card-text fw-semibold">Price: $66.66</p>
-            <div class="mb-2">
-              <button class="btn btn-outline-secondary btn-sm me-1 flavor-btn">Vanilla</button>
-              <button class="btn btn-outline-secondary btn-sm me-1 flavor-btn">Chocolate</button>
-              <button class="btn btn-outline-secondary btn-sm me-1 flavor-btn">Caramel</button>
-              <button class="btn btn-outline-secondary btn-sm me-1 flavor-btn">Hazelnut</button>
-            </div>
-            <button class="btn btn-primary w-100" type="button">Add</button>
-          </div>
-        </div>
-      </div>
-  </div>
+
     <!-- Start of product listing -->
+    <!-- Card generated by JS-->
+    <div class="coffee-container">
+      <div class="row g-5" id="product-list"></div>
+    </div>
+     
+  </div>
     
     <!-- End of product listing -->
     </main>
@@ -246,10 +144,10 @@
 
     <!-- End of Footer -->
 
-    <script>  
-     
-  
-    </script>
+    <!-- Custom script -->
+    
+    <script src= "script/product.js"></script>
+    <script src ="script/ProductsController.js"></script>
 
     <!-- JavaScript from Bootstrap -->
     <script
