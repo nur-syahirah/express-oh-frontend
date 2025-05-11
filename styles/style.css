@@ -1,181 +1,327 @@
 /*******  universal settings *******/
-*{
-    margin: 0%;
-    padding: 0%;
-    background-color: #2A2A2A;
+* {
+  margin: 0%;
+  padding: 0%;
+  background-color: #2a2a2a;
 }
 /*******  Logo styles *******/
-.logo{
-    font-family: "Rock Salt", cursive;
-    color: white;
-    font-size: 1.2rem;
+.logo {
+  font-family: "Rock Salt", cursive;
+  color: white;
+  font-size: 1.2rem;
 }
-#nav-logo{
-    font-size: 3rem;
-    text-align: left;
+#nav-logo {
+  font-size: 3rem;
+  text-align: left;
 }
 /*******  End of Logo styles *******/
 
 /*******  Start of nav bar *******/
-.navContainer{
-    margin: 0 auto;
-    display: flex;
-    width: 100dvw;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 2rem;
+.navContainer {
+  margin: 0 auto;
+  display: flex;
+  width: 100dvw;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2rem;
 }
 
 #navbar-header {
-    display: flex;
-    gap: 20px;
+  display: flex;
+  gap: 20px;
 }
 
 .right-section {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.right-section ul{
-    display: flex;
-    list-style: none;
+.right-section ul {
+  display: flex;
+  list-style: none;
 }
 
-.right-section li a, .nav-icon li a {
-    text-decoration: none;
-    color: white;
-    font-family: "Ceviche One", cursive;
-    font-style: normal;
-    font-size: 2rem;
-    padding: 0 1rem;
+.right-section li a,
+.nav-icon li a {
+  text-decoration: none;
+  color: white;
+  font-family: "Ceviche One", cursive;
+  font-style: normal;
+  font-size: 2rem;
+  padding: 0 1rem;
 }
 
 ion-icon {
-    padding-top: 0.5rem;
+  padding-top: 0.5rem;
 }
 
 /*******  End of nav bar */
 
 /******* Start of main body *******/
-#main{
-    background-color: #f7ede1;
-
- }
-#main h1{
-    background-color: #f7ede1;
+#main {
+  background-color: #f7ede1;
+}
+#main h1 {
+  background-color: #f7ede1;
 }
 .nav-item-icon a {
-    color: white;
-    padding: 4% 0 0 1rem;
-    border: solid 1px;
-    display:inline;
-    margin-bottom: 0;
-    
+  color: white;
+  padding: 4% 0 0 1rem;
+  border: solid 1px;
+  display: inline;
+  margin-bottom: 0;
 }
-#container{
-    justify-content:center;
+#container {
+  justify-content: center;
 }
-#nav-item-icon{
-    border: solid 1px;
-    position:fixed;
+#nav-item-icon {
+  border: solid 1px;
+  position: fixed;
 }
 
 /******* End of main body *******/
 
 /******* Start of footer *******/
-.footer-container{
-    width: 100%;
-    padding-top: 30px;
-    text-align: center;
-    align-items: center;
-
+.footer-container {
+  width: 100%;
+  padding-top: 30px;
+  text-align: center;
+  align-items: center;
 }
-.foot-text{
-    font-family: "Mali", cursive;
-    font-weight: 400;
-    font-style: normal;
-    color: white;
+.foot-text {
+  font-family: "Mali", cursive;
+  font-weight: 400;
+  font-style: normal;
+  color: white;
 }
-.top-logo{
-    font-size: 48px;
+.top-logo {
+  font-size: 48px;
 }
 .socialIcons a i {
-    font-size: 2em;
-    text-decoration: none;
-    color: white;
-    margin: 5px 15px 0 10px;
+  font-size: 2em;
+  text-decoration: none;
+  color: white;
+  margin: 5px 15px 0 10px;
 }
 #foot-left-col {
-    text-align: left;
+  text-align: left;
 }
 
-h5{
-    color: white;
-    font-family: "Mali", cursive;
-    text-decoration: underline;
+h5 {
+  color: white;
+  font-family: "Mali", cursive;
+  text-decoration: underline;
 }
-#foot-mid-col  {
-    max-width: fit-content;
+#foot-mid-col {
+  max-width: fit-content;
 }
 
 #foot-mid-col ul {
-    list-style-type:none;
+  list-style-type: none;
 }
 #foot-right-col {
-    max-width: max-content;
+  max-width: max-content;
 }
-#foot-right-col ul{
-    list-style-type:none;
+#foot-right-col ul {
+  list-style-type: none;
 }
-#foot-right-col a{
-    width: max-content;
-    text-align: right; 
-    text-decoration: none;
-    color: white;
+#foot-right-col a {
+  width: max-content;
+  text-align: right;
+  text-decoration: none;
+  color: white;
 }
-#nav-link{
-    margin-top: 0;
+#nav-link {
+  margin-top: 0;
 }
 /******* End of footer *******/
 
+/*******  Start of ADMIN PAGE STYLING *******/
+/* Global styling for admin page */
+#adminBody {
+  background-color: #f7ede1;
+  font-family: "Bubblegum Sans", cursive;
+}
+/* Center all section headers (<h2>) in admin sections */
+#adminBody section h2 {
+  text-align: center;
+  background-color: #f7ede1;
+}
+/* Admin Welcome Section */
+#adminWelcome {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* background-color: #eb2424; Fully transparent */
+  padding: 20px;
+  border-radius: 15px;
+  margin-bottom: 20px;
+  background-color: #f7ede1;
+}
+/* "Hello Admin" as H1 */
+#adminWelcome h1 {
+  font-family: "The Girl Next Door", cursive;
+  font-size: 3rem;
+  margin: 0 auto;
+  text-align: center;
+  width: 100%;
+}
+/* Logout button in admin welcome section */
+#adminWelcome button {
+  background-color: #d5bfb9;
+  color: #6f4e37;
+  border: none;
+  padding: 1px 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.2em;
+}
+/* Generic admin section styling */
+#adminBody section {
+  background-color: #f7ede1;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 15px;
+  /* box-shadow: 0 0 10px rgba(0,0,0,0.1); */
+}
+/* Admin Sales Orders - Chart container styling */
+#adminSalesOrders{
+  border: 2px solid #8f8d8d;
+
+}
+#adminSalesOrders .chart-container {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  background-color: #f7ede1;
+}
+#adminSalesChart {
+  background-color: #f7ede1;
+  
+}
+/* Admin dropdown menu for custom tags */
+#adminBody .dropdown-menu {
+  max-height: 300px;
+  overflow-y: auto;
+  background-color: #f7ede1;
+}
+
+/* Standardized button styling for admin page */
+#adminBody button,
+#adminBody input[type="submit"],
+#adminBody input[type="reset"],
+#adminBody button.action-btn {
+  background-color: #d5bfb9;
+  color: #6f4e37;
+  border: none;
+  padding: 1px 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.2em;
+  padding: 5px 10px; /* Default padding */
+  margin: 2px; /* Small margin between buttons */
+}
+/* Admin Product Listing Table styling */
+#adminProductList{
+  border: 2px solid #8f8d8d;
+}
+#adminProductList table {
+  border: 2px solid #ccc;
+  border-collapse: collapse;
+  width: 100%;
+}
+#adminProductList th,
+#adminProductList td {
+  border: 2px solid #ccc;
+  padding: 0.75rem;
+  text-align: center;
+}
+#adminProductList th {
+  font-size: 1.2em;
+}
+/* Remove border for Action's column */
+#adminProductList td:last-child {
+  border: none;
+}
+/* Additional styling for buttons in the admin Add Product section */
+#adminAddProduct .btn {
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+}
+#adminAddProduct .btn:hover {
+  transform: translateY(-2px);
+}
+
+#adminAddProduct {
+  background-color: #f7ede1 !important;
+  border: 2px solid #8f8d8d;
+  padding: 20px;
+  border-radius: 15px;
+}
+
+/* Ensure the dropdown menu in the add product section has the same background */
+#adminAddProduct .dropdown-menu {
+  background-color: #f7ede1 !important;
+}
+
+/* If you want each tag option (the li elements inside the dropdown options) to also have the same background and a border, add: */
+#adminAddProduct .dropdown-menu li {
+  background-color: #f7ede1;
+  /*border: 1px solid #ccc;  /* Optional: Adds a border to each tag option */
+  padding: 5px; /* Optional: Adjust padding for better spacing */
+}
+
+/*******  End of ADMIN PAGE STYLING *******/
+
 /******* Start of Media Query for responsive display *******/
-@media screen and (max-width: 822px){
+@media screen and (max-width: 822px) {
+  #foot-left-col {
+    text-align: center;
+  }
+  #foot-mid-col #foot-right-col {
+    text-align: center;
+  }
+  #foot-right-col #foot-right-col {
+    text-align: center;
+  }
 
-    #foot-left-col {
-        text-align: center;
-    }
-    #foot-mid-col #foot-right-col {
-        text-align: center;
-    }
-    #foot-right-col #foot-right-col {
-        text-align: center;
-    }
+  /* Set the navigation container in mobile view */
+  .navContainer {
+    display: block;
+    margin: 0 auto;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 0 2rem;
+  }
 
-    /* Set the navigation container in mobile view */
-    .navContainer{
-        display: block;
-        margin: 0 auto;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        padding: 0 2rem;
-    }
-    
-    /* Set the navigation links' block in mobile view */
-    .right-section {
-        display: block;
-        align-items: center;
-        padding-top: 1rem;
-        gap: 10px;
-    }
+  /* Set the navigation links' block in mobile view */
+  .right-section {
+    display: block;
+    align-items: center;
+    padding-top: 1rem;
+    gap: 10px;
+  }
 
-    /* Set the navigation unorder list of links in mobile view */
-    .right-section ul{
-        display: flex;
-        justify-content: center;
-    }
-    
+  /* Set the navigation unorder list of links in mobile view */
+  .right-section ul {
+    display: flex;
+    justify-content: center;
+  }
 
+  /*******  Start of ADMIN PAGE STYLING (QUERY) *******/
+  #adminBody button.action-btn {
+    padding: 8px 12px; /* Increase padding for better spacing */
+    margin: 4px; /* Add more margin to prevent overlap */
+    display: block; /* Stack buttons vertically if needed */
+    width: 100%; /* Make them full width to ensure proper spacing */
+  }
+
+  #adminProductList table {
+    width: 100%;
+    table-layout: fixed;
+  }
+  /*******  End of ADMIN PAGE STYLING (QUERY) *******/
 }
 /******* End of Media Query for responsive display *******/
