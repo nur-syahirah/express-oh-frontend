@@ -41,14 +41,11 @@
         <a id = "nav-logo" class="navbar-brand text-white logo top-logo" href="#">
           Express-Oh!
         </a>
-
         <!-- Right side: Links & Logos -->
-        <div class = "nav-icon right-section"> 
-          
-          Dynamic Navigation
-          <nav>
-          </nav>
-
+        <div class = "nav-icon  right-section"> 
+        <nav>
+          <!-- Dynamic Navigation -->
+        </nav>
         </div>
       </div>
     </div>
@@ -60,7 +57,9 @@
       <!-- Admin Welcome Section -->
       <section id="adminWelcome">
         <h1>Hello Admin</h1>
-        <button>Log Out</button>
+        <div class="logout-container">
+          <button>Log Out</button>
+        </div>
       </section>
   
       <!-- Admin Sales Orders Section -->
@@ -71,75 +70,82 @@
         </div>
       </section>
   
-      <!-- Admin Add/Edit Product Section -->
-      <section id="adminAddProduct">
-        <h2 id="adminFormTitle">Add Product</h2>
-        <form id="adminProductForm">
-          <!-- Hidden field for product index; "-1" means new product -->
-          <input type="hidden" id="adminProductIndex" value="-1" />
-          <div class="row">
-            <!-- Left Column: Image Upload and Preview (approx. 2/5 of width) -->
-            <div class="col-md-5 mb-3">
-              <!-- On page load, the preview will be empty -->
-              <img id="adminImagePreview" src="" alt="Product Preview" class="img-fluid" />
-              <input type="file" id="adminProductImage" class="form-control mt-2" accept="image/*" />
+       <!-- Admin Add/Edit Product Section -->
+    <section id="adminAddProduct">
+      <h2 id="adminFormTitle">Add Product</h2>
+      <form id="adminProductForm">
+        <!-- Hidden field for product index; "-1" means new product -->
+        <input type="hidden" id="adminProductIndex" value="-1" />
+        <div class="row">
+          <!-- Left Column: Image Upload and Preview (≈2/5 of width) -->
+          <div class="col-md-5 mb-3">
+            <!-- Product image preview: initially empty -->
+            <img id="adminImagePreview" src="" alt="Product Preview" class="img-fluid" />
+            <input type="file" id="adminProductImage" class="form-control mt-2" accept="image/*" />
+          </div>
+          <!-- Right Column: Product Details (≈3/5 of width) -->
+          <div class="col-md-7">
+            <!-- Name Field -->
+            <div class="mb-3">
+              <label for="adminProductName" class="form-label">Name:</label>
+              <input type="text" id="adminProductName" class="form-control" required />
             </div>
-            <!-- Right Column: Product Details (approx. 3/5 of width) -->
-            <div class="col-md-7">
-              <!-- Name Field: label to left, input max-width 500px -->
-              <div class="mb-3 d-flex align-items-center">
-                <label for="adminProductName" class="me-2">Name:</label>
-                <input type="text" id="adminProductName" class="form-control" style="max-width: 500px;" required />
+            <!-- Description Field -->
+            <div class="mb-3">
+              <label for="adminProductDescription" class="form-label">Description:</label>
+              <textarea id="adminProductDescription" class="form-control" required></textarea>
+            </div>
+            <!-- Price Field -->
+            <div class="mb-3">
+              <label for="adminProductPrice" class="form-label">Price:</label>
+              <input type="number" id="adminProductPrice" class="form-control" step="0.01" required />
+            </div>
+            <!-- Quantity Field -->
+            <div class="mb-3">
+              <label for="adminProductQuantity" class="form-label">Quantity:</label>
+              <input type="number" id="adminProductQuantity" class="form-control" required />
+            </div>
+            <!-- Flavors Dropdown -->
+            <div class="mb-3">
+              <label class="form-label">Flavors</label>
+              <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="adminFlavorsDropdownButton" data-bs-toggle="dropdown" aria-expanded="false">
+                  Select Flavors
+                </button>
+                <ul class="dropdown-menu p-2" aria-labelledby="adminFlavorsDropdownButton" style="min-width: 300px;">
+                  <li>
+                    <input type="text" class="form-control mb-2" id="adminNewFlavorInput" placeholder="Add new flavor">
+                  </li>
+                  <div id="adminDropdownFlavorOptions">
+                    <!-- Dynamic flavor options will be injected here -->
+                  </div>
+                </ul>
               </div>
-              <!-- Price Field: label to left, input max-width 100px -->
-              <div class="mb-3 d-flex align-items-center">
-                <label for="adminProductPrice" class="me-2">Price:</label>
-                <input type="number" id="adminProductPrice" class="form-control" style="max-width: 100px;" step="0.01" required />
-              </div>
-              <!-- Quantity Field: label to left, input max-width 100px -->
-              <div class="mb-3 d-flex align-items-center">
-                <label for="adminProductQuantity" class="me-2">Quantity:</label>
-                <input type="number" id="adminProductQuantity" class="form-control" style="max-width: 100px;" required />
-              </div>
-              <!-- Custom Tags Dropdown -->
-              <div class="mb-3">
-                <label class="form-label">Tags</label>
-                <div class="dropdown">
-                  <button class="btn btn-secondary dropdown-toggle" type="button" id="adminTagsDropdownButton" data-bs-toggle="dropdown" aria-expanded="false">
-                    Select Tags
-                  </button>
-                  <ul class="dropdown-menu p-2" aria-labelledby="adminTagsDropdownButton" style="min-width: 300px;">
-                    <li>
-                      <input type="text" class="form-control mb-2" id="adminNewTagInput" placeholder="Add new tag">
-                    </li>
-                    <div id="adminDropdownTagOptions">
-                      <!-- Tag options will be injected here dynamically -->
-                    </div>
-                  </ul>
-                </div>
-              </div>
-              <!-- Buttons aligned to the right -->
-              <div class="d-flex justify-content-end gap-2">
-                <button type="submit" id="adminSubmitButton" class="btn">Add</button>
-                <button type="reset" class="btn">Clear</button>
-              </div>
+            </div>
+            <!-- Buttons (Submit and Reset) -->
+            <div class="d-flex justify-content-end gap-2">
+              <button type="submit" id="adminSubmitButton" class="btn">Add</button>
+              <button type="reset" class="btn">Clear</button>
             </div>
           </div>
-        </form>
-      </section>
-   
-  
-      <!-- Admin Product Listing Section -->
-      <section id="adminProductList">
-        <h2>Product Listing</h2>
+        </div>
+      </form>
+    </section>
+
+    <!-- Admin Product Listing Section -->
+    <section id="adminProductList">
+      <h2>Product Listing</h2>
+      <!-- Wrap product listing table container -->
+      <div id="adminProductListContainer">
         <table class="table">
           <thead>
             <tr>
               <th>Image</th>
               <th>Name</th>
-              <th>Tags</th>
+              <th>Description</th>
               <th>Price</th>
               <th>Quantity</th>
+              <th>Flavors</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -147,8 +153,9 @@
             <!-- Product rows will be rendered dynamically -->
           </tbody>
         </table>
-      </section>
-    </div>
+      </div>
+    </section>
+  </div>
   </main>
 
     <!-- Footer -->
@@ -195,8 +202,7 @@
                   </ul>
                 </div>
             </div>
-          <div
-            class="d-flex flex-column flex-sm-row justify-content-center py-4 my-4 text-white foot-text">
+            <div class="d-flex flex-column flex-sm-row justify-content-center py-4 text-white foot-text">
             <p>© 2025 Express-Oh! All rights reserved.</p>
           </div>
         </footer>
@@ -206,7 +212,11 @@
 
     <!-- Custom Script -->
     <script src="./script/navbar.js"></script>
-    <script src="./script/admin.js"></script>
+
+      <!-- Chart.js Library -->
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <script src="./script/admin.js"></script>
+
 
     <!-- JavaScript from Bootstrap -->
     <script
@@ -219,8 +229,5 @@
     <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@latest/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@latest/dist/ionicons/ionicons.js"></script>
 
-  <!-- Chart.js Library -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="admis.js"></script>
   </body>
 </html>

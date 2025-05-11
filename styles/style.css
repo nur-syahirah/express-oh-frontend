@@ -1,8 +1,14 @@
 /*******  universal settings *******/
 * {
-  margin: 0%;
-  padding: 0%;
-  background-color: #2a2a2a;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Ensure the body and html don't have overflow */
+html, body {
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+  width: 100%;
+  position: relative;
 }
 /*******  Logo styles *******/
 .logo {
@@ -18,28 +24,30 @@
 
 /*******  Start of nav bar *******/
 .navContainer {
-  margin: 0 auto;
   display: flex;
-  width: 100dvw;
   justify-content: space-between;
   align-items: center;
-  padding: 0 2rem;
-}
+  width: 100%;
+  background-color: #2a2a2a;
+  padding-left: 2rem;
+  padding-bottom: 2rem;
 
+}
 #navbar-header {
   display: flex;
   gap: 20px;
+  background-color: #2a2a2a;
 }
 
 .right-section {
   display: flex;
-  align-items: center;
   gap: 10px;
+  justify-content: flex-end;
 }
 
 .right-section ul {
   display: flex;
-  list-style: none;
+  gap: 15px;
 }
 
 .right-section li a,
@@ -56,11 +64,24 @@ ion-icon {
   padding-top: 0.5rem;
 }
 
+.nav-icon{
+  padding-top: 1.5rem;
+  padding-right: 1rem;
+}
+.nav-icon ul{
+  padding-left: 0;
+  margin-bottom: 0;
+}
 /*******  End of nav bar */
 
 /******* Start of main body *******/
 #main {
   background-color: #f7ede1;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 #main h1 {
   background-color: #f7ede1;
@@ -88,6 +109,9 @@ ion-icon {
   padding-top: 30px;
   text-align: center;
   align-items: center;
+  background-color: #2a2a2a;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 .foot-text {
   font-family: "Mali", cursive;
@@ -165,7 +189,6 @@ h5 {
   font-size: 3rem;
   margin: 0 auto;
   text-align: center;
-  width: 100%;
 }
 /* Logout button in admin welcome section */
 #adminWelcome button {
@@ -223,13 +246,29 @@ h5 {
   margin: 2px; /* Small margin between buttons */
 }
 /* Admin Product Listing Table styling */
+#adminProductListContainer {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  border-radius: 8px;
+  overflow-x: auto;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+/* Ensure tables don't cause overflow */
+desktop-table {
+  table-layout: fixed;
+  width: 100%;
+}
+
 #adminProductList{
   border: 2px solid #8f8d8d;
+  padding: 15px;
 }
 #adminProductList table {
   border: 2px solid #ccc;
   border-collapse: collapse;
   width: 100%;
+  table-layout: auto; /* This helps with responsive behavior */
 }
 #adminProductList th,
 #adminProductList td {
@@ -240,6 +279,44 @@ h5 {
 #adminProductList th {
   font-size: 1.2em;
 }
+
+/* Column widths */
+#adminProductList th:nth-child(1), 
+#adminProductList td:nth-child(1) { /* Image column */
+  width: 80px;
+}
+
+#adminProductList th:nth-child(2), 
+#adminProductList td:nth-child(2) { /* Name column */
+  width: 25%;
+}
+
+#adminProductList th:nth-child(3), 
+#adminProductList td:nth-child(3) { /* Tags column */
+  width: 20%;
+}
+
+#adminProductList th:nth-child(4), 
+#adminProductList td:nth-child(4) { /* Price column */
+  width: 12%;
+}
+
+#adminProductList th:nth-child(5), 
+#adminProductList td:nth-child(5) { /* Quantity column */
+  width: 12%;
+}
+
+#adminProductList th:nth-child(6), 
+#adminProductList td:nth-child(6) { /* Actions column */
+  width: 15%;
+}
+
+/* Product image styles */
+#adminProductList .product-image {
+  max-width: 60px;
+  height: auto;
+}
+
 /* Remove border for Action's column */
 #adminProductList td:last-child {
   border: none;
@@ -260,22 +337,74 @@ h5 {
   border-radius: 15px;
 }
 
-/* Ensure the dropdown menu in the add product section has the same background */
-#adminAddProduct .dropdown-menu {
-  background-color: #f7ede1 !important;
+/* Image preview styling */
+#adminImagePreview {
+  border-radius: 8px;
+  min-height: 200px;
+  object-fit: contain;
+  width: 100%;
 }
 
-/* If you want each tag option (the li elements inside the dropdown options) to also have the same background and a border, add: */
-#adminAddProduct .dropdown-menu li {
-  background-color: #f7ede1;
-  /*border: 1px solid #ccc;  /* Optional: Adds a border to each tag option */
-  padding: 5px; /* Optional: Adjust padding for better spacing */
+/* File input styling */
+#adminProductImage {
+  background-color: white;
 }
+
+/* Style for the dropdown menu */
+#adminAddProduct .dropdown-menu {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
 
 /*******  End of ADMIN PAGE STYLING *******/
 
 /******* Start of Media Query for responsive display *******/
-@media screen and (max-width: 822px) {
+@media screen and (max-width: 600px) {
+
+  /* Set the navigation container in mobile view */
+  .navContainer {
+    display: flex;
+    margin: 0 auto;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    text-align: center;
+    width: 100%; /* Ensure it takes full width */
+    overflow: visible; /* Prevent content clipping */
+    padding-left: 0;
+  }
+  #nav-logo {
+    font-size: 30px; /* Adjust size for mobile */
+    padding-top: 2rem;
+  }
+
+  /* Set the navigation links' block in mobile view */
+  .right-section {
+    display: flex;
+    align-items: center;
+    padding-top: 1rem;
+    gap: 10px;
+    margin: 0 auto;
+    padding-right: 0%;
+    justify-content: flex-start;
+  }
+
+  /* Set the navigation unorder list of links in mobile view */
+  .right-section ul {
+      display: flex;
+      flex-wrap: wrap; /* Prevents overflow */
+      justify-content: center; /* Keeps links aligned */
+      gap: 10px;
+      padding-left: 0;
+      margin-bottom: 0;
+  }
+  .right-section li a {
+    white-space: nowrap; /* Keeps links in one line */
+    font-size: 1.5rem;
+  }
+
   #foot-left-col {
     text-align: center;
   }
@@ -286,42 +415,103 @@ h5 {
     text-align: center;
   }
 
-  /* Set the navigation container in mobile view */
-  .navContainer {
-    display: block;
-    margin: 0 auto;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 0 2rem;
-  }
+/*******  Start of ADMIN PAGE STYLING (QUERY) *******/
 
-  /* Set the navigation links' block in mobile view */
-  .right-section {
-    display: block;
-    align-items: center;
-    padding-top: 1rem;
-    gap: 10px;
-  }
-
-  /* Set the navigation unorder list of links in mobile view */
-  .right-section ul {
-    display: flex;
-    justify-content: center;
-  }
-
-  /*******  Start of ADMIN PAGE STYLING (QUERY) *******/
+#adminBody h1{
+  font-size: 40px;
+}
+#adminBody button{
+  font-size: small;
+}
   #adminBody button.action-btn {
-    padding: 8px 12px; /* Increase padding for better spacing */
-    margin: 4px; /* Add more margin to prevent overlap */
+    padding: 4px 6px; /* Increase padding for better spacing */
+    margin: 1px; /* Add more margin to prevent overlap */
     display: block; /* Stack buttons vertically if needed */
     width: 100%; /* Make them full width to ensure proper spacing */
   }
-
-  #adminProductList table {
-    width: 100%;
-    table-layout: fixed;
+}
+/* Responsive styles for table */
+@media screen and (max-width: 992px) {
+  #adminProductList th,
+  #adminProductList td {
+    padding: 0.5rem;
   }
+  
+  #adminProductList th {
+    font-size: 1em;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  /* Option 1: Convert table to scrollable horizontally */
+  #adminProductListContainer {
+    overflow-x: auto;
+  }
+
+  @media screen and (max-width: 768px) {
+  .responsive-table,
+  .responsive-table thead,
+  .responsive-table tbody,
+  .responsive-table th,
+  .responsive-table td,
+  .responsive-table tr {
+    display: block;
+  }
+
+  /* Hide the table header */
+  .responsive-table thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+    display: none;
+  }
+
+  .responsive-table tr {
+    background: #fff;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    padding: 1rem;
+  }
+
+  .responsive-table td {
+    position: relative;
+    padding-left: 50%;
+    text-align: right;
+    border: none;
+    border-bottom: 1px solid #eee;
+  }
+
+  /* Add labels before each cell using the data-label attribute */
+  .responsive-table td:before {
+    position: absolute;
+    top: 0;
+    left: 1rem;
+    width: 45%;
+    padding-right: 1rem;
+    white-space: nowrap;
+    text-align: left;
+    font-weight: bold;
+    content: attr(data-label);
+  }
+}
+
+
   /*******  End of ADMIN PAGE STYLING (QUERY) *******/
 }
 /******* End of Media Query for responsive display *******/
+/* Hide scrollbar appearance while maintaining functionality if needed */
+/* For Webkit browsers (Chrome, Safari) */
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: none;
+}
+
+/* For IE and Edge */
+* {
+  -ms-overflow-style: none;
+}

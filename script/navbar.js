@@ -1,7 +1,3 @@
-// 6. Challenge:
-// a. Create a menu of items based on an array of references
-// b. Provide the links from the array of references to the user
-
 // Array of links to display
 const siteNavigation = [
     {name: "shop", url: "./shop.html"},
@@ -10,7 +6,7 @@ const siteNavigation = [
     {name: "cart", url: "./cart.html"},
     ];
 
-// get the navbar
+// Get the navbar
 const nav = document.getElementsByTagName("nav");
 const navbar = nav[0];
 
