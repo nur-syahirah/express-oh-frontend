@@ -1,25 +1,66 @@
-// Function to add a single item card to the DOM
-function addItemCard(item) {
+  // Function to add a single item card to the DOM
+  function addItemCard(item) {
   const productListDiv = document.getElementById("product-list");
-  const productCard = document.createElement('div');
-  productCard.classList.add('col', 'col-lg-4', 'col-md-4', 'col-sm-6');
   
-  productCard.innerHTML = `
-    <div class="card h-100">
-      <img src="${item.image}" class="card-img-top" alt="${item.name}">
-      <div class="card-body">
-        <h5 class="card-title">${item.name}</h5>
-        <p class="card-text">${item.description}</p>
-        <p class="card-text fw-semibold">Price: $${item.price.toFixed(2)}</p>
-        <div class="mb-2">
-          ${item.flavors.map(flavor => `<button class="btn btn-outline-secondary btn-sm me-1 flavor-btn">${flavor}</button>`).join('')}
-        </div>
-        <button class="btn btn-primary w-100" type="button">Add</button>
-      </div>
-    </div>
-  `;
+  // Create column wrapper (for Bootstrap layout)
+  const columnWrapper = document.createElement('div');
+  columnWrapper.classList.add('col', 'col-lg-4', 'col-md-4', 'col-sm-6');
 
-  productListDiv.appendChild(productCard);
+  // Create product card
+  const productCard = document.createElement('div');
+  productCard.className = "card h-100";
+  columnWrapper.appendChild(productCard); // Append card to column
+
+  // Create image element
+  const productCardImage = document.createElement("img");
+  productCardImage.src = item.image;
+  productCardImage.alt = item.name; // Use alt instead of name
+  productCardImage.className = "card-img-top";
+  productCard.appendChild(productCardImage);
+
+  // Create body container for card
+  const productCardBody = document.createElement("div");
+  productCardBody.className = "card-body";
+  productCard.appendChild(productCardBody);
+
+  // Create card title for card
+  const productCardTitle = document.createElement("h5");
+  productCardTitle.className = "card-title";
+  productCardTitle.innerText = item.name;
+  productCardBody.appendChild(productCardTitle);
+
+  // Create card description
+  const productCardInfo = document.createElement("p");
+  productCardInfo.className = "card-text";
+  productCardInfo.innerText = item.description;
+  productCardBody.appendChild(productCardInfo);
+
+  // Create price info for card
+  const productCardPrice = document.createElement("p");
+  productCardPrice.className = "card-text fw-semibold";
+  productCardPrice.innerText = `Price: $${item.price.toFixed(2)}`;
+  productCardBody.appendChild(productCardPrice);
+
+  // Create flavor tags for card
+  const flavorContainer = document.createElement("div");
+  flavorContainer.className = "mb-2";
+  item.flavors.forEach(flavor => {
+    const flavorButton = document.createElement("button");
+    flavorButton.className = "btn btn-outline-secondary btn-sm me-1 flavor-btn";
+    flavorButton.innerText = flavor;
+    flavorContainer.appendChild(flavorButton);
+  });
+  productCardBody.appendChild(flavorContainer);
+
+  // Create add button for card
+  const addButton = document.createElement("button");
+  addButton.className = "btn btn-primary w-100";
+  addButton.type = "button";
+  addButton.innerText = "Add";
+  productCardBody.appendChild(addButton);
+
+  // Append the full column to the product list
+  productListDiv.appendChild(columnWrapper);
 }
 
 // Controller class for managing items
@@ -92,5 +133,12 @@ addItemCard({
   image: "./images/cuphead.png",
   flavors: ["Test", "Demo"]
 });
+
+*/
+
+/* To clear localStorage when adding item in product mock data
+
+localStorage.removeItem("product-list");
+location.reload(); // reloads the page
 
 */

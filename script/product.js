@@ -84,6 +84,15 @@ const productData = [
         image: "./images/cuphead.png",
         flavors: ["Chocolate", "Caramel"]
     },
+    {
+        id: 15,
+        name: "Product 15",
+        description: "Description of product 3",
+        price: 55.00,
+        image: "./images/cuphead.png",
+        flavors: ["Chocolate", "Caramel"]
+    },
+   
   ];
 
 
