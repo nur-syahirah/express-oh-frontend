@@ -5,7 +5,7 @@
 }
 
 .container {
-  max-width: 1400px; /* Allows proper expansion */
+  /* max-width: 1400px; Allows proper expansion */
   width: 100%; /* Full width */
   margin: 0 auto;
 }
@@ -82,7 +82,7 @@ ion-icon {
 /*******  End of nav bar */
 
 /******* Start of main body *******/
-#main {
+#mainAdmin {
   background-color: #f7ede1;
   width: 100%;
   margin: 0;
@@ -90,7 +90,7 @@ ion-icon {
   box-sizing: border-box;
   overflow-x: hidden;
 }
-#main h1 {
+#mainAdmin h1 {
   background-color: #f7ede1;
 }
 .nav-item-icon a {
@@ -114,11 +114,9 @@ ion-icon {
   }
   
   /* Main content grows to push footer down */
-  #main {
+  #mainAdmin {
     flex: 1; /* Takes remaining space */
   }
-
-   
   .coffee-pic img{
     width: 100%;
     height: 500px;
@@ -274,6 +272,7 @@ h5 {
 
 /*******  Start of ADMIN PAGE STYLING *******/
 /* Global styling for admin page */
+
 #adminBody {
   background-color: #f7ede1;
   font-family: "Bubblegum Sans", cursive;
@@ -406,6 +405,7 @@ h5 {
   border: 2px solid #8f8d8d;
   padding: 20px;
   border-radius: 15px;
+  box-sizing: border-box;
 }
 
 /* Image preview styling */
@@ -414,25 +414,28 @@ h5 {
   height: auto; /* Adjusts height based on the image aspect ratio */
   display: block; /* Removes unwanted spacing */
   object-fit: cover; /* Ensures the image fills the box properly */
-  border: 2px solid #ccc; /* Optional: Adds a clean border */
+  border: 2px solid #7e7d7d; 
   font-size: 18px; /* Enlarges alt text */
   text-align: center;
   color: #333; /* Darker text for readability */
 }
 
-/* File input styling */
+/* User input styling */
 #adminProductImage {
   background-color: white;
 }
 
 #adminProductPrice,
 #adminProductQuantity {
-  width: 130px; /* Adjust this value as needed */
+  width: 130px;
+}
+
+#adminProductListContainer {
+  overflow-x: auto; /* Enables horizontal scrolling if needed */
+  width: 100%;
 }
 
 /* Admin Product Listing Table styling */
-
-
 #adminProductList{
   border: 2px solid #8f8d8d;
   padding: 15px;
@@ -442,10 +445,10 @@ h5 {
 
 #adminProductList th,
 #adminProductList td {
-  border: 2px solid #ccc;
   padding: 0.75rem;
   text-align: center;
-  vertical-align: middle; /* Centers text vertically */
+  vertical-align: middle;
+  min-width: auto;
 }
 
 #adminProductList th {
@@ -469,7 +472,8 @@ h5 {
 
 #adminProductList th:nth-child(3), 
 #adminProductList td:nth-child(3) { /* Tags Description */
-  width: 20%;
+  min-width: 180px; /* Ensure enough space for readability */
+  word-wrap: break-word; /* Wraps long text */
 }
 
 #adminProductList th:nth-child(4), 
@@ -497,148 +501,190 @@ h5 {
   max-width: 200px;
   height: auto;
 }
-
 /*******  End of ADMIN PAGE STYLING *******/
 
 /******* Start of Media Query for responsive display *******/
-@media screen and (max-width: 600px) {
-  /* Set the navigation container in mobile view */
-  .navContainer {
-    display: flex;
-    margin: 0 auto;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: center;
-    text-align: center;
-    width: 100%; /* Ensure it takes full width */
-    overflow: visible; /* Prevent content clipping */
-    padding-left: 0;
-  }
-  #nav-logo {
-    font-size: 30px; /* Adjust size for mobile */
-    padding-top: 2rem;
-  }
-
-  /* Set the navigation links' block in mobile view */
-  .right-section {
-    display: flex;
-    align-items: center;
-    padding-top: 1rem;
-    gap: 10px;
-    margin: 0 auto;
-    padding-right: 0%;
-    justify-content: flex-start;
-  }
-
-  /* Set the navigation unorder list of links in mobile view */
-  .right-section ul {
-      display: flex;
-      flex-wrap: wrap; /* Prevents overflow */
-      justify-content: center; /* Keeps links aligned */
-      gap: 10px;
-      padding-left: 0;
-      margin-bottom: 0;
-  }
-  .right-section li a {
-    white-space: nowrap; /* Keeps links in one line */
-    font-size: 1.5rem;
-  }
-
-  #foot-left-col {
-    text-align: center;
-  }
-  #foot-mid-col #foot-right-col {
-    text-align: center;
-  }
-  #foot-right-col #foot-right-col {
-    text-align: center;
-  }
-
-/*******  Start of ADMIN PAGE STYLING (QUERY) *******/
-#adminBody .container {
-  max-width: 100%;
-}
-  /* Convert table to scrollable horizontally */
-  #adminProductList {
-    table-layout: auto; /* Allows flexible resizing */
-    width: 100%; /* Ensures it takes full width */
-  }
-#adminBody h1{
-  font-size: 40px;
-}
-#adminBody button{
-  font-size: small;
-}
-  #adminBody button.action-btn {
-    padding: 4px 6px; /* Increase padding for better spacing */
-    margin: 1px; /* Add more margin to prevent overlap */
-    display: block; /* Stack buttons vertically if needed */
-    width: 100%; /* Make them full width to ensure proper spacing */
-  }
-}
-/* Responsive styles for table */
-@media screen and (max-width: 992px) {
-  #adminProductList th,
-  #adminProductList td {
-    padding: 0.5rem;
-  }
-  
-  #adminProductList th {
-    font-size: 1em;
-  }
-}
-
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 822px){
   #adminBody .container {
     max-width: 100%;
   }
+  #adminProductTableBody{
+    max-width: 100%;
 
-  /* Convert table to scrollable horizontally */
-  #adminProductList {
-    table-layout: auto; /* Allows flexible resizing */
-    width: 100%; /* Ensures it takes full width */
+  }
+#foot-left-col {
+    text-align: center;
+}
+#foot-mid-col #foot-right-col {
+    text-align: center;
+}
+#foot-right-col #foot-right-col {
+    text-align: center;
+}
+
+/* Set the navigation container in mobile view */
+.navContainer{
+    display: block;
+    margin: 0 auto;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2rem 2rem;
+}
+
+/* Set the navigation links' block in mobile view */
+.right-section {
+    display: block;
+    align-items: center;
+    padding-top: 1rem;
+    gap: 10px;
+}
+
+/* Set the navigation unorder list of links in mobile view */
+.right-section ul{
+    display: flex;
+    justify-content: center;
+}
+
+/******* ADMIN PAGE RESPONSIVE STYLING *******/
+/* Ensure max width for container */
+
+#adminBody .container {
+  max-width: 100%;
+}
+/* Standard table styling */
+#adminProductList {
+  width: 100%;
+  table-layout: auto; /* Allows flexible resizing */
+}
+
+/* Headings & Button Adjustments */
+#adminBody h1 {
+  font-size: 40px;
+}
+
+#adminBody button {
+  font-size: small;
+}
+
+/* Action button styling */
+#adminBody button.action-btn {
+  padding: 4px 6px;
+  margin: 1px;
+  display: block; /* Stack buttons vertically if needed */
+  width: 100%;
+}
+
+}
+/* Hide table headers in compact mobile view */
+@media screen and (max-width: 768px) {
+
+  #adminProductForm{
+    width: 100%;
+  }
+  #adminProductForm button{
+    font-size: medium;
+    
   }
 
-  #adminProductList th, #adminProductList td {
-    font-size: 14px; /* Adjusts text size for smaller screens */
-    padding: 8px; /* Keeps spacing consistent */
+  #adminProductList table {
+    width: 100%;
+    table-layout: auto;
+  }
+
+  #adminAddProduct h2 {
+    text-align: center;
+    width: 100%; /* Ensures it stretches fully */
+    margin-bottom: 10px; /* Space below */
+  }
+
+  #adminProductList td {
+    text-align: left;
+    padding-left: 50%;
+    position: relative;
+    width: auto;
+  }
+
+  #adminAddProduct {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+  }
+
+  #adminAddProduct .col-md-5 {
+    display: flex;
+    flex-direction: column; /* Stack image & input */
+    align-items: center; /* Center them */
+  }
+  
+  #adminImagePreview {
+    width: 100%;
+    margin-bottom: 10px; /* Space between image and input */
+  }
+  
+  #adminProductImage {
+    width: 100%;
+  }
+
+  /* Responsive Table - Stack Items in Mobile View */
+.responsive-table thead tr {
+  display: none;
+}
+
+.responsive-table tr {
+  background: #fff;
+  margin-bottom: 1rem;
+  border: 1px solid #ddd;
+  padding: 1rem;
+}
+
+.responsive-table td {
+  position: relative;
+  padding-left: 50%;
+  text-align: right;
+  border: none;
+  border-bottom: 1px solid #eee;
+}
+
+/* Add labels before each cell using data-label */
+.responsive-table td:before {
+  position: absolute;
+  top: 0;
+  left: 1rem;
+  width: 45%;
+  padding-right: 1rem;
+  white-space: nowrap;
+  text-align: left;
+  font-weight: bold;
+  content: attr(data-label);
+}
+}
+
+/* Table responsiveness adjustments */
+@media screen and (max-width: 992px) {
+  #adminProductList th,
+  #adminProductList td {
+    font-size: 14px;
+    padding: 8px;
+    }
+
+  #adminProductList th {
+    font-size: 1em;
+  }
+  #adminAddProduct .row {
+    flex-direction: column; /* Stack left & right sections */
+  }
+  
+  #adminAddProduct .col-md-5, 
+  #adminAddProduct .col-md-7 {
+    width: 100%; /* Make them take full width */
+    
   }
 }
-  /* Hide the table header */
-  .responsive-table thead tr {
-    position: absolute;
-    top: -9999px;
-    left: -9999px;
-    display: none;
-  }
 
-  .responsive-table tr {
-    background: #fff;
-    margin-bottom: 1rem;
-    border: 1px solid #ddd;
-    padding: 1rem;
-  }
-
-  .responsive-table td {
-    position: relative;
-    padding-left: 50%;
-    text-align: right;
-    border: none;
-    border-bottom: 1px solid #eee;
-  }
-
-  /* Add labels before each cell using the data-label attribute */
-  .responsive-table td:before {
-    position: absolute;
-    top: 0;
-    left: 1rem;
-    width: 45%;
-    padding-right: 1rem;
-    white-space: nowrap;
-    text-align: left;
-    font-weight: bold;
-    content: attr(data-label);
-  }
 /*******  End of ADMIN PAGE STYLING (QUERY) *******/
 /******* End of Media Query for responsive display *******/
 
