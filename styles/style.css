@@ -508,6 +508,7 @@ h5 {
   #adminBody .container {
     max-width: 100%;
   }
+  
   #adminProductTableBody{
     max-width: 100%;
 
@@ -684,7 +685,6 @@ h5 {
     
   }
 }
-
 /*******  End of ADMIN PAGE STYLING (QUERY) *******/
 /******* End of Media Query for responsive display *******/
 
