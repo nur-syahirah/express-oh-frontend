@@ -122,21 +122,23 @@
             
             <!-- Flavors Dropdown -->
             <div class="mb-3">
-              <label class="form-label">Flavors</label>
+              <label class="form-label" for="adminFlavorsDropdownButton">Flavors</label>
               <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="adminFlavorsDropdownButton" data-bs-toggle="dropdown" aria-expanded="false">
-                  Select Flavors
-                </button>
-                <ul class="dropdown-menu p-2" aria-labelledby="adminFlavorsDropdownButton" style="min-width: 300px;">
-                  <li>
-                    <input type="text" class="form-control mb-2" id="adminNewFlavorInput" placeholder="Add new flavor">
-                  </li>
-                  <ul id="adminDropdownFlavorOptions">
-                    <!-- Dynamic flavor options will be correctly injected inside <li> elements -->
+                  <button class="btn btn-secondary dropdown-toggle" type="button" id="adminFlavorsDropdownButton" data-bs-toggle="dropdown" aria-expanded="false">
+                      Select Flavors
+                  </button>
+                  <ul class="dropdown-menu p-2" aria-labelledby="adminFlavorsDropdownButton" style="min-width: 300px;">
+                      <li>
+                          <input type="text" class="form-control mb-2" id="adminNewFlavorInput" placeholder="Add new flavor">
+                      </li>
+                      <!-- Correct placement for dynamically injected flavors -->
+                      <li id="adminDropdownFlavorOptions">
+                          <!-- Dynamic flavor options will be correctly injected inside <li> elements -->
+                      </li>
                   </ul>
-                </ul>
               </div>
-            </div>
+          </div>
+          
 
             <!-- Buttons (Add and Clear) -->
             <div class="d-flex justify-content-end gap-2">
