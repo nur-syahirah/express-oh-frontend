@@ -6,6 +6,7 @@ const productData = [
         name: "Product 1",
         description: "Description of product 1",
         price: 66.66,
+        quantity: 200,
         image: "./images/cuphead.png",
         flavors: ["Vanilla", "Chocolate", "Caramel", "Hazelnut"]
     },
@@ -14,6 +15,7 @@ const productData = [
         name: "Product 2",
         description: "Description of product 2",
         price: 45.99,
+        quantity: 200,
         image: "./images/cuphead.png",
         flavors: ["Vanilla", "Chocolate", "Hazelnut"]
     },
@@ -22,6 +24,7 @@ const productData = [
         name: "Product 3",
         description: "Description of product 3",
         price: 55.00,
+        quantity: 200,
         image: "./images/cuphead.png",
         flavors: ["Chocolate", "Caramel"]
     },
@@ -31,6 +34,7 @@ const productData = [
         name: "Product 4",
         description: "Description of product 3",
         price: 55.00,
+        quantity: 200,
         image: "./images/cuphead.png",
         flavors: ["Chocolate", "Caramel"]
     },
@@ -40,6 +44,7 @@ const productData = [
         name: "Product 5",
         description: "Description of product 3",
         price: 55.00,
+        quantity: 200,
         image: "./images/cuphead.png",
         flavors: ["Chocolate", "Caramel"]
     },
@@ -49,6 +54,7 @@ const productData = [
         name: "Product 6",
         description: "Description of product 3",
         price: 55.00,
+        quantity: 200,
         image: "./images/cuphead.png",
         flavors: ["Chocolate", "Caramel"]
     },
@@ -57,6 +63,7 @@ const productData = [
         name: "Product 7",
         description: "Description of product 3",
         price: 55.00,
+        quantity: 200,
         image: "./images/cuphead.png",
         flavors: ["Chocolate", "Caramel"]
     },
@@ -65,6 +72,7 @@ const productData = [
         name: "Product 8",
         description: "Description of product 3",
         price: 55.00,
+        quantity: 200,
         image: "./images/cuphead.png",
         flavors: ["Chocolate", "Caramel"]
     },
@@ -73,6 +81,7 @@ const productData = [
         name: "Product 9",
         description: "Description of product 3",
         price: 55.00,
+        quantity: 200,
         image: "./images/cuphead.png",
         flavors: ["Chocolate", "Caramel"]
     },
@@ -81,6 +90,7 @@ const productData = [
         name: "Product 10",
         description: "Description of product 3",
         price: 55.00,
+        quantity: 200,
         image: "./images/cuphead.png",
         flavors: ["Chocolate", "Caramel"]
     },

@@ -1,7 +1,13 @@
 /*******  universal settings *******/
 * {
-  max-width: 100%;
+  /* max-width: 100%; */
   box-sizing: border-box;
+}
+
+.container {
+  max-width: 1400px; /* Allows proper expansion */
+  width: 100%; /* Full width */
+  margin: 0 auto;
 }
 
 /* Ensure the body and html don't have overflow */
@@ -15,6 +21,7 @@ html, body {
   font-family: "Rock Salt", cursive;
   color: white;
   font-size: 1.2rem;
+  padding-top: 2rem;
 }
 #nav-logo {
   font-size: 3rem;
@@ -101,9 +108,6 @@ ion-icon {
   position: fixed;
 }
 
-
-
-  
   body {
     display: flex;
     flex-direction: column; /* Stacks header, main, footer vertically */
@@ -207,8 +211,6 @@ ion-icon {
     width: 100%;
     max-width: 100%;
   }
- 
-  
 
 /******* End of main body *******/
 
@@ -286,7 +288,6 @@ h5 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  /* background-color: #eb2424; Fully transparent */
   padding: 20px;
   border-radius: 15px;
   margin-bottom: 20px;
@@ -295,7 +296,7 @@ h5 {
 /* "Hello Admin" as H1 */
 #adminWelcome h1 {
   font-family: "The Girl Next Door", cursive;
-  font-size: 3rem;
+  font-size: 4rem;
   margin: 0 auto;
   text-align: center;
 }
@@ -317,26 +318,22 @@ h5 {
   border-radius: 15px;
   /* box-shadow: 0 0 10px rgba(0,0,0,0.1); */
 }
-/* Admin Sales Orders - Chart container styling */
-#adminSalesOrders{
-  border: 2px solid #8f8d8d;
 
-}
-#adminSalesOrders .chart-container {
-  position: relative;
-  width: 100%;
-  height: 300px;
-  background-color: #f7ede1;
-}
-#adminSalesChart {
-  background-color: #f7ede1;
-  
-}
-/* Admin dropdown menu for custom tags */
-#adminBody .dropdown-menu {
-  max-height: 300px;
-  overflow-y: auto;
-  background-color: #f7ede1;
+#adminSalesOrders, 
+#adminFormTitle,
+#adminProductList h2{
+    text-decoration: underline;
+    text-decoration-thickness: 3px; /* Adjust thickness (default is usually very thin) */
+    text-underline-offset: 3px; /* Adds slight spacing between text and underline */
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+#adminBody label, 
+#adminBody input, 
+#adminBody button, 
+#adminBody .dropdown-toggle {
+  font-size: 20px; /* Adjust as needed */
 }
 
 /* Standardized button styling for admin page */
@@ -354,83 +351,48 @@ h5 {
   padding: 5px 10px; /* Default padding */
   margin: 2px; /* Small margin between buttons */
 }
-/* Admin Product Listing Table styling */
-#adminProductListContainer {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  border-radius: 8px;
-  overflow-x: auto;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-/* Ensure tables don't cause overflow */
-desktop-table {
-  table-layout: fixed;
-  width: 100%;
-}
 
-#adminProductList{
+/* Admin Sales Orders - Chart container styling */
+#adminSalesOrders{
   border: 2px solid #8f8d8d;
-  padding: 15px;
+
 }
-#adminProductList table {
-  border: 2px solid #ccc;
-  border-collapse: collapse;
+#adminSalesOrders .chart-container {
+  position: relative;
   width: 100%;
-  table-layout: auto; /* This helps with responsive behavior */
+  height: 300px;
+  background-color: #f7ede1;
 }
-#adminProductList th,
-#adminProductList td {
-  border: 2px solid #ccc;
-  padding: 0.75rem;
-  text-align: center;
+#adminSalesChart {
+  background-color: #f7ede1;
+  
 }
-#adminProductList th {
-  font-size: 1.2em;
-}
-
-/* Column widths */
-#adminProductList th:nth-child(1), 
-#adminProductList td:nth-child(1) { /* Image column */
-  width: 80px;
+/* Dropdown menu for custom tags */
+#adminDropdownFlavorOptions {
+  list-style: none; /* Removes default bullet points */
+  padding: 0; /* Removes default padding */
+  padding-left: 15px;
+  margin: 0; /* Ensures no unwanted spacing */
 }
 
-#adminProductList th:nth-child(2), 
-#adminProductList td:nth-child(2) { /* Name column */
-  width: 25%;
+.form-check-input[type="checkbox"] {
+  appearance: none; /* Removes default styling */
+  width: 20px;
+  height: 20px;
+  border: 3px solid #000000; /* Darker border for stronger contrast */
+  border-radius: 2px;
+  background-color: #fff;
+  cursor: pointer;
 }
 
-#adminProductList th:nth-child(3), 
-#adminProductList td:nth-child(3) { /* Tags column */
-  width: 20%;
+/* Custom style when the checkbox is checked */
+.form-check-input[type="checkbox"]:checked {
+  background-color: #212529; /* Darker background when checked */
+  border: 3px solid #fff; /* Contrast border for visibility */
 }
 
-#adminProductList th:nth-child(4), 
-#adminProductList td:nth-child(4) { /* Price column */
-  width: 12%;
-}
-
-#adminProductList th:nth-child(5), 
-#adminProductList td:nth-child(5) { /* Quantity column */
-  width: 12%;
-}
-
-#adminProductList th:nth-child(6), 
-#adminProductList td:nth-child(6) { /* Actions column */
-  width: 15%;
-}
-
-/* Product image styles */
-#adminProductList .product-image {
-  max-width: 60px;
-  height: auto;
-}
-
-/* Remove border for Action's column */
-#adminProductList td:last-child {
-  border: none;
-}
 /* Additional styling for buttons in the admin Add Product section */
+
 #adminAddProduct .btn {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s ease;
@@ -448,10 +410,14 @@ desktop-table {
 
 /* Image preview styling */
 #adminImagePreview {
-  border-radius: 8px;
-  min-height: 200px;
-  object-fit: contain;
-  width: 100%;
+  width: 100%; /* Makes sure it stretches within the container */
+  height: auto; /* Adjusts height based on the image aspect ratio */
+  display: block; /* Removes unwanted spacing */
+  object-fit: cover; /* Ensures the image fills the box properly */
+  border: 2px solid #ccc; /* Optional: Adds a clean border */
+  font-size: 18px; /* Enlarges alt text */
+  text-align: center;
+  color: #333; /* Darker text for readability */
 }
 
 /* File input styling */
@@ -459,19 +425,83 @@ desktop-table {
   background-color: white;
 }
 
-/* Style for the dropdown menu */
-#adminAddProduct .dropdown-menu {
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+#adminProductPrice,
+#adminProductQuantity {
+  width: 130px; /* Adjust this value as needed */
 }
 
+/* Admin Product Listing Table styling */
+
+
+#adminProductList{
+  border: 2px solid #8f8d8d;
+  padding: 15px;
+  width: 100%;
+  table-layout: auto; /* Allows columns to adjust dynamically */
+}
+
+#adminProductList th,
+#adminProductList td {
+  border: 2px solid #ccc;
+  padding: 0.75rem;
+  text-align: center;
+  vertical-align: middle; /* Centers text vertically */
+}
+
+#adminProductList th {
+  font-size: 1.4em;
+}
+
+#adminProductList td{
+  font-size: 1.2em;
+}
+
+/* Column widths */
+#adminProductList th:nth-child(1), 
+#adminProductList td:nth-child(1) { /* Image column */
+  width: 80px;
+}
+
+#adminProductList th:nth-child(2), 
+#adminProductList td:nth-child(2) { /* Name column */
+  width: 10%;
+}
+
+#adminProductList th:nth-child(3), 
+#adminProductList td:nth-child(3) { /* Tags Description */
+  width: 20%;
+}
+
+#adminProductList th:nth-child(4), 
+#adminProductList td:nth-child(4) { /* Price column */
+  width: 6%;
+}
+
+#adminProductList th:nth-child(5), 
+#adminProductList td:nth-child(5) { /* Quantity column */
+  width: 6%;
+}
+
+#adminProductList th:nth-child(6), 
+#adminProductList td:nth-child(6) { /* Flavours column */
+  width: 25%;
+}
+
+#adminProductList th:nth-child(7), 
+#adminProductList td:nth-child(7) { /* Actions column */
+  width: 15%;
+}
+
+/* Product image styles */
+#adminProductList .product-image {
+  max-width: 200px;
+  height: auto;
+}
 
 /*******  End of ADMIN PAGE STYLING *******/
 
 /******* Start of Media Query for responsive display *******/
 @media screen and (max-width: 600px) {
-
   /* Set the navigation container in mobile view */
   .navContainer {
     display: flex;
@@ -525,7 +555,14 @@ desktop-table {
   }
 
 /*******  Start of ADMIN PAGE STYLING (QUERY) *******/
-
+#adminBody .container {
+  max-width: 100%;
+}
+  /* Convert table to scrollable horizontally */
+  #adminProductList {
+    table-layout: auto; /* Allows flexible resizing */
+    width: 100%; /* Ensures it takes full width */
+  }
 #adminBody h1{
   font-size: 40px;
 }
@@ -552,21 +589,21 @@ desktop-table {
 }
 
 @media screen and (max-width: 768px) {
-  /* Option 1: Convert table to scrollable horizontally */
-  #adminProductListContainer {
-    overflow-x: auto;
+  #adminBody .container {
+    max-width: 100%;
   }
 
-  @media screen and (max-width: 768px) {
-  .responsive-table,
-  .responsive-table thead,
-  .responsive-table tbody,
-  .responsive-table th,
-  .responsive-table td,
-  .responsive-table tr {
-    display: block;
+  /* Convert table to scrollable horizontally */
+  #adminProductList {
+    table-layout: auto; /* Allows flexible resizing */
+    width: 100%; /* Ensures it takes full width */
   }
 
+  #adminProductList th, #adminProductList td {
+    font-size: 14px; /* Adjusts text size for smaller screens */
+    padding: 8px; /* Keeps spacing consistent */
+  }
+}
   /* Hide the table header */
   .responsive-table thead tr {
     position: absolute;
@@ -602,12 +639,9 @@ desktop-table {
     font-weight: bold;
     content: attr(data-label);
   }
-}
-
-
-  /*******  End of ADMIN PAGE STYLING (QUERY) *******/
-}
+/*******  End of ADMIN PAGE STYLING (QUERY) *******/
 /******* End of Media Query for responsive display *******/
+
 /* Hide scrollbar appearance while maintaining functionality if needed */
 /* For Webkit browsers (Chrome, Safari) */
 ::-webkit-scrollbar {
