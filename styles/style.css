@@ -179,12 +179,14 @@ nav {
   font-family: "Mali", cursive;
   font-size: 1.8rem;
   color: #2A2A2A;
+  text-align: center;
 }
 
 .product-description {
   font-family: "Mali", cursive;
   color: #666;
   min-height: 60px;
+  text-align: center;
 }
 
 .product-price {
@@ -192,12 +194,14 @@ nav {
   font-weight: 700;
   font-size: 1.3rem;
   color: #2A2A2A;
+  text-align: center;
 }
 
 .product-tags {
   font-family: "Mali", cursive;
   font-size: 0.9rem;
   color: #999;
+  text-align: center;
 }
 
 .add-to-cart-btn {
