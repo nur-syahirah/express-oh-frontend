@@ -4,13 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-<!-- Bootstrap's CSS -->
+    <!-- Bootstrap's CSS -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css"
       rel="stylesheet"
       integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7"
-      crossorigin="anonymous"
-    />
+      crossorigin="anonymous"/>
 
     <!-- Display Icon on webpage tab -->
     <link rel = "shortcut icon" type = "x-icon" href="./images/logo.png">
@@ -30,7 +29,9 @@
     <link href="https://fonts.googleapis.com/css2?family=The+Girl+Next+Door&display=swap" rel="stylesheet" />
 
     <!----- Social Media Logo Link ----->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" 
+    integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" 
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
   
     <!-- Confirmation dialog using SweetAlert2-->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -41,7 +42,7 @@
   </head>
   <body>
 
-   <!-- Top Nav Bar -->
+   <!-------------- START OF TOP NAV BAR --------------->
    <header>  
     <div id ="navbar-header" class="navbar top-nav-bar">
       <div class="navContainer">
@@ -57,17 +58,20 @@
       </div>
     </div>
   </header>  
+  <!-------------- END OF TOP NAV BAR --------------->
+
   
-    <!-- Main Page Body -->
-    <main id="mainAdmin" class="container d-flex main-content-bg mw-100">
-    <div id="adminBody" class="container mt-4 ">
-      <!-- Admin Welcome Section -->
-      <section id="adminWelcome">
-        <h1>Hello Admin</h1>
-        <div class="logout-container">
-          <button>Log Out</button>
-        </div>
-      </section>
+  <!--------------  ADMIN MAIN BODY -------------->
+  <main id="mainAdmin" class="container d-flex main-content-bg mw-100">
+  <div id="adminBody" class="container mt-4 ">
+
+    <!-- Admin Welcome Section -->
+    <section id="adminWelcome">
+      <h1>Hello Admin</h1>
+      <div class="logout-container">
+        <button>Log Out</button>
+      </div>
+    </section>
   
     <!-- Admin Sales Orders Section -->
     <section id="adminSalesOrders">
@@ -95,7 +99,6 @@
 
       <!-- Right Column: Product Details (≈3/5 of width) -->
       <div class="col-md-7">
-      
         <!-- Name Field -->
         <div class="mb-3">
           <label for="adminProductName" class="form-label">Name:</label>
@@ -124,14 +127,14 @@
             <div class="mb-3">
               <label class="form-label" for="adminFlavorsDropdownButton">Flavors</label>
               <div class="dropdown">
-                  <button class="btn btn-secondary dropdown-toggle" type="button" id="adminFlavorsDropdownButton" data-bs-toggle="dropdown" aria-expanded="false">
+                  <button class="btn btn-secondary dropdown-toggle" type="button" 
+                  id="adminFlavorsDropdownButton" data-bs-toggle="dropdown" aria-expanded="false">
                       Select Flavors
                   </button>
                   <ul class="dropdown-menu p-2" aria-labelledby="adminFlavorsDropdownButton" style="min-width: 300px;">
                       <li>
                           <input type="text" class="form-control mb-2" id="adminNewFlavorInput" placeholder="Add new flavor">
                       </li>
-                      <!-- Correct placement for dynamically injected flavors -->
                       <li id="adminDropdownFlavorOptions">
                           <!-- Dynamic flavor options will be correctly injected inside <li> elements -->
                       </li>
@@ -139,16 +142,15 @@
               </div>
           </div>
           
-
-            <!-- Buttons (Add and Clear) -->
-            <div class="d-flex justify-content-end gap-2">
-              <button type="submit" id="adminSubmitButton" class="btn">Add</button>
-              <button type="reset" class="btn">Clear</button>
-            </div>
+          <!-- Buttons (Add and Clear) -->
+          <div class="d-flex justify-content-end gap-2">
+            <button type="submit" id="adminSubmitButton" class="btn">Add</button>
+            <button type="reset" class="btn">Clear</button>
           </div>
         </div>
-      </form>
-    </section>
+      </div>
+    </form>
+  </section>
 
     <!-- Admin Product Listing Section -->
     <section id="adminProductList">
@@ -175,19 +177,24 @@
       </div>
     </section>
   </div>
-  </main>
+</main>
+  <!-------------- END OF ADMIN MAIN BODY --------------->
 
-  <!-- Footer -->
+
+  <!-------------- START OF FOOTER -------------->
+  <!-- Footer Container: Wraps the entire footer section -->
     <div class="footer-container">
       <footer class="footer-col">
         <div class="row justify-content-center">
-
+          
+          <!-- Left Column: Contains logo, description, and social media links -->
           <div id ="foot-left-col" class="col-md-7 mb-3">
             <h4 class="logo">Express-Oh!</h4>
             <p class="foot-text fw-medium">
               Premium coffee beans, expertly roasted
             </p>
 
+            <!-- Social Icons Section: Provides links to social media profiles -->
             <div class="socialIcons">             
                 <h5>Follow Us</h5> 
               <a href="https://www.facebook.com"><i class="fa-brands fa-facebook"></i></a>
@@ -196,7 +203,8 @@
               <a href="https://www.instagram.com"><i class="fa-brands fa-instagram"></i></a>
           </div>
         </div>
-
+        
+        <!-- Middle Column: Quick Links for page navigation -->
         <div id = "foot-mid-col" class="col-6 col-md-3 foot-text">
           <h5>Quick Links</h5>
           <ul class="nav flex-column">
@@ -211,7 +219,8 @@
             </li>
           </ul>
         </div>
-
+        
+        <!-- Right Column: Contact Information -->
         <div id = "foot-right-col" class="col-6 col-md-3 foot-text">
           <h5>Contacts</h5>
               <ul class="nav flex-column">
@@ -221,29 +230,29 @@
               </ul>
             </div>
         </div>
+
+        <!-- Bottom Footer Section: Contains copyright and rights information -->
         <div class="d-flex flex-column flex-sm-row justify-content-center py-4 text-white foot-text">
         <p>© 2025 Express-Oh! All rights reserved.</p>
       </div>
     </footer>
   </div>
-<!-- End of Footer -->
+  <!-------------- END OF FOOTER --------------->
 
-    <!-- Bootstrap's CSS -->
-  
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Bootstrap's CSS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Custom Script -->
-    <script src="./script/navbar.js"></script>
-    <script src="./script/product.js"></script>
+  <!-- Custom Script -->
+  <script src="./script/navbar.js"></script>
+  <script src="./script/product.js"></script>
 
-    <!-- Chart.js Library -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="./script/admin.js"></script>
+  <!-- Chart.js Library -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="./script/admin.js"></script>
 
-    <!-- Ionic Framework for Icons -->
-    <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@latest/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@latest/dist/ionicons/ionicons.js"></script>
-
+  <!-- Ionic Framework for Icons -->
+  <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@latest/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@latest/dist/ionicons/ionicons.js"></script>
 
   </body>
 </html>

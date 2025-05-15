@@ -1,4 +1,4 @@
-/*******  universal settings *******/
+/******* UNIVERSAL SETTINGS *******/
 * {
   /* max-width: 100%; */
   box-sizing: border-box;
@@ -16,7 +16,9 @@ html, body {
   width: 100%;
   position: relative;
 }
-/*******  Logo styles *******/
+/******* END OF UNIVERSAL SETTINGS *******/
+
+/*******  LOGO STYLES *******/
 .logo {
   font-family: "Rock Salt", cursive;
   color: white;
@@ -27,9 +29,9 @@ html, body {
   font-size: 3rem;
   text-align: left;
 }
-/*******  End of Logo styles *******/
+/*******  END OF LOGO STYLES *******/
 
-/*******  Start of nav bar *******/
+/******* START OF NAV BAR *******/
 .navContainer {
   display: flex;
   justify-content: space-between;
@@ -79,9 +81,9 @@ ion-icon {
   padding-left: 0;
   margin-bottom: 0;
 }
-/*******  End of nav bar */
+/*******  END OF NAV BAR ******* /
 
-/******* Start of main body *******/
+/******* START OF PRODUCT MAIN BODY *******/
 #mainAdmin {
   background-color: #f7ede1;
   width: 100%;
@@ -108,111 +110,111 @@ ion-icon {
   position: fixed;
 }
 
-  body {
-    display: flex;
-    flex-direction: column; /* Stacks header, main, footer vertically */
-  }
+body {
+  display: flex;
+  flex-direction: column; /* Stacks header, main, footer vertically */
+}
+
+/* Main content grows to push footer down */
+#mainAdmin {
+  flex: 1; /* Takes remaining space */
+}
+.coffee-pic img{
+  width: 100%;
+  height: 500px;
+  object-fit: cover;
   
-  /* Main content grows to push footer down */
-  #mainAdmin {
-    flex: 1; /* Takes remaining space */
-  }
-  .coffee-pic img{
-    width: 100%;
-    height: 500px;
-    object-fit: cover;
-    
-  }
-  .coffee-filter {
-    position: absolute;
-    padding: 30px 0 0 110px;
-    min-width: 200px;
-    width: auto;
-  }
-  .coffee-filter button {
-    display: inline-block;
-    min-width: 180px; 
-    padding: 12px 24px;
-    white-space: nowrap; 
-  }
+}
+.coffee-filter {
+  position: absolute;
+  padding: 30px 0 0 110px;
+  min-width: 200px;
+  width: auto;
+}
+.coffee-filter button {
+  display: inline-block;
+  min-width: 180px; 
+  padding: 12px 24px;
+  white-space: nowrap; 
+}
 
-  .pic-text{
-    position: absolute;
-    top: 50%; /* Center vertically */
-    left: 50%; /* Center horizontally */
-    transform: translate(-50%, -50%); /* Perfect centering */
-    color: white;
-    font-size: 24px;
-    font-weight: bold;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.8); /* Improves readability */
-  }
+.pic-text{
+  position: absolute;
+  top: 50%;                                   /* Center vertically */
+  left: 50%;                                  /* Center horizontally */
+  transform: translate(-50%, -50%);           /* Perfect centering */
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.8); /* Improves readability */
+}
 
-  .card {
-    width: 300px; /* Fixed width or use % for responsiveness */
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 15px;
-    margin: 10px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  }
-  .card img {
-    width: 100%;
-    border-radius: 5px;
-  }
-  .edit-description {
-    width: 100%;
-    min-height: 60px;
-    margin-top: 10px;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
+.card {
+  width: 300px;                               /* Fixed width or use % for responsiveness */
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  margin: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.card img {
+  width: 100%;
+  border-radius: 5px;
+}
+.edit-description {
+  width: 100%;
+  min-height: 60px;
+  margin-top: 10px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
 
-  .flavor-tag {
-    display: inline-block;
-    background-color: #007bff; /* Blue */
-    color: white;
-    padding: 4px 10px;
-    border-radius: 15px; /* Rounded corners */
-    font-size: 12px;
-    margin: 2px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
+.flavor-tag {
+  display: inline-block;
+  background-color: #007bff; /* Blue */
+  color: white;
+  padding: 4px 10px;
+  border-radius: 15px;          /* Rounded corners */
+  font-size: 12px;
+  margin: 2px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
 
-  /* Hover Effect */
-  .flavor-tag:hover {
-    background-color: #0056b3; /* Darker blue */
-  }
+/* Hover Effect */
+.flavor-tag:hover {
+  background-color: #0056b3; /* Darker blue */
+}
 
-  .btn-primary:hover{
-    background-color: orange;
-  }
+.btn-primary:hover{
+  background-color: orange;
+}
 
-  .btn-primary{
-    color: white;
-    border-radius: 16px;
-    background-color: #2c2c2c;
-    margin-top: 10px;
-    
-  }
+.btn-primary{
+  color: white;
+  border-radius: 16px;
+  background-color: #2c2c2c;
+  margin-top: 10px;
+  
+}
 
-   /* ---- Container for Evenly Spaced Cards ---- */
-   .coffee-container {
-    padding: 100px;
-    flex-wrap: wrap;
-    gap: 50px;
-    
-   
-  }
-  .card{
-    width: 100%;
-    max-width: 100%;
-  }
+  /* ---- Container for Evenly Spaced Cards ---- */
+  .coffee-container {
+  padding: 100px;
+  flex-wrap: wrap;
+  gap: 50px;
+  
+  
+}
+.card{
+  width: 100%;
+  max-width: 100%;
+}
 
-/******* End of main body *******/
+/******* END OF PRODUCT MAIN BODY *******/
 
-/******* Start of footer *******/
+/******* START OF FOOTER *******/
 .footer-container {
   width: 100%;
   padding-top: 30px;
@@ -268,20 +270,21 @@ h5 {
 #nav-link {
   margin-top: 0;
 }
-/******* End of footer *******/
+/******* END OF FOOTER *******/
 
-/*******  Start of ADMIN PAGE STYLING *******/
+/*******  START OF ADMIN PAGE STYLING *******/
 /* Global styling for admin page */
-
 #adminBody {
   background-color: #f7ede1;
   font-family: "Bubblegum Sans", cursive;
 }
+
 /* Center all section headers (<h2>) in admin sections */
 #adminBody section h2 {
   text-align: center;
   background-color: #f7ede1;
 }
+
 /* Admin Welcome Section */
 #adminWelcome {
   display: flex;
@@ -292,6 +295,7 @@ h5 {
   margin-bottom: 20px;
   background-color: #f7ede1;
 }
+
 /* "Hello Admin" as H1 */
 #adminWelcome h1 {
   font-family: "The Girl Next Door", cursive;
@@ -299,6 +303,7 @@ h5 {
   margin: 0 auto;
   text-align: center;
 }
+
 /* Logout button in admin welcome section */
 #adminWelcome button {
   background-color: #d5bfb9;
@@ -309,13 +314,13 @@ h5 {
   cursor: pointer;
   font-size: 1.2em;
 }
+
 /* Generic admin section styling */
 #adminBody section {
   background-color: #f7ede1;
   padding: 20px;
   margin-bottom: 20px;
   border-radius: 15px;
-  /* box-shadow: 0 0 10px rgba(0,0,0,0.1); */
 }
 
 #adminSalesOrders, 
@@ -323,7 +328,7 @@ h5 {
 #adminProductList h2{
     text-decoration: underline;
     text-decoration-thickness: 3px; /* Adjust thickness (default is usually very thin) */
-    text-underline-offset: 3px; /* Adds slight spacing between text and underline */
+    text-underline-offset: 3px;     /* Adds slight spacing between text and underline */
     font-weight: bold;
     margin-bottom: 10px;
   }
@@ -332,7 +337,7 @@ h5 {
 #adminBody input, 
 #adminBody button, 
 #adminBody .dropdown-toggle {
-  font-size: 20px; /* Adjust as needed */
+  font-size: 20px;
 }
 
 /* Standardized button styling for admin page */
@@ -348,7 +353,7 @@ h5 {
   cursor: pointer;
   font-size: 1.2em;
   padding: 5px 10px; /* Default padding */
-  margin: 2px; /* Small margin between buttons */
+  margin: 2px;       /* Small margin between buttons */
 }
 
 /* Admin Sales Orders - Chart container styling */
@@ -356,26 +361,28 @@ h5 {
   border: 2px solid #8f8d8d;
 
 }
+
 #adminSalesOrders .chart-container {
   position: relative;
   width: 100%;
   height: 300px;
   background-color: #f7ede1;
 }
+
 #adminSalesChart {
   background-color: #f7ede1;
-  
 }
+
 /* Dropdown menu for custom tags */
 #adminDropdownFlavorOptions {
   list-style: none; /* Removes default bullet points */
-  padding: 0; /* Removes default padding */
+  padding: 0;       /* Removes default padding */
   padding-left: 15px;
-  margin: 0; /* Ensures no unwanted spacing */
+  margin: 0;        /* Ensures no unwanted spacing */
 }
 
 .form-check-input[type="checkbox"] {
-  appearance: none; /* Removes default styling */
+  appearance: none;             /* Removes default styling */
   width: 20px;
   height: 20px;
   border: 3px solid #000000; /* Darker border for stronger contrast */
@@ -387,11 +394,10 @@ h5 {
 /* Custom style when the checkbox is checked */
 .form-check-input[type="checkbox"]:checked {
   background-color: #212529; /* Darker background when checked */
-  border: 3px solid #fff; /* Contrast border for visibility */
+  border: 3px solid #fff;    /* Contrast border for visibility */
 }
 
 /* Additional styling for buttons in the admin Add Product section */
-
 #adminAddProduct .btn {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s ease;
@@ -406,18 +412,6 @@ h5 {
   padding: 20px;
   border-radius: 15px;
   box-sizing: border-box;
-}
-
-/* Image preview styling */
-#adminImagePreview {
-  width: 100%; /* Makes sure it stretches within the container */
-  height: auto; /* Adjusts height based on the image aspect ratio */
-  display: block; /* Removes unwanted spacing */
-  object-fit: cover; /* Ensures the image fills the box properly */
-  border: 2px solid #7e7d7d; 
-  font-size: 18px; /* Enlarges alt text */
-  text-align: center;
-  color: #333; /* Darker text for readability */
 }
 
 /* User input styling */
@@ -472,8 +466,8 @@ h5 {
 
 #adminProductList th:nth-child(3), 
 #adminProductList td:nth-child(3) { /* Tags Description */
-  min-width: 180px; /* Ensure enough space for readability */
-  word-wrap: break-word; /* Wraps long text */
+  min-width: 180px;                 /* Ensure enough space for readability */
+  word-wrap: break-word;            /* Wraps long text */
 }
 
 #adminProductList th:nth-child(4), 
@@ -508,20 +502,22 @@ h5 {
   #adminBody .container {
     max-width: 100%;
   }
-  
+
   #adminProductTableBody{
     max-width: 100%;
-
   }
-#foot-left-col {
+
+  #foot-left-col {
     text-align: center;
-}
-#foot-mid-col #foot-right-col {
+  }
+
+  #foot-mid-col #foot-right-col {
     text-align: center;
-}
-#foot-right-col #foot-right-col {
+  }
+
+  #foot-right-col #foot-right-col {
     text-align: center;
-}
+  }
 
 /* Set the navigation container in mobile view */
 .navContainer{
@@ -549,10 +545,10 @@ h5 {
 
 /******* ADMIN PAGE RESPONSIVE STYLING *******/
 /* Ensure max width for container */
-
 #adminBody .container {
   max-width: 100%;
 }
+
 /* Standard table styling */
 #adminProductList {
   width: 100%;
@@ -595,7 +591,7 @@ h5 {
 
   #adminAddProduct h2 {
     text-align: center;
-    width: 100%; /* Ensures it stretches fully */
+    width: 100%;         /* Ensures it stretches fully */
     margin-bottom: 10px; /* Space below */
   }
 
@@ -618,12 +614,12 @@ h5 {
   #adminAddProduct .col-md-5 {
     display: flex;
     flex-direction: column; /* Stack image & input */
-    align-items: center; /* Center them */
+    align-items: center;    /* Center them */
   }
   
   #adminImagePreview {
     width: 100%;
-    margin-bottom: 10px; /* Space between image and input */
+    margin-bottom: 10px;   /* Space between image and input */
   }
   
   #adminProductImage {
@@ -631,8 +627,8 @@ h5 {
   }
 
   /* Responsive Table - Stack Items in Mobile View */
-.responsive-table thead tr {
-  display: none;
+  .responsive-table thead tr {
+    display: none;
 }
 
 .responsive-table tr {
@@ -661,7 +657,7 @@ h5 {
   text-align: left;
   font-weight: bold;
   content: attr(data-label);
-}
+ }
 }
 
 /* Table responsiveness adjustments */
@@ -681,7 +677,7 @@ h5 {
   
   #adminAddProduct .col-md-5, 
   #adminAddProduct .col-md-7 {
-    width: 100%; /* Make them take full width */
+    width: 100%;            /* Make them take full width */
     
   }
 }
