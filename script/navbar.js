@@ -61,3 +61,31 @@ siteNavigation.forEach(navitem => {
     // append each list item into the unordered list
     listofLinks.append(itemLink);            
 });        
+
+function updateCartCount() {
+  const cart = JSON.parse(localStorage.getItem('cart')) || [];
+  const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+  const cartLink = document.querySelector('a[href="./cart.html"]');
+  if (!cartLink) return;
+
+  // Remove existing counter if any
+  const existingCounter = cartLink.querySelector('.cart-counter');
+  if (existingCounter) existingCounter.remove();
+
+  // Add new counter (always visible, even if 0)
+  const counter = document.createElement('span');
+  counter.className = 'cart-counter ms-2 fw-bold';
+  counter.textContent = totalCount;
+  
+  // Style for visibility (customize in CSS)
+  counter.style.backgroundColor = '#FF6B6B';
+  counter.style.color = 'white';
+  counter.style.borderRadius = '50%';
+  counter.style.padding = '2px 8px';
+  
+  cartLink.appendChild(counter);
+}
+
+// Initialize counter on page load
+updateCartCount();
