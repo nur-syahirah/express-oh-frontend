@@ -53,6 +53,12 @@ siteNavigation.forEach(navitem => {
         const icon = document.createElement("ion-icon");                                        // Use graphical icon "cart-outline"
         icon.setAttribute("name", "cart-outline");
         anchor.append(icon);
+
+         // Create cart counter badge
+        const counter = document.createElement("span");
+        counter.className = "cart-counter";
+        counter.textContent = "0";
+        anchor.append(counter);
     }
 
     // append the anchor to each list item
@@ -62,30 +68,19 @@ siteNavigation.forEach(navitem => {
     listofLinks.append(itemLink);            
 });        
 
+// Update cart counter
 function updateCartCount() {
-  const cart = JSON.parse(localStorage.getItem('cart')) || [];
-  const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-
-  const cartLink = document.querySelector('a[href="./cart.html"]');
-  if (!cartLink) return;
-
-  // Remove existing counter if any
-  const existingCounter = cartLink.querySelector('.cart-counter');
-  if (existingCounter) existingCounter.remove();
-
-  // Add new counter (always visible, even if 0)
-  const counter = document.createElement('span');
-  counter.className = 'cart-counter ms-2 fw-bold';
-  counter.textContent = totalCount;
-  
-  // Style for visibility (customize in CSS)
-  counter.style.backgroundColor = '#FF6B6B';
-  counter.style.color = 'white';
-  counter.style.borderRadius = '50%';
-  counter.style.padding = '2px 8px';
-  
-  cartLink.appendChild(counter);
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+    
+    const cartCounter = document.querySelector('.cart-counter');
+    if (cartCounter) {
+        cartCounter.textContent = totalItems;
+        cartCounter.style.display = totalItems > 0 ? 'inline-block' : 'none';
+    }
 }
 
-// Initialize counter on page load
+// Initialize cart counter on page load
+// Clear all cart data
+localStorage.removeItem('cart');
 updateCartCount();

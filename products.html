@@ -81,25 +81,39 @@
 
   <!-- Modal HTML (Bootstrap 5 example) -->
   <div class="modal fade" id="addToCartModal" tabindex="-1" aria-labelledby="addToCartModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="addToCartModalLabel">Add to Cart</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header border-bottom-0 pb-0">
+        <h4 class="modal-title w-100 text-center" id="addToCartModalLabel">
+          <span id="modal-product-name" class="fw-bold"></span>
+        </h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      
+      <div class="modal-body pt-0">
+        <div class="mb-4">
+          <p id="modal-product-description" class="text-muted"></p>
         </div>
-        <div class="modal-body">
-          <p>Product: <span id="modal-product-name"></span></p>
-          <input type="hidden" id="modal-product-id" value="" />
-          <label for="modal-quantity" class="form-label">Quantity:</label>
+        
+        <div class="mb-3">
+          <h5 id="modal-product-price" class="text-primary"></h5>
+        </div>
+        
+        <div class="mb-3">
+          <label for="modal-quantity" class="form-label fw-semibold">Quantity:</label>
           <input type="number" id="modal-quantity" class="form-control" min="1" value="1" />
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" id="modal-confirm-btn" class="btn btn-primary">Confirm</button>
-        </div>
+        
+        <input type="hidden" id="modal-product-id" value="" />
+      </div>
+      
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" id="modal-confirm-btn" class="btn btn-primary">Add to Cart</button>
       </div>
     </div>
   </div>
+</div>
 
 
   <!-- End of main body -->
