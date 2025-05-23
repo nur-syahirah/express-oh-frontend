@@ -197,7 +197,7 @@ nav {
   text-align: center;
 }
 
-.product-tags {
+.product-tags, .product-tags a{
   font-family: "Mali", cursive;
   font-size: 0.9rem;
   color: #999;
