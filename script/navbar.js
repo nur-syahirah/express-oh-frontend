@@ -36,7 +36,7 @@ siteNavigation.forEach(navitem => {
 
     }else if(navItemName === "login"){                                                          // If the navitem.name === "User"        
         
-        if(loggedIn)                                                                            //  If loggedIn === true
+        if(!loggedIn)                                                                            //  If loggedIn === true
         {
             const icon = document.createElement("ion-icon");                                    // Use graphical icon "person-outline"
             icon.setAttribute("name", "person-outline");
