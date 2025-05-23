@@ -197,7 +197,7 @@ nav {
   text-align: center;
 }
 
-.product-tags {
+.product-tags , .product-tags a{
   font-family: "Mali", cursive;
   font-size: 0.9rem;
   color: #999;
@@ -298,7 +298,18 @@ nav {
 
 }
 /* End of responsive adjustments for landing page */
-/************end of landing page****************/
+/************end of landing page************/
+
+/************start of login page************/
+
+main#login-page{
+    padding-top: 80px;
+    padding-bottom: 100px;
+    background-color: #f7ede1;
+
+}
+
+/************end of login page************/
 
 
 /******* End of main body *******/
