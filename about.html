@@ -30,384 +30,85 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-
-    <style>
-      /* Hero Styles */
-      .hero {
-        background-image: url(images/banner.jpeg);
-        background-size: cover;
-        background-position: center;
-        background-repeat: repeat;
-        color: white;
-        padding: 100px 20px;
-        text-align: center;
-        border-radius: 12px;
-        position: relative;
-        z-index: 1;
-        overflow: hidden;
-        font-family: 'Mali', sans-serif;
-      }
-
-      .hero::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: -1;
-      }
-
-      .hero h1 {
-        font-family: 'Rock Salt', cursive;
-      }
-
-      /* Team Section */
-      .team-section {
-        padding: 60px 0;
-        background-color: #f8f9fa;
-      }
-
-      .team-section h2 {
-        font-family: 'Ceviche One', cursive;
-        font-size: 3rem;
-        margin-bottom: 2rem;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-      }
-
-      .team-img-container {
-        position: relative;
-        overflow: hidden;
-        border-radius: 50%;
-      }
-
-      .team-img {
-        transition: transform 0.3s;
-        max-width: 100%;
-        height: auto;
-        display: block;
-        border-radius: 50%;
-      }
-
-      .team-img-container:hover .team-img {
-        transform: scale(1.05);
-      }
-
-      .overlay {
-        position: absolute;
-        top: -100%;
-        left: 0;
-        right: 0;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.6);
-        color: #fff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 1rem;
-        text-align: center;
-        font-family: 'Mali', sans-serif;
-        transition: top 0.3s ease-in-out;
-        border-radius: 50%;
-      }
-
-      .team-img-container:hover .overlay {
-        top: 0;
-      }
-
-      .team-name {
-        margin: 0.25rem 0 0;
-        font-weight: 600;
-        color: #000;
-        font-family: 'Mali', sans-serif;
-      }
-
-      .team-role {
-        margin: 0;
-        font-size: 0.9rem;
-        color: #666;
-        font-family: 'Mali', sans-serif;
-      }
-
-      /* Contact Form Styling */
-      .contact-form {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-      }
-
-      .contact-form input,
-      .contact-form textarea {
-        padding: 0.75rem;
-        border-radius: 0.375rem;
-        border: 1px solid #ccc;
-        font-size: 1rem;
-        font-family: 'Mali', sans-serif;
-      }
-
-      .contact-form button {
-        align-self: flex-start;
-      }
-
-      .contact-section {
-        padding: 2rem 1rem;
-        width: 80%;
-        margin: 0 auto;
-      }
-    </style>
-
     <title>Express-Oh!</title>
   </head>
   <body>
     <!-- Top Nav Bar -->
-   <header>  
-    <div id ="navbar-header" class="navbar top-nav-bar">
-      <div class="navContainer">
-        <a id = "nav-logo" class="navbar-brand text-white logo top-logo" href="#">
-          Express-Oh!
-        </a>
+    <header>  
+      <div id ="navbar-header" class="navbar top-nav-bar">
+        <div class="navContainer">
+          <a id="nav-logo" class="navbar-brand text-white logo top-logo" href="#">
+            Express-Oh!
+          </a>
 
-        <!-- Right side: Links & Logos -->
-        <div class = "nav-icon right-section"> 
-          
-          <!-- Dynamic Navigation -->
-          <nav>
-          </nav>
-
+          <!-- Right side: Links & Logos -->
+          <div class="nav-icon right-section"> 
+            <!-- Dynamic Navigation -->
+            <nav></nav>
+          </div>
         </div>
-
       </div>
-    </div>
-  </header>  
+    </header>  
 
     <!-- Main -->
     <main id="main" class="container d-flex flex-column main-content-bg w-100">
-      <!-- Hero Section -->
-      <section class="hero mb-5">
-        <div class="hero-logo">
-          <h1>About Us</h1>
-        </div>
-        <p class="lead">
-          Freshly roasted in Singapore. Ethically sourced. Always intentional.
-        </p>
-        <p>
-          We’re a small-batch coffee roastery based in Singapore, focused on
-          thoughtful sourcing and precise roasting. Each origin is selected for
-          its unique character, then roasted in-house to bring out its best —
-          nothing more, nothing less. No noise, no shortcuts. Just honest
-          coffee, crafted for those who care about the details.
-        </p>
-        <a href="#" class="btn btn-dark mt-3">Explore Now!</a>
-      </section>
-      <!-- Team Section -->
-<section class="team-section text-center mb-5">
-  <h2 class="mb-4">The Team</h2>
-
-  <!-- Mobile Carousel -->
-<div id="teamCarousel" class="carousel slide d-md-none" data-bs-ride="carousel" data-bs-interval="8000">
-    <div class="carousel-inner">
-
-      <div class="carousel-item active">
-        <div class="team-img-container mx-auto" style="width: 70%;">
-          <img src="images/placeholder Syahirah.png" alt="Syahirah" class="img-fluid rounded-circle team-img" />
-          <div class="overlay">Creative genius behind the brand.</div>
-        </div>
-        <h5 class="team-name mt-3">Syahirah</h5>
-        <p class="team-role">Creative Director</p>
-      </div>
-
-      <div class="carousel-item">
-        <div class="team-img-container mx-auto" style="width: 70%;">
-          <img src="images/placeholder Keith.png" alt="Keith" class="img-fluid rounded-circle team-img" />
-          <div class="overlay">Master of the roast profile.</div>
-        </div>
-        <h5 class="team-name mt-3">Keith</h5>
-        <p class="team-role">Roastmaster</p>
-      </div>
-
-      <div class="carousel-item">
-        <div class="team-img-container mx-auto" style="width: 70%;">
-          <img src="images/placeholder Chee Yong.png" alt="Chee Yong" class="img-fluid rounded-circle team-img" />
-          <div class="overlay">Orchestrates the logistics.</div>
-        </div>
-        <h5 class="team-name mt-3">Chee Yong</h5>
-        <p class="team-role">Operations Lead</p>
-      </div>
-
-      <div class="carousel-item">
-        <div class="team-img-container mx-auto" style="width: 70%;">
-          <img src="images/placeholder Ke Wei.png" alt="Ke Wei" class="img-fluid rounded-circle team-img" />
-          <div class="overlay">Tech wizard of the crew.</div>
-        </div>
-        <h5 class="team-name mt-3">Ke Wei</h5>
-        <p class="team-role">Tech & Web</p>
-      </div>
-    </div>
-
-    <button class="carousel-control-prev" type="button" data-bs-target="#teamCarousel" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon"></span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#teamCarousel" data-bs-slide="next">
-      <span class="carousel-control-next-icon"></span>
-    </button>
-  </div>
-
-  <!-- Desktop Grid -->
-  <div class="row g-4 justify-content-center d-none d-md-flex">
-    <div class="col-6 col-md-3">
-      <div class="team-img-container">
-        <img src="images/placeholder Syahirah.png" alt="Syahirah" class="img-fluid rounded-circle team-img" />
-        <div class="overlay">Creative genius behind the brand.</div>
-      </div>
-      <h5 class="team-name">Syahirah</h5>
-      <p class="team-role">Creative Director</p>
-    </div>
-    <div class="col-6 col-md-3">
-      <div class="team-img-container">
-        <img src="images/placeholder Keith.png" alt="Keith" class="img-fluid rounded-circle team-img" />
-        <div class="overlay">Master of the roast profile.</div>
-      </div>
-      <h5 class="team-name">Keith</h5>
-      <p class="team-role">Roastmaster</p>
-    </div>
-    <div class="col-6 col-md-3">
-      <div class="team-img-container">
-        <img src="images/placeholder Chee Yong.png" alt="Chee Yong" class="img-fluid rounded-circle team-img" />
-        <div class="overlay">Orchestrates the logistics.</div>
-      </div>
-      <h5 class="team-name">Chee Yong</h5>
-      <p class="team-role">Operations Lead</p>
-    </div>
-    <div class="col-6 col-md-3">
-      <div class="team-img-container">
-        <img src="images/placeholder Ke Wei.png" alt="Ke Wei" class="img-fluid rounded-circle team-img" />
-        <div class="overlay">Tech wizard of the crew.</div>
-      </div>
-      <h5 class="team-name">Ke Wei</h5>
-      <p class="team-role">Tech & Web</p>
-    </div>
-  </div>
-</section>
-
+      <!-- Dynamic content will be inserted here -->
     </main>
 
     <!-- Contact Form Section -->
-    <section class="contact-section">
-      <h2>Contact Us</h2>
-      <form
-        id="contactForm"
-        action="https://getform.io/f/aqomopwa"
-        method="POST"
-        class="contact-form"
-        novalidate
-      >
-        <label for="name">Full Name</label>
-        <input
-          type="text"
-          id="name"
-          name="name"
-          placeholder="Wan Zhen"
-          required
-          pattern="^[A-Za-z\s]{2,}$"
-          title="Full name should only contain letters and spaces, minimum 2 characters."
-        />
-
-        <label for="email">Email address</label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          placeholder="wanzhen@gmail.com"
-          required
-          pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,63}$"
-          title="Please enter a valid email address."
-        />
-
-        <label for="message">Your message</label>
-        <textarea
-          id="message"
-          name="message"
-          rows="5"
-          placeholder="Please give us your valuable feedback"
-          required
-          pattern=".{10,}"
-          title="Message must be at least 10 characters."
-        ></textarea>
-
-        <button type="submit" class="btn btn-dark">Send Message</button>
-      </form>
-    </section>
-
-    <!-- Toast Container -->
-    <div
-      id="toast"
-      style="
-        position: fixed;
-        bottom: 30px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: #333;
-        color: #fff;
-        padding: 1rem 1.5rem;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        display: none;
-        z-index: 9999;
-        font-size: 1rem;
-      "
-    ></div>
+<section class="contact-section" id="contact-section">
+  <!-- Contact form will be inserted here dynamically -->
+</section>
 
     <!-- Footer -->
-      <div class="footer-container">
-        <footer class="footer-col">
-          <div class="row justify-content-center">
-
-            <div id ="foot-left-col" class="col-md-7 mb-3">
-              <h4 class="logo">Express-Oh!</h4>
-              <p class="foot-text fw-medium">
-                Premium coffee beans, expertly roasted
-              </p>
-
-              <div class="socialIcons">             
-                 <h5>Follow Us</h5> 
-                <a href="https://www.facebook.com"><i class="fa-brands fa-facebook"></i></a>
-                <a href="https://www.youtube.com"><i class="fa-brands fa-youtube"></i></a>
-                <a href="https://www.linkedin.com"><i class="fa-brands fa-linkedin"></i></a>
-                <a href="https://www.instagram.com"><i class="fa-brands fa-instagram"></i></a>
+    <div class="footer-container">
+      <footer class="footer-col">
+        <div class="row justify-content-center">
+          <div id="foot-left-col" class="col-md-7 mb-3">
+            <h4 class="logo">Express-Oh!</h4>
+            <p class="foot-text fw-medium">
+              Premium coffee beans, expertly roasted
+            </p>
+            <div class="socialIcons">             
+              <h5>Follow Us</h5> 
+              <a href="https://www.facebook.com"><i class="fa-brands fa-facebook"></i></a>
+              <a href="https://www.youtube.com"><i class="fa-brands fa-youtube"></i></a>
+              <a href="https://www.linkedin.com"><i class="fa-brands fa-linkedin"></i></a>
+              <a href="https://www.instagram.com"><i class="fa-brands fa-instagram"></i></a>
             </div>
           </div>
-
-            <div id = "foot-mid-col" class="col-6 col-md-3 foot-text">
-              <h5>Quick Links</h5>
-              <ul class="nav flex-column">
-                <li class="nav-item mb-2">
-                  <a href="#" class="nav-link p-0 text-white">Shop</a>
-                </li>
-                <li class="nav-item mb-2">
-                  <a href="#" class="nav-link p-0 text-white">Contact Us</a>
-                </li>
-                <li class="nav-item mb-2">
-                  <a href="#" class="nav-link p-0 text-white">Login</a>
-                </li>
-              </ul>
-            </div>
-
-            <div id = "foot-right-col" class="col-6 col-md-3 foot-text">
-              <h5>Contacts</h5>
-                  <ul class="nav flex-column">
-                    <li class="nav-item mb-2"> <class="nav-link p-0 ">123 Coffee Street</li>
-                    <li class="nav-item mb-2"><class="nav-link p-0 ">Singapore</li>
-                    <li class="nav-item mb-2"><a href="mailto:info@expressoh.com" class="nav-link p-0 ">info@expressoh.com</a></li>
-                  </ul>
-                </div>
-            </div>
-          <div
-            class="d-flex flex-column flex-sm-row justify-content-center py-4 my-4 text-white foot-text">
-            <p>© 2025 Express-Oh! All rights reserved.</p>
+          <div id="foot-mid-col" class="col-6 col-md-3 foot-text">
+            <h5>Quick Links</h5>
+            <ul class="nav flex-column">
+              <li class="nav-item mb-2">
+                <a href="#" class="nav-link p-0 text-white">Shop</a>
+              </li>
+              <li class="nav-item mb-2">
+                <a href="#" class="nav-link p-0 text-white">Contact Us</a>
+              </li>
+              <li class="nav-item mb-2">
+                <a href="#" class="nav-link p-0 text-white">Login</a>
+              </li>
+            </ul>
           </div>
-        </footer>
-      </div>
+          <div id="foot-right-col" class="col-6 col-md-3 foot-text">
+            <h5>Contacts</h5>
+            <ul class="nav flex-column">
+              <li class="nav-item mb-2">123 Coffee Street</li>
+              <li class="nav-item mb-2">Singapore</li>
+              <li class="nav-item mb-2">
+                <a href="mailto:info@expressoh.com" class="nav-link p-0">info@expressoh.com</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div
+          class="d-flex flex-column flex-sm-row justify-content-center py-4 my-4 text-white foot-text"
+        >
+          <p>© 2025 Express-Oh! All rights reserved.</p>
+        </div>
+      </footer>
+    </div>
 
     <!-- Scripts -->
     <script src="./script/navbar.js"></script>
@@ -417,64 +118,16 @@
       crossorigin="anonymous"
     ></script>
     <!-- Ionic Framework for Icons -->
-    <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@latest/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@latest/dist/ionicons/ionicons.js"></script>
-
-    <!-- Toast & Form Handling -->
-    <script>
-      const form = document.getElementById('contactForm');
-      const toast = document.getElementById('toast');
-
-      function showToast(message, isSuccess = true) {
-        toast.textContent = message;
-        toast.style.background = isSuccess ? '#28a745' : '#dc3545';
-        toast.style.display = 'block';
-        setTimeout(() => {
-          toast.style.display = 'none';
-        }, 3000);
-      }
-
-      form.addEventListener('submit', function (e) {
-        e.preventDefault();
-        const name = form.name;
-        const email = form.email;
-        const message = form.message;
-
-        if (!name.checkValidity()) {
-          showToast(name.title, false);
-          name.focus();
-          return;
-        }
-        if (!email.checkValidity()) {
-          showToast(email.title, false);
-          email.focus();
-          return;
-        }
-        if (!message.checkValidity()) {
-          showToast(message.title, false);
-          message.focus();
-          return;
-        }
-
-        const formData = new FormData(form);
-        fetch(form.action, {
-          method: 'POST',
-          body: formData,
-          headers: { Accept: 'application/json' },
-        })
-        .then((response) => {
-          if (response.ok) {
-            form.reset();
-            showToast('Thank you! Your message has been sent.');
-          } else {
-            showToast('Oops! Something went wrong.', false);
-          }
-        })
-        .catch(() => {
-          showToast('Network error. Please try again later.', false);
-        });
-      });
-    </script>
+    <script
+      type="module"
+      src="https://cdn.jsdelivr.net/npm/ionicons@latest/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://cdn.jsdelivr.net/npm/ionicons@latest/dist/ionicons/ionicons.js"
+    ></script>
+    
+    <!-- Your separate JS file should be linked here -->
+    <script src="./script/about.js"></script>
   </body>
 </html>
-

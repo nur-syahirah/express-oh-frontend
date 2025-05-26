@@ -1,6 +1,6 @@
 // Array of links to display
 const siteNavigation = [
-    {name: "shop", url: "./shop.html"},
+    {name: "shop", url: "./products.html"},
     {name: "about", url: "./about.html"},
     {name: "login", url: "./login.html"},
     {name: "cart", url: "./cart.html"},
