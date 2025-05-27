@@ -40,27 +40,27 @@ function createTeamSection() {
   const teamMembers = [
     {
       name: 'Syahirah',
-      role: 'Creative Director',
+      role: 'Developer 1',
       img: 'images/placeholder Syahirah.png',
-      overlay: 'Creative genius behind the brand.'
+      overlay: 'Created the administrative page and respective crud and tracking.'
     },
     {
       name: 'Keith',
-      role: 'Roastmaster',
+      role: 'Developer 2',
       img: 'images/placeholder Keith.png',
-      overlay: 'Master of the roast profile.'
+      overlay: 'Created the landing, login and splash page'
     },
     {
       name: 'Chee Yong',
-      role: 'Operations Lead',
+      role: 'Developer 3',
       img: 'images/placeholder Chee Yong.png',
-      overlay: 'Orchestrates the logistics.'
+      overlay: 'created the Shop, Cart & Payment pages'
     },
     {
       name: 'Ke Wei',
-      role: 'Tech & Web',
+      role: 'Developer 4',
       img: 'images/placeholder Ke Wei.png',
-      overlay: 'Tech wizard of the crew.'
+      overlay: 'created the about and user dashboard'
     },
   ];
 
