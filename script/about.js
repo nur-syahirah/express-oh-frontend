@@ -225,16 +225,16 @@ function createContactForm() {
     title: 'Please enter a valid email address.'
   });
 
-  const [labelMessage, textareaMessage] = createInput({
-    tag: 'textarea',
-    id: 'message',
-    name: 'message',
-    rows: 5,
-    placeholder: 'Please give us your valuable feedback',
-    required: true,
-    pattern: '.{10,}',
-    title: 'Message must be at least 10 characters.'
-  });
+const [labelMessage, textareaMessage] = createInput({
+  tag: 'textarea',
+  id: 'message',
+  name: 'message',
+  rows: 5,
+  placeholder: 'Please give us your valuable feedback',
+  required: true,
+  pattern: "^(?!.*(--|/\\*|\\*/|['\";])).{10,}$",
+  title: 'Message must be at least 10 characters and must not contain characters like quotes, semicolons, or comment symbols.'
+});
 
   const btnSubmit = document.createElement('button');
   btnSubmit.type = 'submit';
