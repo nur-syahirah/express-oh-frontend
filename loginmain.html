@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Bootstrap's CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7"
+      crossorigin="anonymous"/>
+
+    <!-- Display Icon on webpage tab -->
+    <link rel = "shortcut icon" type = "x-icon" href="./images/logo.png">
+
+    <link rel="stylesheet" href="styles/style.css" />
+
+    <!----- Fancy font's links ----->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Ceviche+One&family=Mali:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&family=Rock+Salt&display=swap"
+          rel="stylesheet"/>
+
+    <!-- Global Google Font: Bubblegum Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Bubblegum+Sans&display=swap" rel="stylesheet" />
+
+    <!-- Google Font for "Hello Admin": The Girl Next Door -->
+    <link href="https://fonts.googleapis.com/css2?family=The+Girl+Next+Door&display=swap" rel="stylesheet" />
+
+    <!----- Social Media Logo Link ----->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" 
+    integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" 
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
+    <!-- Confirmation dialog using SweetAlert2-->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!--Webpage Title-->    
+    <title>Express-Oh! Admin</title>
+    
+  </head>
+  <body>
+
+   <!-------------- START OF TOP NAV BAR --------------->
+   <header>  
+    <div id ="navbar-header" class="navbar top-nav-bar">
+      <div class="navContainer">
+        <a id = "nav-logo" class="navbar-brand text-white logo top-logo" href="#">
+          Express-Oh!
+        </a>
+        <!-- Right side: Links & Logos -->
+        <div class = "nav-icon  right-section"> 
+        <nav>
+          <!-- Dynamic Navigation -->
+        </nav>
+        </div>
+      </div>
+    </div>
+  </header>  
+  <!-------------- END OF TOP NAV BAR --------------->
+    
+    <!-- Main Page Body - Replaced with Login Form -->
+    <main id="login-page">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-header text-white" style="background-color: #6f4e37;">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-lock-fill"></i> Login
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <div class="mb-3">
+                                <label for="loginEmail" class="form-label">
+                                    <i class="bi bi-person-fill"></i> Username or Email
+                                </label>
+                                <input type="text" class="form-control" id="loginEmail" placeholder="Enter username or email">
+                            </div>
+                            <div class="mb-3">
+                                <label for="loginPassword" class="form-label">
+                                    <i class="bi bi-key-fill"></i> Password
+                                </label>
+                                <input type="password" class="form-control" id="loginPassword" placeholder="Enter password">
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="rememberMe" checked>
+                                <label class="form-check-label" for="rememberMe">Remember me</label>
+                            </div>
+                            <button type="submit" class="btn w-100 text-white"  style="background-color: #6f4e37; " onmouseover="this.style.backgroundColor='#8a6d4f'" 
+                            onmouseout="this.style.backgroundColor='#6f4e37'">
+                            <i class="bi bi-box-arrow-in-right"></i> Login
+                        </button>
+                    </form>
+                </div>
+                <div class="card-footer text-center">
+                    <p class="mb-1">Don't have an account? 
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#signupModal">Sign Up</a>
+                    </p>
+                    <p class="mb-0">Forgot <a href="#">Password?</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Signup Modal -->
+<div class="modal fade" id="signupModal" tabindex="-1" aria-labelledby="signupModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-white" style="background-color: #2a2a2a;">
+                <h5 class="modal-title" id="signupModalLabel">
+                    <i class="bi bi-person-plus-fill"></i> Create Account
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="signupUsername" class="form-label">
+                            <i class="bi bi-person-badge"></i> Username
+                        </label>
+                        <input type="text" class="form-control" id="signupUsername" placeholder="Choose a username">
+                    </div>
+                    <div class="mb-3">
+                        <label for="signupEmail" class="form-label">
+                            <i class="bi bi-envelope-fill"></i> Email
+                        </label>
+                        <input type="email" class="form-control" id="signupEmail" placeholder="Enter your email">
+                    </div>
+                    <div class="mb-3">
+                        <label for="signupPassword" class="form-label">
+                            <i class="bi bi-lock-fill"></i> Password
+                        </label>
+                        <input type="password" class="form-control" id="signupPassword" placeholder="Create a password">
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirmPassword" class="form-label">
+                            <i class="bi bi-lock-fill"></i> Confirm Password
+                        </label>
+                        <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm your password">
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100"  style="background-color: #2a2a2a;"  onmouseover="this.style.backgroundColor='#3d3d3d'"
+                    onmouseout="this.style.backgroundColor='#2a2a2a'">
+                    <i class="bi bi-person-plus"></i> Create Account
+                </button>
+            </form>
+        </div>
+        <div class="modal-footer justify-content-center">
+            <p>Already have an account? 
+                <a href="#" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
+            </p>
+        </div>
+    </div>
+</div>
+</div>
+
+<!-- Footer -->
+  <div class="footer-container">
+    <footer class="footer-col">
+      <div class="row justify-content-center">
+
+        <div id ="foot-left-col" class="col-md-7 mb-3">
+          <h4 class="logo">Express-Oh!</h4>
+          <p class="foot-text fw-medium">
+            Premium coffee beans, expertly roasted
+          </p>
+
+          <div class="socialIcons">             
+             <h5>Follow Us</h5> 
+            <a href="https://www.facebook.com"><i class="fa-brands fa-facebook"></i></a>
+            <a href="https://www.youtube.com"><i class="fa-brands fa-youtube"></i></a>
+            <a href="https://www.linkedin.com"><i class="fa-brands fa-linkedin"></i></a>
+            <a href="https://www.instagram.com"><i class="fa-brands fa-instagram"></i></a>
+        </div>
+      </div>
+
+        <div id = "foot-mid-col" class="col-6 col-md-3 foot-text">
+          <h5>Quick Links</h5>
+          <ul class="nav flex-column">
+            <li class="nav-item mb-2">
+              <a href="#" class="nav-link p-0 text-white">Shop</a>
+            </li>
+            <li class="nav-item mb-2">
+              <a href="#" class="nav-link p-0 text-white">Contact Us</a>
+            </li>
+            <li class="nav-item mb-2">
+              <a href="#" class="nav-link p-0 text-white">Login</a>
+            </li>
+          </ul>
+        </div>
+
+        <div id = "foot-right-col" class="col-6 col-md-3 foot-text">
+          <h5>Contacts</h5>
+              <ul class="nav flex-column">
+                <li class="nav-item mb-2"> <class="nav-link p-0 ">123 Coffee Street</li>
+                <li class="nav-item mb-2"><class="nav-link p-0 ">Singapore</li>
+                <li class="nav-item mb-2"><a href="mailto:info@expressoh.com" class="nav-link p-0 ">info@expressoh.com</a></li>
+              </ul>
+            </div>
+        </div>
+      <div
+        class="d-flex flex-column flex-sm-row justify-content-center py-4 my-4 text-white foot-text">
+        <p>© 2025 Express-Oh! All rights reserved.</p>
+      </div>
+    </footer>
+  </div>
+
+<!-- End of Footer -->
+
+<!-- Custom script -->
+<!-- JavaScript from Bootstrap -->
+<script
+  src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
+  crossorigin="anonymous"
+></script>
+
+<!-- Custom Script for authentication -->
+<script src="script/Mock.js"></script>          <!-- TODO: to remove in production env. (NEW) -->
+<script src="script/const.js"></script>         <!-- * For management of common variable values (NEW)-->
+<script src="script/auth.js"></script>          <!-- * For authentication (NEW) -->
+<script src="script/form-validate.js"></script> <!-- * For validating inputs (NEW)-->
+
+<script src= "script/navbar.js"></script>
+<script src= "script/product.js"></script>
+<script src= "script/ProductsController.js"></script>
+<script src= "script/cart.js"></script>
+
+<!-- Ionic Framework for Icons -->
+<script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@latest/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@latest/dist/ionicons/ionicons.js"></script>
+</body>
+</html>
