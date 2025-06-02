@@ -44,7 +44,8 @@ class Mock{
     };
 
     // !! Mock token containing the username (username: momorunner) email (email: martin@example.com), role (role: ADMIN) and Unix Timestamps: issued at (iat: 6st Sept 2024) and expiry (exp: 6st Sept 2025)
-    static mockToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImF2aWRydW5uZXIiLCJlbWFpbCI6ImF2aWRydW5uZXJAZ21haWwuY29tIiwiaWF0IjoxNzQ3OTcxMzk5LCJleHAiOjE3Nzk1MDczOTl9.MMt0fe0u1ecnlGfVpANv6O__zKM83A3jau8g3ATC6NI";
+    static mockUserToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIiLCJlbWFpbCI6InRlc3RAZ21haWwuY29tIiwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NDg4MTI3NzksImV4cCI6MTc4MDM0ODc3OX0.nAsCPO7siSTakY6oBlN77kN7CJ8Jyrf87pPXqVB1dLI";
+    static mockAdminToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNhaGFyYSIsImVtYWlsIjoiaXJhaEBnbWFpbC5jb20iLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NDg4MTI3NzksImV4cCI6MTc4MDM0ODc3OX0.jY2Lu6irUCZDF5V4UNVn-Xw1mhicL0s3afJqxPsPTz8";
 
     
     // Static methods
@@ -65,8 +66,9 @@ class Mock{
     static getToken(status = false){                            // Returns mock NOT_FOUND status
         return status ? this.mockToken : status;
     }
+    static getToken(isAdmin = false) {                             // Returns a mock token based on the user's role
 
-    // Class methods (TBC)
-    /* **************** */
+        return isAdmin ? this.mockAdminToken : this.mockUserToken; // If isAdmin is true, return the admin token; otherwise, return the user token
+    }
 
 }

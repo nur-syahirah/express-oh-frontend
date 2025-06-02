@@ -1,14 +1,14 @@
-// Array of links to display
-const siteNavigation = [
-    {name: "shop", url: "./shop.html"},
-    {name: "about", url: "./about.html"},
-    {name: "login", url: "./login.html"},
-    {name: "cart", url: "./cart.html"},
-];
+// Start with a base navigation array.
+let siteNavigation = [
+    { name: "shop", url: "./products.html" },
+    { name: "about", url: "./about.html" },
+    { name: "login", url: "./loginmain.html" },
+    { name: "cart", url: "./cart.html" }
+  ];
 
-const profileURL = "./profile.html";                                                            // * link to userprofile (NEW)
+//const profileURL = "./profile.html";                                                            // * link to userprofile (NEW)
 
-// get the navbar
+// Retrieve the <nav> element and create an unordered list for navigation items.const nav = document.getElementsByTagName("nav");
 const nav = document.getElementsByTagName("nav");
 const navbar = nav[0];
 
@@ -20,54 +20,69 @@ navbar.append(listofLinks);
 // when covering the topic of User-athentication, a fetch request will be needed to change loggedIn (true/false)
 const loggedIn = true;
 
-// For each navitem in siteNavigation
-siteNavigation.forEach(navitem => {
-    // Create a list item
+// Loop through each navigation item and build the menu.
+siteNavigation.forEach((navitem) => {
     const itemLink = document.createElement("li");
-
-    // Create an anchor on each navitem
     const anchor = document.createElement("a");
+
+    // Set the default href attribute based on the navitem.url
     anchor.setAttribute("href", navitem.url);
+  
+    // Convert nav item name to lowercase for easier comparisons.
+    const navItemName = navitem.name.toLowerCase();
 
-    const navItemName = navitem.name.toLowerCase();                                             // Set all navitem.names to lowercase
+    if (navItemName !== "login" && navItemName !== "cart") {
     
-   
-    if(navItemName !== "login" && navItemName !== "cart")                                       // For links !== "User" and !== "About" (DON'T use graphical icons)
-    {
-        // list the basic naviation items
-        anchor.textContent = navItemName.charAt(0).toUpperCase() + navItemName.slice(1);        // Set the text and the link
+        // Display the text; Shop, About
+        anchor.textContent = navItemName.charAt(0).toUpperCase() + navItemName.slice(1);
+            } else if (navItemName === "login") {
 
-    }else if(navItemName === "login"){                                                          // If the navitem.name === "User"        
+            // For the "login" nav item, check the authentication status.
+            const token = isAuthenticated();                                                    // * check if token exists (NEW)
+            console.log(token);
+            if(token)                                                                               // * if token is found (NEW)
+            {
+                // User is authenticated.
+                const user = decodeUser(token);
+                anchor.textContent = "Logout";
+                
+                // Add tooltip attributes to display the username on hover.
+                anchor.setAttribute("data-bs-toggle", "tooltip");
+                anchor.setAttribute("data-bs-title", user.username);
+                anchor.setAttribute("data-bs-placement", "bottom");
 
-        const token = isAuthenticated();                                                        // * check if token exists (NEW)
-        console.log(token);
-        if(token)                                                                               // * if token is found (NEW)
-        {
+                // Initialize the Bootstrap tooltip.
+                new bootstrap.Tooltip(anchor);
 
-            const user = decodeUser(token);                                                     // * decode the token (NEW)
-            const icon = document.createElement("ion-icon");                                    // Use graphical icon "person-outline"
+                // Add an event listener for logging out.
+                anchor.addEventListener("click", (e) => {
+                e.preventDefault();
+
+                // Remove the auth token from localStorage.
+                localStorage.removeItem("usertoken");
+
+                // Redirect to index.html after logging out.
+                window.location.href = "index.html";
+                });                                      
+        } else{
+            // User is not authenticated - display the login icon.
+            const icon = document.createElement("ion-icon");
             icon.setAttribute("name", "person-outline");
             anchor.append(icon);
-            anchor.setAttribute("href", profileURL);                                            // * allow user to redirect to profile page (NEW)
-            anchor.setAttribute("data-bs-toggle", "tooltip");                                   // * show tool tip when mouseover user icon (NEW)
-            anchor.setAttribute("data-bs-title", user.username)                                 // * show user when mouseover user icon (NEW)
-            anchor.setAttribute("data-bs-placement", "bottom");                                 // * place tooltip at the bottom 
-            const tooltipProfile =  new bootstrap.Tooltip(anchor);                              // * pass anchor instance to bootstrap tooltip (NEW)             
-        }
-        else{
-            anchor.text = navitem.name;                                                         // Use text "Log in"
-        }
+            anchor.setAttribute("href", "./loginmain.html");                                                  // Use text "Log in"
+            }
 
     }else if(navItemName === "cart"){
-        const icon = document.createElement("ion-icon");                                        // Use graphical icon "cart-outline"
-        icon.setAttribute("name", "cart-outline");
-        anchor.append(icon);
+      // For the cart, display the cart icon and a counter badge.
+      const icon = document.createElement("ion-icon");
+      icon.setAttribute("name", "cart-outline");
+      anchor.append(icon);
 
-         // Create cart counter badge
-        const counter = document.createElement("span");
-        counter.className = "cart-counter";
-        counter.textContent = "0";
-        anchor.append(counter);
+      // Create cart counter badge.
+      const counter = document.createElement("span");
+      counter.className = "cart-counter";
+      counter.textContent = "0";
+      anchor.append(counter);
     }
 
     // append the anchor to each list item
@@ -77,7 +92,7 @@ siteNavigation.forEach(navitem => {
     listofLinks.append(itemLink);            
 });        
 
-// Update cart counter
+// Function to update the displayed cart count.
 function updateCartCount() {
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
     const totalItems = cart.reduce((total, item) => total + item.quantity, 0);

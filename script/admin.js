@@ -37,11 +37,27 @@ const salesChart = new Chart(adminCtx, {
   },
 });
 
+document.addEventListener("DOMContentLoaded", () => {
+  // Select the logout button inside the admin welcome section.
+  const logoutButton = document.querySelector("#adminWelcome .logout-container button");
+
+  // Check if the button exists in the DOM.
+  if (logoutButton) {
+    logoutButton.addEventListener("click", () => {
+      // Remove the token from localStorage.
+      localStorage.removeItem("usertoken");
+      // Redirect to index.html.
+      window.location.href = "index.html";
+    });
+  }
+});
+
 /*----------------
   UPON PAGE LOAD
 -----------------*/
 // Initialize the products array.
 window.addEventListener("load", function () {
+
 
   // Removes any saved image from localStorage to prevent unintended preloaded images
   document.getElementById("adminImagePreview").src = "";

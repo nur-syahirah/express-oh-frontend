@@ -44,7 +44,7 @@ function decodeUser(token){
 
 // Funtion to login
 async function login(formData = {}){
-    
+
     if(Object.entries(formData).length === 0)                                               // Return if the object is empty
         return;
 
@@ -59,20 +59,57 @@ async function login(formData = {}){
             });
         */
 
+        // !! Mock response for testing purposes (remove when endpoint request is available)
         const response = Mock.getMockSuccess();                                            // TODO: remove when endpoint request is available (remove in production env.)  
-
         const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));      // TODO: remove delay when endpoint is instated
         await sleep(2000);
         
         if(response.ok){                                                                    // If response is ok
-            
-            const token = Mock.getToken(true);                                              // TODO: refactor when token is retrieved from response, (remove in production env.) 
-            window.localStorage.setItem(_USERTOKEN, token);                                 // Store the string in localStorage with the key 'usertoken'
-            window.location = _HOME_URL;                                                    // Redirect the user to homepage
+       // Decode both tokens from the mock
+        const decodedUser = decodeUser(Mock.mockUserToken);
+        const decodedAdmin = decodeUser(Mock.mockAdminToken);
+       
+        // Check if the login input matches either admin or user credentials
+       const loginInput = formData.login.toLowerCase();
 
-        }
-        
-        return;                                                                             // Else return false
+        // Initialize a variable to hold the token to use
+       let tokenToUse;
+       
+       // Check if the login matches admin credentials
+       if (
+         loginInput === decodedAdmin.username.toLowerCase() ||
+         loginInput === decodedAdmin.email.toLowerCase()
+       ) {
+         tokenToUse = Mock.mockAdminToken;
+       }
+       // Check if the login matches user credentials
+       else if (
+         loginInput === decodedUser.username.toLowerCase() ||
+         loginInput === decodedUser.email.toLowerCase()
+       ) {
+         tokenToUse = Mock.mockUserToken;
+       }
+       
+       // If no match is found, means unregistered user
+       else {
+         alert("User not found. Please check your login credentials or register.");
+         return;
+       }
+ 
+       // Save the selected token to local storage
+       window.localStorage.setItem(_USERTOKEN, tokenToUse);
+ 
+       // Decode token to verify the user's details
+       const userData = decodeUser(tokenToUse);
+ 
+       // Redirect based on the user's role from the token
+       if (userData.role && userData.role.toUpperCase() === "ADMIN") {
+         window.location.href = "./admin.html";
+       } else {
+         window.location.href = "./index.html";
+       }
+     }
+     return;                                                                          // Else return false
 
     } catch (error) {
         console.log("Exception error gotten is: ", error.message);
@@ -84,5 +121,5 @@ async function login(formData = {}){
 // Function to logout
 function logout(){
     window.localStorage.removeItem(_USERTOKEN);                                             // Store the string in localStorage with the key 'token'
-    window.location = _HOME_URL;                                                            // Redirect the user to homepage
+    window.location.href = "./index.html";                                          // Redirect the user to homepage
 }
