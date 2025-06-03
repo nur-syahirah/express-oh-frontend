@@ -1,8 +1,12 @@
 function isEmailOrUsername(value) {
-  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  const usernameRegex = /^(?=.{3,20}$)[a-zA-Z0-9_]+$/;
-  return emailRegex.test(value) || usernameRegex.test(value);
+  const emailRegex = isEmail(value);
+  const usernameRegex = isUsername(value)
+  return emailRegex || usernameRegex;
 }
+
+// split emailRegex and usernameRegex (where they might be used separately)
+
+
 document.addEventListener("DOMContentLoaded", () => {
 const loginForm = document.querySelector("#login-page form");
 if (!loginForm) {
