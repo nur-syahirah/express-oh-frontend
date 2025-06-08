@@ -745,13 +745,16 @@ h5 {
 }
 #foot-mid-col {
   max-width: fit-content;
+  margin-top: 30px; 
 }
 
 #foot-mid-col ul {
   list-style-type: none;
+  
 }
 #foot-right-col {
   max-width: max-content;
+  margin-top: 30px; 
 }
 #foot-right-col ul {
   list-style-type: none;
@@ -1194,16 +1197,6 @@ h5 {
         text-align: center;
         padding: 0 4px;  
     }
-    /* @media (max-width: 768px) {
-    .cart-counter { font-size: 1rem; }
-    }
-    @media (max-width: 480px) {
-    .cart-counter { font-size: 1rem; }
-    } */
-
-
-
-}
 /******* End of Media Query for responsive display *******/
 
 /* Hide scrollbar appearance while maintaining functionality if needed */
