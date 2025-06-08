@@ -83,6 +83,199 @@ ion-icon {
 }
 /*******  END OF NAV BAR ******* /
 
+/*********** start of landing page ***********/
+/******* Start of main body *******/
+#main{
+  background-color: #f7ede1;
+
+}
+#main h1{
+  background-color: #f7ede1;
+}
+.nav-item-icon a {
+  color: white;
+  padding: 4% 0 0 1rem;
+  border: solid 1px;
+  display:inline;
+  margin-bottom: 0;
+  
+}
+#container{
+  justify-content:center;
+}
+#nav-item-icon{
+  border: solid 1px;
+  position:fixed;
+}
+
+/*********** start of landing page ***********/
+/* Start of hero banner  */
+
+.font-girl-next-door {
+  font-family: 'The Girl Next Door', cursive;
+  font-size: 4.5rem;
+}
+
+.hero-banner {
+  background-color: #f7ede1; /* Fallback color */
+  background-image: url('https://images.unsplash.com/photo-1497935586351-b67a49e012bf?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+  background-position: center;
+  padding: 100px 0;
+  text-align: center;
+}
+
+.hero-banner::before {      /* to add some darkening to the image so the text pops better */
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.3);
+}
+
+/*start of featured products section */
+.shop-now-btn {                 /* Button styles - kept custom for hover effects */
+  background-color: #d5bfb9;
+  color: #6f4e37;
+  border: 2px solid white;
+  padding: 12px 40px;
+  font-family: "Mali", cursive;
+  font-size: 1.5rem;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.shop-now-btn:hover {
+  background-color: #5a3d2b;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+}
+
+.hero-description {
+  font-family: "Mali", cursive;
+  font-size: 1.2rem;
+}
+
+.scroll-indicator {
+  font-family: "Mali", cursive;
+  font-size: 1rem;
+  background-color: transparent;
+}
+
+.animate-bounce {
+animation: bounce 2s infinite;  /* animate scroll arrow */
+}
+
+@keyframes bounce {
+0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+40% { transform: translateY(-10px); }
+60% { transform: translateY(-5px); }
+}
+.section-title {  /* for "Featured products" and "Why Choose" */
+  font-family: "the girl next door", cursive;
+  font-size: 3rem;
+  background-color: #f7ede1;
+  color: #2A2A2A;
+  text-align: center;
+  padding: 2rem 0;
+  margin-bottom: 50px;
+}
+
+.product-card {
+border-radius: 10px;
+box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+transition: all 0.3s;
+border: 1px solid #e0e0e0;
+background-color: white; /* Only set here, not in HTML */
+}
+
+.product-card:hover {
+transform: translateY(-10px);
+box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+}
+
+.product-title {
+font-family: "Mali", cursive;
+font-size: 1.8rem;
+color: #2A2A2A;
+text-align: center;
+}
+
+.product-description {
+  font-family: "Mali", cursive;
+  color: #666;
+  min-height: 60px;
+  text-align: center;
+}
+
+.product-price {
+  font-family: "Mali", cursive;
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: #2A2A2A;
+  text-align: center;
+}
+
+.product-tags , .product-tags a{
+  font-family: "Mali", cursive;
+  font-size: 0.9rem;
+  color: #999;
+  text-align: center;
+}
+
+.add-to-cart-btn {
+  background-color: #C4A484;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-family: "Mali", cursive;
+  font-weight: 600;
+  transition: all 0.3s;
+  margin-top: 0.5rem;
+}
+
+.add-to-cart-btn:hover {
+  background-color: #6F4E37;
+  color: white;
+}
+
+/*end of featured products section */
+/* start of features section */
+
+.features-section {
+  background-color: #f7ede1;
+  padding: 80px 0;
+}
+
+.feature-item {
+  text-align: center;
+  padding: 0 30px;
+}
+
+.feature-icon {
+  font-size: 2.5rem;
+  color: #6F4E37;
+  margin-bottom: 20px;
+}
+
+.feature-title {
+  font-family: "Mali", cursive;
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+  color: #2A2A2A;
+}
+
+.feature-description {
+  font-family: "Mali", cursive;
+  color: #666;
+  font-size: 1rem;
+}
+
+/* end of features section */
+
 /******* START OF PRODUCT MAIN BODY *******/
 #mainAdmin {
   background-color: #f7ede1;
@@ -213,6 +406,306 @@ body {
 }
 
 /******* END OF PRODUCT MAIN BODY *******/
+   /* ---- Container for Evenly Spaced Cards ---- */
+   .coffee-container {
+    padding: 100px;
+    flex-wrap: wrap;
+    gap: 50px;
+    
+   
+  }
+  .card{
+    width: 100%;
+    max-width: 100%;
+  }
+ 
+ .cart-icon-container {
+    position: relative;
+    display: inline-block;
+}
+
+
+
+ .cart-counter{
+        /* Positioning */
+    position: absolute;
+    margin-right: 1rem;
+  
+  /* Circle styling */
+  background-color: #ff4444; /* Red background */
+  color: white;             /* White text */
+  border-radius: 60%;       /* Makes it circular */
+  min-width: 20px;             /* base width */
+  height: 20px;            /* Fixed height */
+  padding: 0 4px;           /*horizontal padding for 2digit */
+
+  /* Text centering */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  /* Text styling */
+  font-size: 1.2rem; 
+  padding-left: 0.2rem; /* Micro-adjustment for perfect centering */
+  transform: translateX(0.5px); /* Fine-tune horizontal position */
+
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 700;
+
+
+  
+  /* Optional enhancements */
+  box-shadow: 0 0 0 1.5px white; /* White border effect */
+  line-height: 1;               /* Perfect vertical centering */
+
+  
+}
+
+  @keyframes bounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+}
+
+.bounce {
+    animation: bounce 0.3s ease;
+}
+
+
+
+
+
+/*********** start of landing page ***********/
+
+/* Start of hero banner  */
+
+.font-girl-next-door {
+    font-family: 'The Girl Next Door', cursive;
+    font-size: 4.5rem;
+}
+
+.hero-banner {
+    background-color: #f7ede1; /* Fallback color */
+    background-image: url('https://images.unsplash.com/photo-1497935586351-b67a49e012bf?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+    background-position: center;
+    padding: 100px 0;
+    text-align: center;
+}
+
+.hero-banner::before {      /* to add some darkening to the image so the text pops better */
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.3);
+}
+
+.shop-now-btn {                 /* Button styles - kept custom for hover effects */
+    background-color: #d5bfb9;
+    color: #6f4e37;
+    border: 2px solid white;
+    padding: 12px 40px;
+    font-family: "Mali", cursive;
+    font-size: 1.5rem;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.shop-now-btn:hover {
+    background-color: #5a3d2b;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+}
+
+.hero-description {
+    font-family: "Mali", cursive;
+    font-size: 1.2rem;
+}
+
+.scroll-indicator {
+    font-family: "Mali", cursive;
+    font-size: 1rem;
+    background-color: transparent;
+}
+
+.animate-bounce {
+  animation: bounce 2s infinite;  /* animate scroll arrow */
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-10px); }
+  60% { transform: translateY(-5px); }
+}
+
+
+/*start of featured products section */
+
+.section-title {  /* for "Featured products" and "Why Choose" */
+    font-family: "the girl next door", cursive;
+    font-size: 3rem;
+    background-color: #f7ede1;
+    color: #2A2A2A;
+    text-align: center;
+    padding: 2rem 0;
+    margin-bottom: 50px;
+}
+
+
+.product-card {
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  transition: all 0.3s;
+  border: 1px solid #e0e0e0;
+  background-color: white; /* Only set here, not in HTML */
+}
+
+.product-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+}
+
+.product-title {
+  font-family: "Mali", cursive;
+  font-size: 1.8rem;
+  color: #2A2A2A;
+  text-align: center;
+}
+
+.product-description {
+  font-family: "Mali", cursive;
+  color: #666;
+  min-height: 60px;
+  text-align: center;
+}
+
+.product-price {
+  font-family: "Mali", cursive;
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: #2A2A2A;
+  text-align: center;
+}
+
+.product-tags , .product-tags a{
+  font-family: "Mali", cursive;
+  font-size: 0.9rem;
+  color: #999;
+  text-align: center;
+}
+
+.add-to-cart-btn {
+  background-color: #C4A484;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-family: "Mali", cursive;
+  font-weight: 600;
+  transition: all 0.3s;
+  margin-top: 0.5rem;
+}
+
+.add-to-cart-btn:hover {
+  background-color: #6F4E37;
+  color: white;
+}
+
+/*end of featured products section */
+
+/* start of features section */
+
+.features-section {
+    background-color: #f7ede1;
+    padding: 80px 0;
+}
+
+.feature-item {
+    text-align: center;
+    padding: 0 30px;
+}
+
+.feature-icon {
+    font-size: 2.5rem;
+    color: #6F4E37;
+    margin-bottom: 20px;
+}
+
+.feature-title {
+    font-family: "Mali", cursive;
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    color: #2A2A2A;
+}
+
+.feature-description {
+    font-family: "Mali", cursive;
+    color: #666;
+    font-size: 1rem;
+}
+
+/* end of features section */
+
+/* Responsive adjustments for landing page */
+@media (max-width: 822px) {
+    .hero-title {
+        font-size: 3rem;
+    }
+    
+    .section-title {
+        font-size: 2.5rem;
+    }
+    
+    .product-title, .feature-title {
+        font-size: 1.5rem;
+    }
+
+     .shop-now-btn {
+        padding: 8px 25px;
+        font-size: 0.95rem;
+        letter-spacing: 0.8px;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+    }
+    
+    .hero-description, .feature-description, .product-description {
+        font-size: 0.9rem;
+    }
+
+    .shop-now-btn {
+        padding: 8px 20px;
+        font-size: 0.9rem;
+        letter-spacing: 0.5px;
+    }
+
+
+}
+/* End of responsive adjustments for landing page */
+/************end of landing page************/
+
+/************start of login page************/
+
+main#login-page{
+    padding-top: 80px;
+    padding-bottom: 100px;
+    background-color: #f7ede1;
+
+}
+
+/************end of login page************/
+
+
+/******* End of main body *******/
 
 /******* START OF FOOTER *******/
 .footer-container {
@@ -543,6 +1036,12 @@ h5 {
     justify-content: center;
 }
 
+.cart-counter{
+  font-size: 1.1rem;
+  text-align: center;
+  padding: 0 4px;  
+}
+
 /******* ADMIN PAGE RESPONSIVE STYLING *******/
 /* Ensure max width for container */
 #adminBody .container {
@@ -682,6 +1181,27 @@ h5 {
   }
 }
 /*******  End of ADMIN PAGE STYLING (QUERY) *******/
+    /* Set the navigation unorder list of links in mobile view */
+    .right-section ul{
+        display: flex;
+        justify-content: center;
+    }
+
+    .cart-counter{
+        font-size: 1.1rem;
+        text-align: center;
+        padding: 0 4px;  
+    }
+    /* @media (max-width: 768px) {
+    .cart-counter { font-size: 1rem; }
+    }
+    @media (max-width: 480px) {
+    .cart-counter { font-size: 1rem; }
+    } */
+
+
+
+}
 /******* End of Media Query for responsive display *******/
 
 /* Hide scrollbar appearance while maintaining functionality if needed */

@@ -13,7 +13,7 @@ const productData = [
     {
         id: 2,
         name: "Product 2",
-        description: "Description of product 2",
+        description: "Ligula. Torquent curabitur class congue molestie. Feugiat penatibus. Nisl.Elementum Erat lectus pretium blandit amet volutpat Leo eros eleifend. Ipsum.Conubia sed est bibendum tellus adipiscing laoreet ut blandit velit.",
         price: 45.99,
         quantity: 200,
         image: "./images/cuphead.png",
@@ -94,6 +94,15 @@ const productData = [
         image: "./images/cuphead.png",
         flavors: ["Chocolate", "Caramel"]
     },
+    {
+        id: 15,
+        name: "Product 15",
+        description: "Description of product 3",
+        price: 55.00,
+        image: "./images/cuphead.png",
+        flavors: ["Chocolate", "Caramel"]
+    },
+   
   ];
 
 
