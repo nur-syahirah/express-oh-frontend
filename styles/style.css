@@ -92,6 +92,11 @@ ion-icon {
 #main h1{
   background-color: #f7ede1;
 }
+
+.bg-white {
+  background-color: white !important;
+}
+
 .nav-item-icon a {
   color: white;
   padding: 4% 0 0 1rem;
@@ -469,9 +474,6 @@ body {
 .bounce {
     animation: bounce 0.3s ease;
 }
-
-
-
 
 
 /*********** start of landing page ***********/

@@ -6,6 +6,7 @@ function createHeroSection() {
   heroLogo.className = 'hero-logo';
   const h1 = document.createElement('h1');
   h1.textContent = 'About Us';
+  h1.style.backgroundColor = 'transparent'; // Inline style override
   heroLogo.appendChild(h1);
 
   const lead = document.createElement('p');
@@ -19,7 +20,7 @@ function createHeroSection() {
     No noise, no shortcuts. Just honest coffee, crafted for those who care about the details.`;
 
   const exploreBtn = document.createElement('a');
-  exploreBtn.href = '#';
+  exploreBtn.href = 'products.html';
   exploreBtn.className = 'btn btn-dark mt-3';
   exploreBtn.textContent = 'Explore Now!';
 
@@ -160,7 +161,7 @@ function createTeamSection() {
 }
 
 function loadMainContent() {
-  const main = document.getElementById('main');
+  const main = document.getElementById('mainAbout');
   main.innerHTML = '';
 
   const heroSection = createHeroSection();
