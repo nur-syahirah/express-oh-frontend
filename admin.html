@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Bootstrap's CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7"
+      crossorigin="anonymous"/>
+
+    <!-- Display Icon on webpage tab -->
+    <link rel = "shortcut icon" type = "x-icon" href="./images/logo.png">
+
+    <link rel="stylesheet" href="styles/style.css" />
+
+    <!----- Fancy font's links ----->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Ceviche+One&family=Mali:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&family=Rock+Salt&display=swap"
+          rel="stylesheet"/>
+
+    <!-- Global Google Font: Bubblegum Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Bubblegum+Sans&display=swap" rel="stylesheet" />
+
+    <!-- Google Font for "Hello Admin": The Girl Next Door -->
+    <link href="https://fonts.googleapis.com/css2?family=The+Girl+Next+Door&display=swap" rel="stylesheet" />
+
+    <!----- Social Media Logo Link ----->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" 
+    integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" 
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
+    <!-- Confirmation dialog using SweetAlert2-->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!--Webpage Title-->    
+    <title>Express-Oh! Admin</title>
+    
+  </head>
+  <body>
+
+   <!-------------- START OF TOP NAV BAR --------------->
+   <header>  
+    <div id ="navbar-header" class="navbar top-nav-bar">
+      <div class="navContainer">
+        <a id = "nav-logo" class="navbar-brand text-white logo top-logo" href="#">
+          Express-Oh!
+        </a>
+        <!-- Right side: Links & Logos -->
+        <div class = "nav-icon  right-section"> 
+        <nav>
+          <!-- Dynamic Navigation -->
+        </nav>
+        </div>
+      </div>
+    </div>
+  </header>  
+  <!-------------- END OF TOP NAV BAR --------------->
+
+  
+  <!--------------  ADMIN MAIN BODY -------------->
+  <main id="mainAdmin" class="container d-flex main-content-bg mw-100">
+  <div id="adminBody" class="container mt-4 ">
+
+    <!-- Admin Welcome Section -->
+    <section id="adminWelcome">
+      <h1>Hello Admin</h1>
+      <div class="logout-container">
+        <button>Log Out</button>
+      </div>
+    </section>
+  
+    <!-- Admin Sales Orders Section -->
+    <section id="adminSalesOrders">
+      <h2>Sales Orders</h2>
+      <div class="chart-container">
+        <canvas id="adminSalesChart"></canvas>
+      </div>
+    </section>
+  
+    <!-- Admin Add/Edit Product Section -->
+    <section id="adminAddProduct">
+      <h2 id="adminFormTitle">Add Product</h2>
+      <form id="adminProductForm">
+
+      <!-- Hidden field for product index; "-1" means new product -->
+      <input type="hidden" id="adminProductIndex" value="-1" />
+      <div class="row">
+
+      <!-- Left Column: Image Upload and Preview (≈2/5 of width) -->
+      <div class="col-md-5 mb-3">
+        <!-- Product image preview: initially empty -->
+        <img id="adminImagePreview" src="" alt="Product Preview" class="img-fluid" />
+        <input type="file" id="adminProductImage" class="form-control mt-2" accept="image/*" />
+      </div>
+
+      <!-- Right Column: Product Details (≈3/5 of width) -->
+      <div class="col-md-7">
+        <!-- Name Field -->
+        <div class="mb-3">
+          <label for="adminProductName" class="form-label">Name:</label>
+          <input type="text" id="adminProductName" class="form-control" required />
+        </div>
+          
+        <!-- Description Field -->
+            <div class="mb-3">
+              <label for="adminProductDescription" class="form-label">Description:</label>
+              <textarea id="adminProductDescription" class="form-control" required></textarea>
+            </div>
+           
+            <!-- Price Field -->
+            <div class="mb-3">
+              <label for="adminProductPrice" class="form-label">Price:</label>
+              <input type="number" id="adminProductPrice" class="form-control" step="0.01" required />
+            </div>
+           
+            <!-- Quantity Field -->
+            <div class="mb-3">
+              <label for="adminProductQuantity" class="form-label">Quantity:</label>
+              <input type="number" id="adminProductQuantity" class="form-control" required />
+            </div>
+            
+            <!-- Flavors Dropdown -->
+            <div class="mb-3">
+              <label class="form-label" for="adminFlavorsDropdownButton">Flavors</label>
+              <div class="dropdown">
+                  <button class="btn btn-secondary dropdown-toggle" type="button" 
+                  id="adminFlavorsDropdownButton" data-bs-toggle="dropdown" aria-expanded="false">
+                      Select Flavors
+                  </button>
+                  <ul class="dropdown-menu p-2" aria-labelledby="adminFlavorsDropdownButton" style="min-width: 300px;">
+                      <li>
+                          <input type="text" class="form-control mb-2" id="adminNewFlavorInput" placeholder="Add new flavor">
+                      </li>
+                      <li id="adminDropdownFlavorOptions">
+                          <!-- Dynamic flavor options will be correctly injected inside <li> elements -->
+                      </li>
+                  </ul>
+              </div>
+          </div>
+          
+          <!-- Buttons (Add and Clear) -->
+          <div class="d-flex justify-content-end gap-2">
+            <button type="submit" id="adminSubmitButton" class="btn">Add</button>
+            <button type="reset" class="btn">Clear</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </section>
+
+    <!-- Admin Product Listing Section -->
+    <section id="adminProductList">
+      <h2>Product Listing</h2>
+
+      <!-- Wrap product listing table container -->
+      <div id="adminProductListContainer">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Price</th>
+              <th>Quantity</th>
+              <th>Flavors</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="adminProductTableBody">
+            <!-- Product rows will be rendered dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</main>
+  <!-------------- END OF ADMIN MAIN BODY --------------->
+
+
+  <!-------------- START OF FOOTER -------------->
+  <!-- Footer Container: Wraps the entire footer section -->
+    <div class="footer-container">
+      <footer class="footer-col">
+        <div class="row justify-content-center">
+          
+          <!-- Left Column: Contains logo, description, and social media links -->
+          <div id ="foot-left-col" class="col-md-7 mb-3">
+            <h4 class="logo">Express-Oh!</h4>
+            <p class="foot-text fw-medium">
+              Premium coffee beans, expertly roasted
+            </p>
+
+            <!-- Social Icons Section: Provides links to social media profiles -->
+            <div class="socialIcons">             
+                <h5>Follow Us</h5> 
+              <a href="https://www.facebook.com"><i class="fa-brands fa-facebook"></i></a>
+              <a href="https://www.youtube.com"><i class="fa-brands fa-youtube"></i></a>
+              <a href="https://www.linkedin.com"><i class="fa-brands fa-linkedin"></i></a>
+              <a href="https://www.instagram.com"><i class="fa-brands fa-instagram"></i></a>
+          </div>
+        </div>
+        
+        <!-- Middle Column: Quick Links for page navigation -->
+        <div id = "foot-mid-col" class="col-6 col-md-3 foot-text">
+          <h5>Quick Links</h5>
+          <ul class="nav flex-column">
+            <li class="nav-item mb-2">
+              <a href="#" class="nav-link p-0 text-white">Shop</a>
+            </li>
+            <li class="nav-item mb-2">
+              <a href="#" class="nav-link p-0 text-white">Contact Us</a>
+            </li>
+            <li class="nav-item mb-2">
+              <a href="#" class="nav-link p-0 text-white">Login</a>
+            </li>
+          </ul>
+        </div>
+        
+        <!-- Right Column: Contact Information -->
+        <div id = "foot-right-col" class="col-6 col-md-3 foot-text">
+          <h5>Contacts</h5>
+              <ul class="nav flex-column">
+                <li class="nav-item mb-2"> <class="nav-link p-0 ">123 Coffee Street</li>
+                <li class="nav-item mb-2"><class="nav-link p-0 ">Singapore</li>
+                <li class="nav-item mb-2"><a href="mailto:info@expressoh.com" class="nav-link p-0 ">info@expressoh.com</a></li>
+              </ul>
+            </div>
+        </div>
+
+        <!-- Bottom Footer Section: Contains copyright and rights information -->
+        <div class="d-flex flex-column flex-sm-row justify-content-center py-4 text-white foot-text">
+        <p>© 2025 Express-Oh! All rights reserved.</p>
+      </div>
+    </footer>
+  </div>
+  <!-------------- END OF FOOTER --------------->
+
+  <!-- Bootstrap's CSS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Custom Script -->
+  <script src="./script/navbar.js"></script>
+  <script src="./script/product.js"></script>
+
+  <!-- Chart.js Library -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="./script/admin.js"></script>
+
+  <!-- Ionic Framework for Icons -->
+  <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@latest/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@latest/dist/ionicons/ionicons.js"></script>
+
+  </body>
+</html>
