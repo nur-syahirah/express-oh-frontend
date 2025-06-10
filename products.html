@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel = "shortcut icon" type = "x-icon" href="./images/logo.png">
  
+      <!-- Bootstrap Icons CDN for the funnel icon -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+
     <!-- Bootstrap's CSS -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css"
@@ -65,7 +71,16 @@
     </div>
     <div>
       <div class="coffee-filter">
-        <button style="border-radius: 16px;"><ion-icon name="filter-sharp"></ion-icon> Filter </button>
+        <!-- Updated filter button -->
+      <button
+        style="border-radius: 16px;"
+        data-bs-toggle="modal"
+        data-bs-target="#flavorFilterModal"
+        class="btn-coffee"
+      >
+        <i class="bi bi-funnel-fill me-2"></i> Filter
+      </button>
+        </button>
       </div>
     </div>
     <!-- End of hero banner -->
@@ -115,6 +130,29 @@
   </div>
 </div>
 
+ <!-- Flavor Filter Modal -->
+  <div class="modal fade" id="flavorFilterModal" tabindex="-1" aria-labelledby="flavorFilterModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Filter by Flavor</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="flavor-filter-form" class="d-flex flex-column gap-2">
+            <!-- Flavors will be dynamically populated here -->
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <!-- Updated Apply button -->
+          <button type="button" class="btn btn-coffee" id="apply-flavor-filter">
+            <i class="bi bi-check-lg me-2"></i> Apply
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- End of main body -->
   </main>

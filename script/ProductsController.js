@@ -184,6 +184,65 @@ document.addEventListener('DOMContentLoaded', function() {
     localStorage.setItem('cart', JSON.stringify(cart));
     console.log('Added to cart:', product.name, quantity);
   }})
+
+  // Filter flavour dynamically 
+  function populateFlavorOptions() {
+  const form = document.getElementById('flavor-filter-form');
+  form.innerHTML = ''; // Clear existing
+
+  // Extract unique flavors from productData (or modelController.items if needed)
+  const flavors = new Set();
+  productData.forEach(p => p.flavors.forEach(f => flavors.add(f)));
+
+  flavors.forEach(flavor => {
+    const label = document.createElement('label');
+    label.className = "form-check-label";
+
+    const input = document.createElement('input');
+    input.type = "checkbox";
+    input.className = "form-check-input me-1";
+    input.name = "flavors";
+    input.value = flavor;
+
+    label.appendChild(input);
+    label.appendChild(document.createTextNode(flavor));
+    form.appendChild(label);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  populateFlavorOptions();
+});
+
+// Backend fetch filter
+async function applyFlavorFilter() {
+  const checkboxes = document.querySelectorAll('#flavor-filter-form input:checked');
+  const selectedFlavors = Array.from(checkboxes).map(cb => cb.value);
+
+  const params = new URLSearchParams();
+  selectedFlavors.forEach(flavor => params.append("flavors", flavor));
+
+  try {
+    const response = await fetch(`http://localhost:8080/api/products/filter?${params.toString()}`);
+    if (!response.ok) throw new Error("Failed to fetch filtered products");
+
+    const filteredProducts = await response.json();
+    document.getElementById("product-list").innerHTML = '';
+    filteredProducts.forEach(addItemCard);
+
+    const modal = bootstrap.Modal.getInstance(document.getElementById('flavorFilterModal'));
+    modal.hide();
+  } catch (error) {
+    console.error("Error during filtering:", error);
+    alert("An error occurred while filtering. Please try again.");
+  }
+}
+
+function clearFlavorFilter() {
+  document.querySelectorAll('#flavor-filter-form input:checked').forEach(cb => cb.checked = false);
+  modelController.refreshItemsOnPage(); // Go back to showing everything
+}
+
   
 
 /* Quick test on web browser

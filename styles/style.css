@@ -304,6 +304,136 @@ h5{
 #nav-link{
     margin-top: 0;
 }
+
+ /* Coffee-themed button style */
+    .btn-coffee {
+      background-color: #6f4e37; /* Coffee brown */
+      color: #fff;
+      border: none;
+      font-weight: 600;
+      font-family: 'Segoe UI', sans-serif;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(111, 78, 55, 0.3);
+      border-radius: 0.75rem;
+    }
+    .btn-coffee:hover {
+      background-color: #5c3c28;
+      color: #f3e5ab;
+      box-shadow: 0 6px 12px rgba(92, 60, 40, 0.4);
+      transform: translateY(-1px);
+    }
+    /* Modal background and text */
+#flavorFilterModal .modal-content {
+  background: #4b3621; /* Dark coffee brown */
+  color: #f3e5ab; /* Light cream */
+  border-radius: 1rem;
+  box-shadow: 0 8px 24px rgba(75, 54, 33, 0.8);
+}
+
+/* Modal header and footer border color */
+#flavorFilterModal .modal-header,
+#flavorFilterModal .modal-footer {
+  border-color: #6f4e37; /* Medium coffee brown */
+}
+
+/* Close button color */
+#flavorFilterModal .btn-close {
+  filter: invert(1); /* make the close icon white */
+}
+
+/* Checkbox container */
+#flavor-filter-form label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: #f3e5ab;
+}
+.modal-footer .btn-primary,
+.modal-footer .btn-outline-secondary {
+    margin-top: auto;
+  height: 50px; /* or whatever height fits your design */
+}
+
+/* Checkbox custom styling */
+#flavor-filter-form input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: #a67c52; /* warm tan for checkbox tick */
+  cursor: pointer;
+  border-radius: 0.3rem;
+  border: 1.5px solid #a67c52;
+  transition: background-color 0.3s ease;
+}
+
+/* On hover effect for checkbox */
+#flavor-filter-form input[type="checkbox"]:hover {
+  background-color: #a67c52;
+}
+
+/* Scrollbar styling if modal body overflows */
+#flavorFilterModal .modal-body {
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 10px; /* to prevent content under scrollbar */
+}
+
+/* Optional: subtle glow on modal footer buttons */
+#flavorFilterModal .btn-coffee {
+  box-shadow: 0 0 6px #a67c52;
+}
+
+/* Cancel button style (outline) */
+.modal-footer .btn-outline-secondary {
+  color: #6f4e37; /* Coffee brown text */
+  border: 2px solid #6f4e37; /* Coffee brown border */
+  border-radius: 20px;
+  padding: 10px 25px;
+  font-weight: 600;
+  font-size: 1rem;
+  background-color: transparent;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  cursor: pointer;
+}
+
+.modal-footer .btn-outline-secondary:hover {
+  background-color: #6f4e37; /* Coffee brown background */
+  color: #f3e5ab; /* Cream text */
+  border-color: #6f4e37;
+}
+
+.modal-footer .btn-outline-secondary:focus,
+.modal-footer .btn-outline-secondary:active {
+  outline: none;
+  box-shadow: 0 0 8px #a67c52;
+}
+
+
+.modal-footer .btn-primary {
+  background-color: transparent;   /* Make it empty */
+  border: 2px solid #6f4e37;       /* Coffee brown border */
+  color: #6f4e37;                  /* Coffee brown text */
+  border-radius: 20px;
+  padding: 10px 25px;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  cursor: pointer;
+}
+
+.modal-footer .btn-primary:hover {
+  background-color: #6f4e37;       /* Coffee brown background on hover */
+  color: #f3e5ab;                 /* Cream text on hover */
+  border-color: #6f4e37;
+}
+
+.modal-footer .btn-primary:focus,
+.modal-footer .btn-primary:active {
+  outline: none;
+  box-shadow: 0 0 8px #a67c52;
+}
+
 /******* End of footer *******/
 
 /******* Start of Media Query for responsive display *******/
