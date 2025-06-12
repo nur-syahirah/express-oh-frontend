@@ -21,8 +21,8 @@ const _ADMIN_URL = "admin.html";
 const _PROFILE_URL = "profile.html";
 
 // endpoint routes
-const _ENDPOINT_REGISTER = "http://localhost:9090/api/auth/signup";
-const _ENDPOINT_LOGIN = "http://localhost:9090/api/auth/signin";
+const _ENDPOINT_REGISTER = "http://localhost:8080/api/auth/signup";
+const _ENDPOINT_LOGIN = "http://localhost:8080/api/auth/signin";
 
 // TODO 
 // const _ENDPOINT_PUBLIC_PRODUCT = "http://localhost:9090/public/api/product";
