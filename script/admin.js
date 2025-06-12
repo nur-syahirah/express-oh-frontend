@@ -31,6 +31,15 @@ async function makeApiRequest(url, method = 'GET', body = null, headers = {}) {
     console.error('API Error:', error);
     throw error;
   }
+
+  // TODO NEED TO DEL IF IT DOES NOT WORK
+  function getSelectedFlavors() {
+  const selectedOptions = document.querySelectorAll('#adminFlavorSelect option:checked');
+  return Array.from(selectedOptions).map(opt => ({
+    id: parseInt(opt.value)
+  }));
+}
+
 }
 
 /*------------------
@@ -193,7 +202,7 @@ function renderProducts() {
 
     // Quantity
     const qtyTd = document.createElement("td");
-    qtyTd.textContent = product.inventoryCount ?? product.quantity ?? "N/A";
+    qtyTd.textContent = product.inventoryCount ?? "N/A";
     tr.appendChild(qtyTd);
 
     // Flavors
@@ -264,19 +273,27 @@ document.getElementById("adminProductForm").addEventListener("submit", async fun
 
   // (Keep your existing validation code)
   
+  const sku = document.getElementById("adminProductSKU").value.trim();
   const name = document.getElementById("adminProductName").value.trim();
   const description = document.getElementById("adminProductDescription").value.trim();
   const price = parseFloat(document.getElementById("adminProductPrice").value.trim());
-  const quantity = parseInt(document.getElementById("adminProductQuantity").value.trim());
+  const inventoryCount = parseInt(document.getElementById("adminProductQuantity").value.trim());
   const productId = document.getElementById("adminProductIndex").value;
 
+  // Basic validation for SKU (since backend requires it)
+  if (!sku) {
+    Swal.fire("Validation Error", "SKU is required.", "warning");
+    return;
+  }
+
   const productData = {
+    sku,
     name,
     description,
     price,
-    quantity,
+    inventoryCount,   // changed from quantity
     flavors: selectedFlavors,
-    // image will be handled separately for file upload
+    // image upload handled separately
   };
 
   try {
@@ -343,12 +360,14 @@ async function editProduct(productId) {
     const product = await fetchProduct(productId);
     
     // Fill form with product details
+    document.getElementById("adminProductSKU").value = product.sku || "";
     document.getElementById("adminProductName").value = product.name;
     document.getElementById("adminProductDescription").value = product.description;
     document.getElementById("adminProductPrice").value = product.price;
-    document.getElementById("adminProductQuantity").value = product.quantity;
-    document.getElementById("adminImagePreview").src = product.image;
+    document.getElementById("adminProductQuantity").value = product.inventoryCount ?? "";
+    document.getElementById("adminImagePreview").src = product.image || "";
     document.getElementById("adminProductIndex").value = product._id;
+
 
     // Update form labels
     document.getElementById("adminFormTitle").innerText = "Edit Product";
