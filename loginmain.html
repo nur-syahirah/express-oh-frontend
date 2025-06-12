@@ -71,12 +71,12 @@
                         </h5>
                     </div>
                     <div class="card-body">
-                        <form>
+                        <form id="formLogin">
                             <div class="mb-3">
                                 <label for="loginEmail" class="form-label">
-                                    <i class="bi bi-person-fill"></i> Username or Email
+                                    <i class="bi bi-person-fill"></i> Email
                                 </label>
-                                <input type="text" class="form-control" id="loginEmail" placeholder="Enter username or email">
+                                <input type="text" class="form-control" id="loginEmail" placeholder="Enter email">
                             </div>
                             <div class="mb-3">
                                 <label for="loginPassword" class="form-label">
@@ -116,13 +116,7 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form>
-                    <div class="mb-3">
-                        <label for="signupUsername" class="form-label">
-                            <i class="bi bi-person-badge"></i> Username
-                        </label>
-                        <input type="text" class="form-control" id="signupUsername" placeholder="Choose a username">
-                    </div>
+                <form id="formRegister">
                     <div class="mb-3">
                         <label for="signupEmail" class="form-label">
                             <i class="bi bi-envelope-fill"></i> Email
@@ -134,12 +128,6 @@
                             <i class="bi bi-lock-fill"></i> Password
                         </label>
                         <input type="password" class="form-control" id="signupPassword" placeholder="Create a password">
-                    </div>
-                    <div class="mb-3">
-                        <label for="confirmPassword" class="form-label">
-                            <i class="bi bi-lock-fill"></i> Confirm Password
-                        </label>
-                        <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm your password">
                     </div>
                     <button type="submit" class="btn btn-primary w-100"  style="background-color: #2a2a2a;"  onmouseover="this.style.backgroundColor='#3d3d3d'"
                     onmouseout="this.style.backgroundColor='#2a2a2a'">
@@ -232,5 +220,44 @@
 <!-- Ionic Framework for Icons -->
 <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@latest/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@latest/dist/ionicons/ionicons.js"></script>
+
+    <!-- Internal Custom Script -->
+    <script>
+
+      // Custom JS statements and function
+      document.getElementById("formRegister").addEventListener("submit", async (event) => {
+
+          event.preventDefault();                                                 // Prevent default browser events from happening
+
+          const email = document.getElementById("signupEmail");                   // Create constant variables to capture form inputs - txtEmail
+          const pwd = document.getElementById("signupPassword");                  // Create constant variables to capture form inputs - txtPassword
+          
+          if(isEmpty(email.value) || isEmpty(pwd.value)){                         // Trap empty inputs for txtEmail and txtPassword - isEmpty()
+            // TODO - use swal for alerts
+          }
+          
+          if(!isEmail(email.value)){                                              // Trap invalid email for txtEmail - isEmail()
+              // TODO - use swal for alerts
+          }
+
+          const formData = {                                                      // JavaScript Object formData stores the form's input values
+              email: email.value, 
+              password: pwd.value,
+              role: "CUSTOMER"
+          };
+          
+          const registerSuccess = await register(formData);                      // Invoke login() function, and end (return)
+          
+          if(!registerSuccess){
+              // TODO - do up a presentable alert
+              Swal.fire("Registration Unsuccessful! Please try again.");
+              return;
+          }
+
+          window.location.href = _LOGIN_URL;                                    // registration is successful (route to login)
+
+      });
+
+  </script>
 </body>
 </html>
