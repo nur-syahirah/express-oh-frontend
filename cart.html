@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" type="x-icon" href="./images/logo.png" />
+
+    <!-- Bootstrap's CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="styles/style.css" />
+
+    <!-- Fancy font's links -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Ceviche+One&family=Mali:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&family=Rock+Salt&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Social Media Logo Link -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+      integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <style>
+      .cart-item img {
+        width: 100px;
+        height: auto;
+      }
+      .empty-message {
+        text-align: center;
+        margin-top: 3rem;
+        font-size: 1.2rem;
+      }
+    </style>
+
+    <title>Express-Oh! Shop</title>
+  </head>
+  <body>
+    <!-------------- START OF TOP NAV BAR --------------->
+    <header>
+      <div id="navbar-header" class="navbar top-nav-bar">
+        <div class="navContainer">
+          <a
+            id="nav-logo"
+            class="navbar-brand text-white logo top-logo"
+            href="./index.html"
+            >Express-Oh!</a
+          >
+          <!-- Right side: Links & Logos -->
+          <div class="nav-icon right-section">
+            <nav>
+              <!-- Dynamic Navigation -->
+            </nav>
+          </div>
+        </div>
+      </div>
+    </header>
+    <!-------------- END OF TOP NAV BAR --------------->
+
+    <div class="container py-4">
+      <h1 class="mb-4">Your Cart</h1>
+
+      <!-- Empty Cart Message -->
+      <div id="empty-cart-message" class="empty-message text-muted" style="display: none;">
+        <i class="fas fa-shopping-cart fa-2x mb-2"></i>
+        <p>Your cart is empty.</p>
+      </div>
+
+      <!-- Cart Items Container -->
+      <div id="cart-items" class="row g-3"></div>
+
+      <!-- Cart Summary -->
+      <div class="mt-5">
+        <h4>Order Summary</h4>
+        <p class="fw-semibold">Total: $<span id="cart-total">0.00</span></p>
+        <button id="checkout-btn" class="btn btn-success">Checkout</button>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer-container">
+      <footer class="footer-col">
+        <div class="row justify-content-center">
+          <div id="foot-left-col" class="col-md-7 mb-3">
+            <a href="index.html" style="text-decoration: none;">
+              <h4 class="logo">Express-Oh!</h4>
+            </a>
+            <p class="foot-text fw-medium">Premium coffee beans, expertly roasted</p>
+
+            <div class="socialIcons">
+              <h5>Follow Us</h5>
+              <a href="https://www.facebook.com"><i class="fa-brands fa-facebook"></i></a>
+              <a href="https://www.youtube.com"><i class="fa-brands fa-youtube"></i></a>
+              <a href="https://www.linkedin.com"><i class="fa-brands fa-linkedin"></i></a>
+              <a href="https://www.instagram.com"><i class="fa-brands fa-instagram"></i></a>
+            </div>
+          </div>
+
+          <div id="foot-mid-col" class="col-6 col-md-3 foot-text">
+            <h5>Quick Links</h5>
+            <ul class="nav flex-column">
+              <li class="nav-item mb-2">
+                <a href="#" class="nav-link p-0 text-white">Shop</a>
+              </li>
+              <li class="nav-item mb-2">
+                <a href="#" class="nav-link p-0 text-white">Contact Us</a>
+              </li>
+              <li class="nav-item mb-2">
+                <a href="#" class="nav-link p-0 text-white">Login</a>
+              </li>
+            </ul>
+          </div>
+
+          <div id="foot-right-col" class="col-6 col-md-3 foot-text">
+            <h5>Contacts</h5>
+            <ul class="nav flex-column">
+              <li class="nav-item mb-2 nav-link p-0">123 Coffee Street</li>
+              <li class="nav-item mb-2 nav-link p-0">Singapore</li>
+              <li class="nav-item mb-2">
+                <a href="mailto:info@expressoh.com" class="nav-link p-0">info@expressoh.com</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div
+          class="d-flex flex-column flex-sm-row justify-content-center py-4 my-4 text-white foot-text"
+        >
+          <p>© 2025 Express-Oh! All rights reserved.</p>
+        </div>
+      </footer>
+    </div>
+    <!-- End of Footer -->
+
+    <!-- JavaScript from Bootstrap -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- Custom Script for authentication -->
+    <script src="script/Mock.js"></script> <!-- TODO: to remove in production env. -->
+    <script src="script/const.js"></script>
+    <script src="script/auth.js"></script>
+    <script src="script/form-validate.js"></script>
+
+    <!-- Your cart scripts -->
+    <script src="script/navbar.js"></script>
+    <script src="script/product.js"></script>
+    <script type="module" src="script/cart-controller.js"></script>
+
+    <!-- Ionic Framework for Icons -->
+    <script
+      type="module"
+      src="https://cdn.jsdelivr.net/npm/ionicons@latest/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://cdn.jsdelivr.net/npm/ionicons@latest/dist/ionicons/ionicons.js"
+    ></script>
+  </body>
+</html>
+

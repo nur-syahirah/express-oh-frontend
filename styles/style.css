@@ -317,12 +317,15 @@ body {
 #mainAdmin {
   flex: 1; /* Takes remaining space */
 }
-.coffee-pic img{
-  width: 100%;
+.coffee-pic img {
   height: 500px;
   object-fit: cover;
-  
 }
+
+.pic-text {
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+}
+
 .coffee-filter {
   position: absolute;
   padding: 30px 0 0 110px;
@@ -336,16 +339,7 @@ body {
   white-space: nowrap; 
 }
 
-.pic-text{
-  position: absolute;
-  top: 50%;                                   /* Center vertically */
-  left: 50%;                                  /* Center horizontally */
-  transform: translate(-50%, -50%);           /* Perfect centering */
-  color: white;
-  font-size: 24px;
-  font-weight: bold;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.8); /* Improves readability */
-}
+
 
 .card {
   width: 300px;                               /* Fixed width or use % for responsiveness */
