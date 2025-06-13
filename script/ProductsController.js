@@ -229,9 +229,8 @@ addItemCard({
 
 */
 
-/* To clear localStorage when adding item in product mock data
+// To clear localStorage when adding item in product mock data
 
-localStorage.removeItem("product-list");
-location.reload(); // reloads the page
+// localStorage.removeItem("product-list");
+// location.reload(); // reloads the page
 
-*/
