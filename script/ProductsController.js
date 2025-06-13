@@ -1,4 +1,26 @@
-// Function to add a single item card to the DOM
+// Function to filter
+document.querySelectorAll('.flavor-checkbox').forEach(cb => {
+  cb.addEventListener('change', handleFlavorFilterChange);
+});
+
+function handleFlavorFilterChange() {
+  const selectedFlavors = Array.from(document.querySelectorAll('.flavor-checkbox:checked'))
+    .map(cb => cb.value);
+
+  if (selectedFlavors.length === 0) {
+    modelController.refreshItemsOnPage();
+    return;
+  }
+
+  const filteredItems = modelController.items.filter(item =>
+    item.flavors.some(flavor => selectedFlavors.includes(flavor))
+  );
+
+  // Clear current list and show filtered products
+  document.getElementById("product-list").innerHTML = '';
+  filteredItems.forEach(item => addItemCard(item));
+}
+
 // Function to add a single item card to the DOM
 function addItemCard(item) {
   const productListDiv = document.getElementById("product-list");
@@ -184,6 +206,14 @@ document.addEventListener('DOMContentLoaded', function() {
     localStorage.setItem('cart', JSON.stringify(cart));
     console.log('Added to cart:', product.name, quantity);
   }})
+
+  document.getElementById('clear-flavor-filters').addEventListener('click', () => {
+  // Uncheck all flavor checkboxes
+  document.querySelectorAll('.flavor-checkbox').forEach(cb => cb.checked = false);
+
+  // Refresh to show all products again
+  modelController.refreshItemsOnPage();
+  });
   
 
 /* Quick test on web browser
