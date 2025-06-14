@@ -83,3 +83,54 @@ document.addEventListener('DOMContentLoaded', () => {
     renderCart();
   });
 });
+const checkoutModal = new bootstrap.Modal(document.getElementById('checkoutModal'));
+const summaryList = document.getElementById('checkout-summary');
+const summaryTotal = document.getElementById('checkout-total');
+const checkoutForm = document.getElementById('checkout-form');
+const checkoutButton = document.getElementById('checkout-btn'); // Make sure this exists
+
+// Open modal on checkout
+checkoutButton.addEventListener('click', () => {
+  const cartItems = getCartItems();
+  summaryList.innerHTML = '';
+
+  if (cartItems.length === 0) {
+    alert('Your cart is empty.');
+    return;
+  }
+
+  cartItems.forEach(item => {
+    const li = document.createElement('li');
+    li.className = 'list-group-item d-flex justify-content-between align-items-center';
+    li.innerHTML = `${item.name} × ${item.quantity}<span>$${(item.price * item.quantity).toFixed(2)}</span>`;
+    summaryList.appendChild(li);
+  });
+
+  summaryTotal.textContent = calculateTotal().toFixed(2);
+  checkoutModal.show();
+});
+
+// Handle form submission
+checkoutForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  const name = document.getElementById('checkout-name').value.trim();
+  const email = document.getElementById('checkout-email').value.trim();
+  const address = document.getElementById('checkout-address').value.trim();
+  const cardNumber = document.getElementById('card-number').value.trim();
+  const cardExpiry = document.getElementById('card-expiry').value.trim();
+  const cardCVC = document.getElementById('card-cvc').value.trim();
+
+  if (!name || !email || !address || !cardNumber || !cardExpiry || !cardCVC) {
+    alert('Please fill in all required fields.');
+    return;
+  }
+
+  // Simple (not secure) validation could go here if needed
+
+  alert(`Thank you for your purchase, ${name}!`);
+  clearCart();
+  checkoutModal.hide();
+  renderCart();
+  checkoutForm.reset();
+});
