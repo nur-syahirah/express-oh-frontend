@@ -256,7 +256,7 @@ window.addEventListener("load", async function () {
   renderFlavorOptions();
   updateFlavorsButtonText();
 
-]});
+});
 
 
 /*------------------
