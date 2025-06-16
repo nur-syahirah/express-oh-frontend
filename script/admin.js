@@ -518,6 +518,47 @@ async function deleteProduct(productId) {
   }
 }
 
+/*----------------------
+ ADD PRODUCT FUNCTION
+-----------------------*/
+async function addProduct(productData) {
+  try {
+    const token = localStorage.getItem("usertoken");
+    const response = await fetch(PRODUCTS_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token ? `Bearer ${token}` : ''
+      },
+      body: JSON.stringify(productData)
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Failed to create product: ${response.status}`);
+    }
+    
+    const newProduct = await response.json();
+    console.log("Product created:", newProduct);
+    
+    // Refresh the list of products
+    products = await loadProductsFromAPI();
+    renderProducts();
+    
+    // Optionally, show a success message (using SweetAlert for example)
+    await Swal.fire("Success!", "Product has been added.", "success");
+    
+    // Reset the form to its initial state
+    resetProductForm();
+    
+    return newProduct;
+  } catch (error) {
+    console.error("Error adding product:", error);
+    await Swal.fire("Error!", "Failed to add product.", "error");
+    return null;
+  }
+}
+
+
 /*-------------------------------------
     PRODUCT FORM (ADD/EDIT) HANDLING
 --------------------------------------*/
@@ -676,6 +717,7 @@ async function updateProduct(productId, productData) {
 
     // Re-render the product table
     renderProducts();
+    resetProductForm();
 
     return data;
   } catch (error) {
@@ -725,12 +767,36 @@ async function updateProductFlavors(productId, flavorsArray) {
   }
 }
 
+// Form reset event fires (triggered by the Clear button), we call resetProductForm.
+document.getElementById("adminProductForm").addEventListener("reset", function(e) {
+  setTimeout(resetProductForm, 0);
+});
 
 function resetProductForm() {
-  document.getElementById("adminProductForm").reset();
+  // Clear all input fields in the product form.
+  document.getElementById("adminProductSKU").value = "";
+  document.getElementById("adminProductName").value = "";
+  document.getElementById("adminProductDescription").value = "";
+  document.getElementById("adminProductPrice").value = "";
+  document.getElementById("adminProductQuantity").value = "";
+  document.getElementById("adminProductImage").value = ""; // Clear the file input.
+  // Reset the image preview to a placeholder or empty string.
+  document.getElementById("adminImagePreview").src = "https://via.placeholder.com/80"; // Placeholder image URL
+
   // Reset the hidden product id field.
   document.getElementById("adminProductIndex").value = "-1";
-  // Reset selected flavors.
+  
+  // Reset the form header to its default text.
+  document.getElementById("adminFormTitle").innerText = "Add New Product";
+  
+  // Reset the submit button text back to "Add".
+  document.getElementById("adminSubmitButton").innerText = "Add";
+  
+  // Clear the image preview by setting its src to an empty string
+  // Or set to a placeholder image URL if desired.
+  document.getElementById("adminImagePreview").src = "";
+  
+  // Clear any selected flavors and update the dropdown/button text accordingly.
   selectedFlavors = [];
   updateFlavorsButtonText();
 }
@@ -773,7 +839,7 @@ async function editProduct(productId) {
 
     // After rendering, looping through the checkboxes and mark the ones that are selected.
     document.querySelectorAll(".flavor-checkbox").forEach(chk => {
-      chk.checked = selectedFlavors.includes(chk.value);
+      chk.checked = selectedFlavors.includes(parseInt(chk.value, 10));
       console.log("Checkbox value:", chk.value, "Checked:", chk.checked);
     });
    
