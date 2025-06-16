@@ -518,6 +518,10 @@ async function deleteProduct(productId) {
   }
 }
 
+/*----------------
+ ADD PRODUCT FUNCTION
+-----------------*/
+
 /*-------------------------------------
     PRODUCT FORM (ADD/EDIT) HANDLING
 --------------------------------------*/
@@ -527,111 +531,102 @@ let products = [];
 document.getElementById("adminProductForm").addEventListener("submit", async function (e) {
   e.preventDefault();
 
+  // Retrieve and trim form values.
+  const sku = document.getElementById("adminProductSKU").value.trim();
+  const name = document.getElementById("adminProductName").value.trim();
+  const description = document.getElementById("adminProductDescription").value.trim();
+  const price = parseFloat(document.getElementById("adminProductPrice").value.trim());
+
+  // Read inventory from the quantity field
+  const inventory = parseInt(document.getElementById("adminProductQuantity").value.trim());
+
+  // Hidden field holds product id (for edit operations)
+  const productId = document.getElementById("adminProductIndex").value;
+
+  // Determine action based on the submit button’s text.
+  const action = document.getElementById("adminSubmitButton").innerText.trim().toLowerCase();
+
+  // Basic validation: SKU must be provided.
+  if (!sku) {
+    Swal.fire("Validation Error", "SKU is required.", "warning");
+    return;
+  }
+
   try {
-    const productData = collectProductFormData();
-    const productId = document.getElementById("adminProductIndex").value;
-
-    // Validate required fields
-    if (!productData.name || !productData.price) {
-      throw new Error("Product name and price are required");
-    }
-
     let result;
-    if (productId && productId !== "") {
+    if (action === "update") {
+      // For update, ensure that the product id is provided.
+      if (!productId || productId === "-1") {
+        Swal.fire("Error", "No product id provided for update.", "error");
+        return;
+      }
+      console.log("Product id provided:", productId, "- updating product");
       result = await updateProduct(productId, productData);
+
+      // Update the local products array if maintained.
+      const index = products.findIndex(p => (p.id || p._id) == productId);
+      if (index !== -1) {
+        products[index] = result;
+      }
     } else {
+
+      console.log("Adding new product");
       result = await createProduct(productData);
+      products.push(result);
     }
 
-    // Handle image upload if needed
+    // Handle image upload if a file was selected.
     const fileInput = document.getElementById("adminProductImage");
-    if (fileInput.files[0]) {
-      await uploadProductImage(result.id, fileInput.files[0]);
-      // Update product with image URL if needed
-      await updateProduct(result.id, { imageUrl: `/uploads/products/${fileInput.files[0].name}` });
+    if (fileInput.files && fileInput.files[0]) {
+      await uploadProductImage(result.id || result._id, fileInput.files[0]);
+
+      // Optionally re-fetch the updated product to refresh local data.
+      const updatedProduct = await fetchProduct(result.id || result._id);
+      const index = products.findIndex(p => (p.id || p._id) == (result.id || result._id));
+      if (index !== -1) {
+        products[index] = updatedProduct;
+      }
     }
 
-    Swal.fire("Success!", `Product ${productId ? "updated" : "created"} successfully!`, "success");
+    // Update the product's flavors in the separate table if any have been selected.
+    if (selectedFlavors && selectedFlavors.length > 0) {
+      await updateProductFlavors(result.id || result._id, selectedFlavors);
+    }
+
+    // Re-render the product table to display the updated data.
+    renderProducts();
     resetProductForm();
-    loadProducts(); // Refresh product list if you have one
-    
+    Swal.fire("Success!", `Product ${action === "update" ? "updated" : "added"} successfully.`, "success");
   } catch (error) {
-    console.error("Form submission error:", error);
-    Swal.fire({
-      title: "Error!",
-      text: error.message || "Failed to process product",
-      icon: "error"
-    });
+    Swal.fire("Error!", `Failed to ${action === "update" ? "update" : "add"} product.`, "error");
   }
 });
 
-// Function to collect product data
-// function collectProductFormData() {
-//   return {
-//     sku: document.getElementById("adminProductSKU").value.trim(),
-//     name: document.getElementById("adminProductName").value.trim(),
-//     description: document.getElementById("adminProductDescription").value.trim(),
-//     price: parseFloat(document.getElementById("adminProductPrice").value.trim()),
-//     inventory: parseInt(document.getElementById("adminProductQuantity").value.trim()), // Changed from inventoryCount
-//     imageUrl: "", // Initialize empty, will be updated after image upload
-//     flavors: selectedFlavors.map(flavor => ({ id: flavor.id })) // Send just flavor IDs
-//   };
-// }
-
-// Function to reset the product form
-function resetProductForm() {
-  document.getElementById("adminProductForm").reset();
-  document.getElementById("adminProductIndex").value = ""; // Clear ID completely
-  selectedFlavors = [];
-  updateFlavorsButtonText();
-  
-  // Reset image preview
-  document.getElementById("adminImagePreview").src = "";
-  document.getElementById("adminProductImage").value = "";
-  
-  // Set form to "create" mode
-  document.getElementById("adminFormTitle").innerText = "Add New Product";
-  document.getElementById("adminSubmitButton").innerText = "Create Product";
-}
 
 /*---------------------------
   CREATE & UPDATE PRODUCT API
 ---------------------------*/
 async function createProduct(productData) {
   try {
+    console.log("Creating product with data:", productData);
     const token = localStorage.getItem("usertoken");
-    
-    if (!token) {
-      throw new Error("Authentication token missing - please login again");
-    }
-
     const response = await fetch(PRODUCTS_ENDPOINT, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${token}`,
+        'Authorization': token ? `Bearer ${token}` : '',
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(productData)
     });
-
-    // First check for 403 specifically
-    if (response.status === 403) {
-      throw new Error("Access denied - you don't have permission");
-    }
-
-    // Then check for other errors
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(errorText || `Request failed with status ${response.status}`);
+      throw new Error(`Failed to create product: ${response.status}`);
     }
-
-    // Only try to parse JSON if response has content
-    const responseBody = await response.text();
-    return responseBody ? JSON.parse(responseBody) : {};
-
+    const data = await response.json();
+    console.log("Product created:", data);
+    return data;
   } catch (error) {
-    console.error("Error in createProduct:", error);
-    throw error;
+    console.error("Error creating product:", error);
+    return null;
   }
 }
 
@@ -664,14 +659,8 @@ async function uploadProductImage(productId, imageFile) {
 
 async function updateProduct(productId, productData) {
   try {
-    // First validate the productId exists and isn't empty
-    if (!productId || productId.trim() === "") {
-      throw new Error("Product ID is required for update");
-    }
-
     console.log("Updating product with ID:", productId, "Data:", productData);
     const token = localStorage.getItem("usertoken");
-    
     const response = await fetch(`${PRODUCTS_ENDPOINT}/${productId}`, {
       method: 'PUT',
       headers: {
@@ -680,12 +669,9 @@ async function updateProduct(productId, productData) {
       },
       body: JSON.stringify(productData)
     });
-
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Failed to update product: ${response.status} - ${errorText}`);
+      throw new Error(`Failed to update product: ${response.status}`);
     }
-
     const data = await response.json();
     console.log("Product updated:", data);
 
@@ -694,13 +680,15 @@ async function updateProduct(productId, productData) {
 
     // Re-render the product table
     renderProducts();
+    resetProductForm();
 
     return data;
   } catch (error) {
     console.error("Error updating product:", error);
-    throw error; // Re-throw to allow calling code to handle it
+    return null;
   }
 }
+
 
 async function fetchProduct(productId) {
   try {
@@ -742,12 +730,36 @@ async function updateProductFlavors(productId, flavorsArray) {
   }
 }
 
+// Form reset event fires (triggered by the Clear button), we call resetProductForm.
+document.getElementById("adminProductForm").addEventListener("reset", function(e) {
+  setTimeout(resetProductForm, 0);
+});
 
 function resetProductForm() {
-  document.getElementById("adminProductForm").reset();
+  // Clear all input fields in the product form.
+  document.getElementById("adminProductSKU").value = "";
+  document.getElementById("adminProductName").value = "";
+  document.getElementById("adminProductDescription").value = "";
+  document.getElementById("adminProductPrice").value = "";
+  document.getElementById("adminProductQuantity").value = "";
+  document.getElementById("adminProductImage").value = ""; // Clear the file input.
+  // Reset the image preview to a placeholder or empty string.
+  document.getElementById("adminImagePreview").src = "https://via.placeholder.com/80"; // Placeholder image URL
+
   // Reset the hidden product id field.
-  document.getElementById("adminProductIndex").value = "";
-  // Reset selected flavors.
+  document.getElementById("adminProductIndex").value = "-1";
+  
+  // Reset the form header to its default text.
+  document.getElementById("adminFormTitle").innerText = "Add New Product";
+  
+  // Reset the submit button text back to "Add".
+  document.getElementById("adminSubmitButton").innerText = "Add";
+  
+  // Clear the image preview by setting its src to an empty string
+  // Or set to a placeholder image URL if desired.
+  document.getElementById("adminImagePreview").src = "";
+  
+  // Clear any selected flavors and update the dropdown/button text accordingly.
   selectedFlavors = [];
   updateFlavorsButtonText();
 }
@@ -790,7 +802,7 @@ async function editProduct(productId) {
 
     // After rendering, looping through the checkboxes and mark the ones that are selected.
     document.querySelectorAll(".flavor-checkbox").forEach(chk => {
-      chk.checked = selectedFlavors.includes(chk.value);
+      chk.checked = selectedFlavors.includes(parseInt(chk.value, 10));
       console.log("Checkbox value:", chk.value, "Checked:", chk.checked);
     });
    
@@ -804,8 +816,8 @@ async function editProduct(productId) {
     console.error("Error editing product:", error);
   }
 }
- console.log("Product Data being sent:", productData);
-function collectProductFormData() { //TODO
+
+function collectProductFormData() {
   // Get the basic product fields from the form.
   const sku = document.getElementById("adminProductSKU").value;
   const name = document.getElementById("adminProductName").value;
@@ -831,55 +843,27 @@ function collectProductFormData() { //TODO
     name: name,
     description: description,
     price: price,
-    inventoryCount: inventory,
-    imageURL: imageurl,
+    inventory: inventory,
+    imageurl: imageurl,
     flavors: flavors
   };
 }
 
 // When the form is submitted, collect and log the JSON payload.
-document.getElementById("adminSubmitButton").addEventListener("click", async (e) => {
-  e.preventDefault();
+document.getElementById("adminSubmitButton").addEventListener("click", (e) => {
+  e.preventDefault(); 
+  const productData = collectProductFormData();
+  const productId = document.getElementById("adminProductIndex").value;
   
-  try {
-    const productData = collectProductFormData();
-    const productId = document.getElementById("adminProductIndex").value;
-
-    // Validate required fields
-    if (!productData.name || !productData.price) {
-      throw new Error("Product name and price are required");
-    }
-
-    // Determine if we're creating or updating
-    const isNewProduct = !productId || productId.trim() === "" || productId === "-1";
-
-    if (isNewProduct) {
-      // CREATE new product
-      const newProduct = await createProduct(productData);
-      
-      // Handle image upload if needed
-      const fileInput = document.getElementById("adminProductImage");
-      if (fileInput.files[0]) {
-        await uploadProductImage(newProduct.id, fileInput.files[0]);
-      }
-      
-      Swal.fire("Success!", "Product created successfully!", "success");
-    } else {
-      // UPDATE existing product
-      await updateProduct(productId, productData);
-      Swal.fire("Success!", "Product updated successfully!", "success");
-    }
-
-    // Reset form and refresh list
-    resetProductForm();
-    products = await loadProductsFromAPI();
-    renderProducts();
-
-  } catch (error) {
-    console.error("Product operation failed:", error);
-    Swal.fire("Error!", error.message || "Operation failed", "error");
+  // Ensure productId is defined and valid before updating :/
+  if (!productId) {
+    console.error("Product ID is missing.");
+    return;
   }
+  
+  updateProduct(productId, productData);
 });
+
 
 /* To fetch product flavors. */
 async function fetchProductFlavors(productId) {
