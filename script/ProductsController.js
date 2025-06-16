@@ -10,7 +10,8 @@ function addItemCard(item) {
   columnWrapper.appendChild(productCard);
 
   const productCardImage = document.createElement("img");
-  productCardImage.src = item.image;
+  productCardImage.src = item.imageURL;
+  console.log("Image URL:", item.imageURL);
   productCardImage.alt = item.name;
   productCardImage.className = "card-img-top";
   productCard.appendChild(productCardImage);
@@ -152,7 +153,7 @@ function addToCart(product, quantity) {
       id: product.id,
       name: product.name,
       price: product.price,
-      image: product.image,
+      image: product.imageURL,
       quantity: quantity
     });
   }
