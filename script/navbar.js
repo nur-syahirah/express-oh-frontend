@@ -106,5 +106,5 @@ function updateCartCount() {
 
 // Initialize cart counter on page load
 // Clear all cart data
-localStorage.removeItem('cart');
+// localStorage.removeItem('cart');
 updateCartCount();
