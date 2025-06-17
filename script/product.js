@@ -26,73 +26,73 @@ const productData = [
         price: 55.00,
         quantity: 200,
         image: "./images/cuphead.png",
-        flavors: ["Chocolate", "Caramel"]
+        flavors: ["Vanilla", "Caramel"]
     },
   
     {
         id: 4,
         name: "Product 4",
-        description: "Description of product 3",
-        price: 55.00,
+        description: "Description of product 4",
+        price: 20.00,
         quantity: 200,
         image: "./images/cuphead.png",
-        flavors: ["Chocolate", "Caramel"]
+        flavors: ["Chocolate", "Vanilla"]
     },
   
     {
         id: 5,
         name: "Product 5",
-        description: "Description of product 3",
-        price: 55.00,
+        description: "Description of product 5",
+        price: 30.00,
         quantity: 200,
         image: "./images/cuphead.png",
-        flavors: ["Chocolate", "Caramel"]
+        flavors: ["Hazelnut", "Caramel"]
     },
   
     {
         id: 6,
         name: "Product 6",
-        description: "Description of product 3",
-        price: 55.00,
+        description: "Description of product 6",
+        price: 40.00,
         quantity: 200,
         image: "./images/cuphead.png",
-        flavors: ["Chocolate", "Caramel"]
+        flavors: ["Chocolate", "Hazelnut"]
     },
     {
         id: 7,
         name: "Product 7",
-        description: "Description of product 3",
-        price: 55.00,
+        description: "Description of product 7",
+        price: 50.00,
         quantity: 200,
         image: "./images/cuphead.png",
-        flavors: ["Chocolate", "Caramel"]
+        flavors: ["Hazelnut", "Vanilla"]
     },
     {
         id: 8,
         name: "Product 8",
-        description: "Description of product 3",
-        price: 55.00,
+        description: "Description of product 8",
+        price: 60.00,
         quantity: 200,
         image: "./images/cuphead.png",
-        flavors: ["Chocolate", "Caramel"]
+        flavors: ["Chocolate", "Caramel","Hazelnut"]
     },
     {
         id: 9,
         name: "Product 9",
-        description: "Description of product 3",
-        price: 55.00,
+        description: "Description of product 9",
+        price: 70.00,
         quantity: 200,
         image: "./images/cuphead.png",
-        flavors: ["Chocolate", "Caramel"]
+        flavors: ["Vanilla", "Caramel","Hazelnut"]
     },
     {
         id: 10,
         name: "Product 10",
-        description: "Description of product 3",
-        price: 55.00,
+        description: "Description of product 10",
+        price: 80.00,
         quantity: 200,
         image: "./images/cuphead.png",
-        flavors: ["Chocolate", "Caramel"]
+        flavors: ["Chocolate", "Caramel","Vanilla"]
     },
     {
         id: 15,
