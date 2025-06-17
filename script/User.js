@@ -1,11 +1,18 @@
-// 🔧 Placeholder for API call
+import { capitalizeWords, maskCardNumber } from './utils.js';
+
 async function fetchUserData() {
   return {
-    firstName: "john",
-    middleName: "michael", // Optional
-    lastName: "doe",
+    firstName: "John",
+    middleName: "M",
+    lastName: "Doe",
     email: "john.doe@example.com",
     address: "123 Roast Lane<br>Brewtown, BT 45678",
+    cardDetails: {
+      cardholderName: "John M Doe",
+      cardNumber: "4111111111111111",
+      expiryDate: "12/26",
+      cvv: "123"
+    },
     orders: [
       {
         number: "#10234",
@@ -31,18 +38,6 @@ async function fetchUserData() {
   };
 }
 
-// Capitalizes a string (first letter uppercase, rest lowercase)
-function capitalize(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-}
-
-// Returns full name string: First [Middle] Last
-function formatFullName(user) {
-  const parts = [user.firstName, user.middleName, user.lastName].filter(Boolean);
-  return parts.map(capitalize).join(" ");
-}
-
-// Converts order status to badge text and style
 function mapStatus(status) {
   const statusMap = {
     delivered: { text: "Delivered", class: "bg-success" },
@@ -53,23 +48,34 @@ function mapStatus(status) {
   return statusMap[status] || { text: "Unknown", class: "bg-dark" };
 }
 
-// Renders the profile and order info
 function renderAccountPage(user) {
   const main = document.getElementById("main");
+  const fullName = [user.firstName, user.middleName, user.lastName]
+    .filter(n => n && n.trim() !== "")
+    .join(" ");
+
+  const cardNumberMasked = user.cardDetails?.cardNumber
+    ? maskCardNumber(user.cardDetails.cardNumber)
+    : "Not provided";
+
+  const cardholderNameDisplay = user.cardDetails?.cardholderName || "Not provided";
+  const expiryDateDisplay = user.cardDetails?.expiryDate || "Not provided";
+  const cvvDisplay = user.cardDetails?.cvv ? "•••" : "Not provided";
+
   main.innerHTML = `
     <div class="bg-white p-4 rounded shadow-sm w-100">
       <h2 class="mb-4">Your Account</h2>
       <div class="row">
         <div class="col-md-6 mb-3">
-          <h5 class="fw-semibold d-flex justify-content-between align-items-center">
-            Profile Info
-            <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal">
-              <i class="bi bi-pencil"></i> Edit
-            </button>
-          </h5>
-          <p><strong>Name:</strong> ${formatFullName(user)}</p>
+          <h5 class="fw-semibold">Profile Info</h5>
+          <p><strong>Name:</strong> ${fullName}</p>
           <p><strong>Email:</strong> ${user.email}</p>
           <p><strong>Address:</strong><br>${user.address}</p>
+          <p><strong>Cardholder Name:</strong> ${cardholderNameDisplay}</p>
+          <p><strong>Card Number:</strong> ${cardNumberMasked}</p>
+          <p><strong>Expiry Date:</strong> ${expiryDateDisplay}</p>
+          <p><strong>CVV:</strong> ${cvvDisplay}</p>
+          <button id="editProfileBtn" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#editProfileModal">Edit Profile</button>
         </div>
       </div>
 
@@ -94,7 +100,11 @@ function renderAccountPage(user) {
                 <tr>
                   <td>${order.number}</td>
                   <td>${order.date}</td>
-                  <td><ul class="mb-0">${order.items.map(item => `<li>${item}</li>`).join("")}</ul></td>
+                  <td>
+                    <ul class="mb-0">
+                      ${order.items.map(item => `<li>${item}</li>`).join("")}
+                    </ul>
+                  </td>
                   <td>${order.total}</td>
                   <td><span class="badge ${statusInfo.class}">${statusInfo.text}</span></td>
                 </tr>
@@ -104,75 +114,121 @@ function renderAccountPage(user) {
         </table>
       </div>
     </div>
-  `;
-  createEditProfileModal(user);
-}
 
-// Creates the edit profile modal form
-function createEditProfileModal(user) {
-  const modal = document.createElement("div");
-  modal.innerHTML = `
+    <!-- Edit Profile Modal -->
     <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
+      <div class="modal-dialog modal-dialog-scrollable modal-lg">
         <div class="modal-content">
-          <form id="editProfileForm">
-            <div class="modal-header">
-              <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <div class="mb-3">
-                <label for="editFirstName" class="form-label">First Name</label>
-                <input type="text" class="form-control" id="editFirstName" value="${capitalize(user.firstName)}" required />
+          <div class="modal-header">
+            <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="editProfileForm">
+              <div class="row g-3">
+                <div class="col-md-4">
+                  <label for="firstName" class="form-label">First Name *</label>
+                  <input type="text" class="form-control text-capitalize" id="firstName" name="firstName" required value="${user.firstName}">
+                </div>
+                <div class="col-md-4">
+                  <label for="middleName" class="form-label">Middle Name (Optional)</label>
+                  <input type="text" class="form-control text-capitalize" id="middleName" name="middleName" value="${user.middleName || ''}">
+                </div>
+                <div class="col-md-4">
+                  <label for="lastName" class="form-label">Last Name (Optional)</label>
+                  <input type="text" class="form-control text-capitalize" id="lastName" name="lastName" value="${user.lastName || ''}">
+                </div>
+                <div class="col-12">
+                  <label for="email" class="form-label">Email *</label>
+                  <input type="email" class="form-control" id="email" name="email" required value="${user.email}">
+                </div>
+                <div class="col-12">
+                  <label for="address" class="form-label">Address *</label>
+                  <textarea class="form-control" id="address" name="address" rows="3" required>${user.address.replace(/<br>/g, "\n")}</textarea>
+                </div>
               </div>
-              <div class="mb-3">
-                <label for="editMiddleName" class="form-label">Middle Name <small class="text-muted">(Optional)</small></label>
-                <input type="text" class="form-control" id="editMiddleName" value="${user.middleName ? capitalize(user.middleName) : ''}" />
+
+              <hr>
+
+              <h6>Card Details (Optional)</h6>
+              <div class="row g-3">
+                <div class="col-md-3">
+                  <label for="cardholderName" class="form-label">Cardholder Name</label>
+                  <input type="text" class="form-control text-capitalize" id="cardholderName" name="cardholderName" value="${user.cardDetails?.cardholderName || ''}">
+                </div>
+                <div class="col-md-3">
+                  <label for="cardNumber" class="form-label">Card Number</label>
+                  <input type="text" class="form-control" id="cardNumber" name="cardNumber" maxlength="19" placeholder="1234 5678 9012 3456" value="${user.cardDetails?.cardNumber || ''}">
+                </div>
+                <div class="col-md-3">
+                  <label for="expiryDate" class="form-label">Expiry Date (MM/YY)</label>
+                  <input type="text" class="form-control" id="expiryDate" name="expiryDate" maxlength="5" placeholder="MM/YY" value="${user.cardDetails?.expiryDate || ''}">
+                </div>
+                <div class="col-md-3">
+                  <label for="cvv" class="form-label">CVV</label>
+                  <input type="text" class="form-control" id="cvv" name="cvv" maxlength="4" placeholder="123" value="${user.cardDetails?.cvv || ''}">
+                </div>
               </div>
-              <div class="mb-3">
-                <label for="editLastName" class="form-label">Last Name</label>
-                <input type="text" class="form-control" id="editLastName" value="${capitalize(user.lastName)}" required />
-              </div>
-              <div class="mb-3">
-                <label for="editEmail" class="form-label">Email</label>
-                <input type="email" class="form-control" id="editEmail" value="${user.email}" required />
-              </div>
-              <div class="mb-3">
-                <label for="editAddress" class="form-label">Address</label>
-                <textarea class="form-control" id="editAddress" rows="3">${user.address.replace(/<br>/g, "\n")}</textarea>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="submit" class="btn btn-primary">Save Changes</button>
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            </div>
-          </form>
+
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" form="editProfileForm" class="btn btn-primary">Save Changes</button>
+          </div>
         </div>
       </div>
     </div>
   `;
-  document.body.appendChild(modal);
 
-  document.getElementById("editProfileForm").addEventListener("submit", function (e) {
-    e.preventDefault();
+  // Form submission handler
+  const editProfileForm = document.getElementById("editProfileForm");
+  editProfileForm.addEventListener("submit", event => {
+    event.preventDefault();
+    const formData = new FormData(editProfileForm);
+
+    const newCardName = formData.get("cardholderName").trim();
+    const newCardNum = formData.get("cardNumber").replace(/\D/g, "");
+    const newExp = formData.get("expiryDate").trim();
+    const newCVV = formData.get("cvv").trim();
+
+    const allFilled = newCardName && newCardNum && newExp && newCVV;
+    const noneFilled = !newCardName && !newCardNum && !newExp && !newCVV;
+
+    // ✅ Validate CVV (must be 3 or 4 digits if filled)
+    if (newCVV && !/^\d{3,4}$/.test(newCVV)) {
+      alert("CVV must be 3 or 4 digits.");
+      return;
+    }
+
+    let updatedCard = null;
+    if (allFilled) {
+      updatedCard = {
+        cardholderName: capitalizeWords(newCardName),
+        cardNumber: newCardNum,
+        expiryDate: newExp,
+        cvv: newCVV
+      };
+    } else if (!noneFilled) {
+      updatedCard = user.cardDetails || null;
+    }
 
     const updatedUser = {
-      firstName: capitalize(document.getElementById("editFirstName").value.trim()),
-      middleName: capitalize(document.getElementById("editMiddleName").value.trim()) || undefined,
-      lastName: capitalize(document.getElementById("editLastName").value.trim()),
-      email: document.getElementById("editEmail").value.trim(),
-      address: document.getElementById("editAddress").value.replace(/\n/g, "<br>"),
+      firstName: capitalizeWords(formData.get("firstName").trim()),
+      middleName: capitalizeWords(formData.get("middleName").trim() || ""),
+      lastName: capitalizeWords(formData.get("lastName").trim() || ""),
+      email: formData.get("email").trim(),
+      address: formData.get("address").trim().replace(/\n/g, "<br>"),
+      cardDetails: updatedCard,
       orders: user.orders
     };
-
-    const modalInstance = bootstrap.Modal.getInstance(document.getElementById("editProfileModal"));
-    modalInstance.hide();
-
+    const modalElement = document.getElementById("editProfileModal");
+    const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+    modal.hide();
     renderAccountPage(updatedUser);
   });
 }
 
-// 🚀 Initialize
 document.addEventListener("DOMContentLoaded", async () => {
   const userData = await fetchUserData();
   renderAccountPage(userData);
