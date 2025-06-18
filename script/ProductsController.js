@@ -10,7 +10,7 @@ function addItemCard(item) {
   columnWrapper.appendChild(productCard);
 
   const productCardImage = document.createElement("img");
-  productCardImage.src = item.imageURL;
+  productCardImage.src = 'http://localhost:8080' + item.imageURL;
   console.log("Image URL:", item.imageURL);
   productCardImage.alt = item.name;
   productCardImage.className = "card-img-top";
