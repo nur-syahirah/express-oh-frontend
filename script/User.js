@@ -8,22 +8,41 @@ async function fetchUserData() {
 
     if (token) {
       const payload = parseJwt(token);
-      console.log("JWT Payload:", payload); // optional: inspect the token content
+      console.log("JWT Payload:", payload);
       userEmail = payload?.sub || null;
     }
 
-    const response = await fetch('http://localhost:8080/api/user/profile', {
+    // Fetch user profile (without full card info)
+    const profileResponse = await fetch('http://localhost:8080/api/user/profile', {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       }
     });
 
-    if (!response.ok) {
+    if (!profileResponse.ok) {
       throw new Error('Failed to fetch profile from API');
     }
 
-    const profile = await response.json();
+    const profile = await profileResponse.json();
+
+    // Fetch masked card info from new endpoint
+    const cardResponse = await fetch('http://localhost:8080/api/user/profile/cardinfo', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    let cardDetails = null;
+    if (cardResponse.ok) {
+      const cardData = await cardResponse.json();
+      cardDetails = {
+        cardholderName: cardData.cardName || "Not available",
+        cardNumber: cardData.maskedCardNumber || "Not available",
+        expiryDate: cardData.expiryDate || "Not available",  // if expiryDate is included in response
+        cvv: "•••" // Never expose CVV
+      };
+    }
 
     return {
       firstName: profile.firstName || "Not available",
@@ -32,15 +51,8 @@ async function fetchUserData() {
       email: profile.email || userEmail || "Not available",
       address: profile.address || "Not available",
       phone: profile.phone || "Not available",
-      cardDetails: profile.cardDetails
-        ? {
-            cardholderName: profile.cardDetails.cardholderName || "Not available",
-            cardNumber: profile.cardDetails.cardNumber || "Not available",
-            expiryDate: profile.cardDetails.expiryDate || "Not available",
-            cvv: profile.cardDetails.cvv || "Not available"
-          }
-        : null,
-      orders: [
+      cardDetails,
+      orders: profile.orders || [
         {
           number: "#10234",
           date: "2025-06-01",
@@ -66,6 +78,7 @@ async function fetchUserData() {
 
   } catch (error) {
     console.error(error);
+    // fallback user data with orders
     return {
       firstName: "Not available",
       middleName: "",
@@ -100,7 +113,6 @@ async function fetchUserData() {
   }
 }
 
-
 function mapStatus(status) {
   const statusMap = {
     delivered: { text: "Delivered", class: "bg-success" },
@@ -119,13 +131,11 @@ function renderAccountPage(user) {
     .filter(n => n && n.trim() !== "")
     .join(" ");
 
+  const cardholderNameDisplay = user.cardDetails?.cardholderName || "Not provided";
   const cardNumberMasked = user.cardDetails?.cardNumber
     ? maskCardNumber(user.cardDetails.cardNumber)
     : "Not provided";
-
-  const cardholderNameDisplay = user.cardDetails?.cardholderName || "Not provided";
   const expiryDateDisplay = user.cardDetails?.expiryDate || "Not provided";
-  const cvvDisplay = user.cardDetails?.cvv ? "•••" : "Not provided";
 
   main.innerHTML = `
     <div class="bg-white p-4 rounded shadow-sm w-100">
@@ -140,7 +150,7 @@ function renderAccountPage(user) {
           <p><strong>Cardholder Name:</strong> ${cardholderNameDisplay}</p>
           <p><strong>Card Number:</strong> ${cardNumberMasked}</p>
           <p><strong>Expiry Date:</strong> ${expiryDateDisplay}</p>
-          <p><strong>CVV:</strong> ${cvvDisplay}</p>
+          <!-- CVV not displayed -->
           <button id="editProfileBtn" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#editProfileModal">Edit Profile</button>
         </div>
       </div>
