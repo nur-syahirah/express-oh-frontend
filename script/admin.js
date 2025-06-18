@@ -369,6 +369,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+
 window.addEventListener("load", async function () {
 
   // Load products from backend API
@@ -547,6 +548,73 @@ async function deleteProduct(productId) {
 --------------------------------------*/
 // List of products stored locally needs to be fetched initially from your API.
 let products = [];
+
+// TODO - WHETHER WE NEED TO REMOVE
+// document.getElementById("adminProductForm").addEventListener("submit", async function (e) {
+//   e.preventDefault();
+
+//   try {
+//     const productData = collectProductFormData();
+//     const productId = document.getElementById("adminProductIndex").value;
+
+//     // Validate required fields
+//     if (!productData.name || !productData.price) {
+//       throw new Error("Product name and price are required");
+//     }
+//     let formData = new FormData();
+//     formData.append("product", JSON.stringify(productData));
+//     console.log("form data is:" , formData);
+    
+//     const fileInput = document.getElementById("adminProductImage");
+    
+//     if (fileInput.files[0]) {
+//       formData.append("image", fileInput.files[0]);
+//     }
+    
+//     let result;
+//     if (productId && productId !== "") {
+//       alert("I am edited");
+//       result = await updateProduct(productId, productData);
+//     } else {
+//       alert("I'm being created");
+//       result = await createProduct(formData);
+//     }
+
+    // Handle image upload if needed
+    // const fileInput = document.getElementById("adminProductImage");
+    
+    // if (fileInput.files[0]) {
+    //   await uploadProductImage(result.id, fileInput.files[0]);
+    //   // Update product with image URL if needed
+    //   await updateProduct(result.id, { imageUrl: `/uploads/products/${fileInput.files[0].name}` });
+    // }
+
+//     Swal.fire("Success!", `Product ${productId ? "updated" : "created"} successfully!`, "success");
+//     resetProductForm();
+//     loadProducts(); // Refresh product list if you have one
+    
+//   } catch (error) {
+//     console.error("Form submission error:", error);
+//     Swal.fire({
+//       title: "Error!",
+//       text: error.message || "Failed to process product",
+//       icon: "error"
+//     });
+//   }
+// });
+
+// Function to collect product data
+// function collectProductFormData() {
+//   return {
+//     sku: document.getElementById("adminProductSKU").value.trim(),
+//     name: document.getElementById("adminProductName").value.trim(),
+//     description: document.getElementById("adminProductDescription").value.trim(),
+//     price: parseFloat(document.getElementById("adminProductPrice").value.trim()),
+//     inventory: parseInt(document.getElementById("adminProductQuantity").value.trim()), // Changed from inventoryCount
+//     imageUrl: "", // Initialize empty, will be updated after image upload
+//     flavors: selectedFlavors.map(flavor => ({ id: flavor.id })) // Send just flavor IDs
+//   };
+// }
 
 // Function to reset the product form
 function resetProductForm() {
@@ -768,7 +836,7 @@ async function editProduct(productId) {
     console.error("Error editing product:", error);
   }
 }
- console.log("Product Data being sent:", productData);
+ console.log("Product Data being sent:" , productData);
 function collectProductFormData() { //TODO
   // Get the basic product fields from the form.
   const sku = document.getElementById("adminProductSKU").value;
