@@ -9,13 +9,13 @@ async function fetchUserData() {
     if (token) {
       const payload = parseJwt(token);
       console.log("JWT Payload:", payload); // optional: inspect the token content
-      userEmail = payload?.sub || null;     // updated to use 'sub'
+      userEmail = payload?.sub || null;
     }
 
     const response = await fetch('http://localhost:8080/api/user/profile', {
       headers: {
         'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'  // optional, safe to include
+        'Content-Type': 'application/json'
       }
     });
 
@@ -26,18 +26,21 @@ async function fetchUserData() {
     const profile = await response.json();
 
     return {
-      firstName: profile.firstName || "John",
-      middleName: "M",
-      lastName: profile.lastName || "Doe",
-      email: profile.email || userEmail || "john.doe@example.com",
-      address: profile.address || "123 Roast Lane<br>Brewtown, BT 45678",
-      cardDetails: {
-        cardholderName: profile.cardName || "John M Doe",
-        cardNumber: profile.cardNumber || "4111111111111111",
-        expiryDate: profile.cardExpiry || "12/26",
-        cvv: profile.cardCvv || "123"
-      },
-      orders: profile.orders || [
+      firstName: profile.firstName || "Not available",
+      middleName: profile.middleName || "",
+      lastName: profile.lastName || "",
+      email: profile.email || userEmail || "Not available",
+      address: profile.address || "Not available",
+      phone: profile.phone || "Not available",
+      cardDetails: profile.cardDetails
+        ? {
+            cardholderName: profile.cardDetails.cardholderName || "Not available",
+            cardNumber: profile.cardDetails.cardNumber || "Not available",
+            expiryDate: profile.cardDetails.expiryDate || "Not available",
+            cvv: profile.cardDetails.cvv || "Not available"
+          }
+        : null,
+      orders: [
         {
           number: "#10234",
           date: "2025-06-01",
@@ -64,17 +67,13 @@ async function fetchUserData() {
   } catch (error) {
     console.error(error);
     return {
-      firstName: "John",
-      middleName: "M",
-      lastName: "Doe",
-      email: "john.doe@example.com",
-      address: "123 Roast Lane<br>Brewtown, BT 45678",
-      cardDetails: {
-        cardholderName: "John M Doe",
-        cardNumber: "4111111111111111",
-        expiryDate: "12/26",
-        cvv: "123"
-      },
+      firstName: "Not available",
+      middleName: "",
+      lastName: "",
+      email: "Not available",
+      address: "Not available",
+      phone: "Not available",
+      cardDetails: null,
       orders: [
         {
           number: "#10234",
@@ -102,7 +101,6 @@ async function fetchUserData() {
 }
 
 
-
 function mapStatus(status) {
   const statusMap = {
     delivered: { text: "Delivered", class: "bg-success" },
@@ -112,6 +110,8 @@ function mapStatus(status) {
   };
   return statusMap[status] || { text: "Unknown", class: "bg-dark" };
 }
+
+const BACKEND_URL = "http://localhost:8080"; // Change this to match your backend port
 
 function renderAccountPage(user) {
   const main = document.getElementById("main");
@@ -205,18 +205,8 @@ function renderAccountPage(user) {
                   <input type="text" class="form-control text-capitalize" id="lastName" name="lastName" value="${user.lastName || ''}">
                 </div>
                 <div class="col-md-6">
-                  <label for="phone" class="form-label">Phone Number *</label>
-                  <input 
-                    type="tel" 
-                    class="form-control" 
-                    id="phone" 
-                    name="phone" 
-                    required 
-                    pattern="\\d{8}" 
-                    title="Enter an 8-digit phone number" 
-                    value="${user.phone || ''}" 
-                    placeholder="e.g. 91234567"
-                  >
+                  <label for="phone" class="form-label">Phone (local, no area code)</label>
+                  <input type="text" class="form-control" id="phone" name="phone" maxlength="8" placeholder="e.g. 91234567" value="${user.phone || ''}">
                 </div>
                 <div class="col-md-6">
                   <label class="form-label">Email</label>
@@ -249,7 +239,6 @@ function renderAccountPage(user) {
                   <input type="text" class="form-control" id="cvv" name="cvv" maxlength="4" placeholder="123" value="${user.cardDetails?.cvv || ''}">
                 </div>
               </div>
-
             </form>
           </div>
           <div class="modal-footer">
@@ -261,9 +250,8 @@ function renderAccountPage(user) {
     </div>
   `;
 
-  // Form submission handler
   const editProfileForm = document.getElementById("editProfileForm");
-  editProfileForm.addEventListener("submit", event => {
+  editProfileForm.addEventListener("submit", async event => {
     event.preventDefault();
     const formData = new FormData(editProfileForm);
 
@@ -271,52 +259,65 @@ function renderAccountPage(user) {
     const newCardNum = formData.get("cardNumber").replace(/\D/g, "");
     const newExp = formData.get("expiryDate").trim();
     const newCVV = formData.get("cvv").trim();
-    const newPhone = formData.get("phone").trim();
 
-    const allFilled = newCardName && newCardNum && newExp && newCVV;
-    const noneFilled = !newCardName && !newCardNum && !newExp && !newCVV;
-
-    // Validate CVV (must be 3 or 4 digits if filled)
+    // Validate CVV format if present
     if (newCVV && !/^\d{3,4}$/.test(newCVV)) {
-      alert("CVV must be 3 or 4 digits.");
+      console.error("CVV must be 3 or 4 digits.");
       return;
     }
 
-    // Validate phone (8 digits local phone)
-    if (!/^\d{8}$/.test(newPhone)) {
-      alert("Please enter a valid 8-digit phone number.");
-      return;
-    }
-
-    let updatedCard = null;
-    if (allFilled) {
-      updatedCard = {
-        cardholderName: capitalizeWords(newCardName),
-        cardNumber: newCardNum,
-        expiryDate: newExp,
-        cvv: newCVV
-      };
-    } else if (!noneFilled) {
-      updatedCard = user.cardDetails || null;
-    }
+    // Determine if any card details should be sent
+    const allCardFieldsEmpty = [newCardName, newCardNum, newExp, newCVV].every(value => value === "");
 
     const updatedUser = {
       firstName: capitalizeWords(formData.get("firstName").trim()),
       middleName: capitalizeWords(formData.get("middleName").trim() || ""),
       lastName: capitalizeWords(formData.get("lastName").trim() || ""),
-      phone: newPhone,
+      phone: formData.get("phone").trim(),
       address: formData.get("address").trim().replace(/\n/g, "<br>"),
-      cardDetails: updatedCard,
-      orders: user.orders
+      orders: user.orders // keep this if your frontend UI needs it after response
     };
 
-    const modalElement = document.getElementById("editProfileModal");
-    const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
-    modal.hide();
-    renderAccountPage(updatedUser);
-  });
-}
+    // Only include card fields if something was entered
+    if (!allCardFieldsEmpty) {
+      updatedUser.cardName = newCardName;
+      updatedUser.cardNumber = newCardNum;
+      updatedUser.cardExpiry = newExp;
+      updatedUser.cardCvv = newCVV;
+    }
 
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/user/profile`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("usertoken") || ""}`
+        },
+        body: JSON.stringify(updatedUser)
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to update profile: ${errorText}`);
+      }
+
+      const savedProfile = await response.json();
+      console.log("Saved profile response:", savedProfile);
+
+      const modalElement = document.getElementById("editProfileModal");
+      const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+      modal.hide();
+
+      renderAccountPage({
+        ...user,
+        ...savedProfile
+      });
+    } catch (error) {
+      console.error(error.message);
+    }
+  });
+
+}
 
 document.addEventListener("DOMContentLoaded", async () => {
   const userData = await fetchUserData();
