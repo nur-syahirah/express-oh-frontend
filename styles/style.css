@@ -938,14 +938,19 @@ h5 {
   text-align: center;
   vertical-align: middle;
   min-width: auto;
+  border: #8f8d8d 1px solid;
 }
 
 #adminProductList th {
   font-size: 1.4em;
+  text-align: center;
+
 }
 
 #adminProductList td{
   font-size: 1.2em;
+  text-align: center;
+
 }
 
 /* Column widths */
@@ -1142,7 +1147,7 @@ h5 {
 .responsive-table td {
   position: relative;
   padding-left: 50%;
-  text-align: right;
+  text-align: center;
   border: none;
   border-bottom: 1px solid #eee;
 }

@@ -1,139 +1,208 @@
 /*--------------------------------------------------------------------------------
-  LOCAL STORAGE HANDLING (Admin)
-  - For flavors and products; product form image preview remains empty on reload.
+  API COMMUNICATION SETUP
 --------------------------------------------------------------------------------*/
-/*------------------
-  SALES ORDERS CHART
---------------------*/
-// Define the sales data for the chart
-const salesData = {
-  labels: ["January", "February", "March", "April", "May", "June"], // X-axis labels (months)
-  orders: [25, 50, 75, 300, 189],                                   // Corresponding order counts for each month
-};
+const API_BASE_URL = 'http://localhost:8080/api/admin';
+const API_IMAGE_URL = 'http://localhost:8080';
+const PRODUCTS_ENDPOINT = `${API_BASE_URL}/products`;
+const IMG_PLACEHOLDER = "../images/cuphead.png";
+const token = localStorage.getItem("usertoken");
 
-// Get the canvas context for rendering the chart
-const adminCtx = document.getElementById("adminSalesChart").getContext("2d");
 
-// Create a new Chart.js line chart with the sales data
-const salesChart = new Chart(adminCtx, {
-  type: "line",                                       // Specifies the chart type as a line chart
-  data: {
-    labels: salesData.labels,                         // Assign X-axis labels
-    datasets: [
-      {
-        label: "Orders",                              // Name of the dataset that will be displayed in the legend
-        data: salesData.orders,                       // Y-axis data points (order count)
-        borderColor: "#808080",                       // Line color (grey theme)
-        backgroundColor: "rgba(128,128,128,0.1)",   // Color fill for area under the line
-        fill: true,                                   // Enables area fill beneath the line
-        tension: 0.4,                                 // Adds slight curvature to the line for smoother appearance
+// Helper function for API requests
+async function makeApiRequest(url, method = 'GET', body = null, headers = {}) {
+  const defaultHeaders = {
+    'Content-Type': 'application/json',
+    'Authorization': token ? `Bearer ${token}` : '',
+  };
+
+  const config = {
+    method,
+    headers: { ...defaultHeaders, ...headers },
+  };
+
+  if (body) {
+    config.body = JSON.stringify(body);
+  }
+
+  try {
+    const response = await fetch(url, config);
+    if (!response.ok) {
+      throw new Error(`API request failed: ${response.status}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('API Error:', error);
+    throw error;
+  }
+
+}
+
+/*-----------------
+  FLAVORS HANDLING (Database Integration)
+------------------*/
+// Global arrays for flavor options and selected flavors
+let flavorOptions = []; // Will be fetched from the database (each flavor is an object with { id, name })
+let selectedFlavors = []; // Always start with no selected flavors!
+
+// Function to fetch flavor options from the database
+async function loadFlavorOptionsFromAPI() {
+  try {
+    const response = await fetch('http://localhost:8080/api/admin/flavor', {
+      method: "GET",
+      headers: {
+         'Content-Type': 'application/json',
+         'Authorization': token ? `Bearer ${token}` : ''
+      }
+  });
+    // Expect an array of flavor objects, e.g., [{ id: 1, name: "Vanilla" }, { id: 2, name: "Chocolate" }, ...]
+    flavorOptions = await response.json();
+  } catch (error) {
+    console.error("Error fetching flavors from DB:", error);
+    // Optional: Provide default flavors if the API call fails
+    flavorOptions = [
+      { id: 1, name: "Vanilla" },
+      { id: 2, name: "Chocolate" },
+      { id: 3, name: "Caramel" },
+      { id: 4, name: "Hazelnut" }
+    ];
+  }
+}
+
+document.getElementById("adminProductImage").addEventListener("change", function(e) {
+  
+  const imageFile = e.target.files[0];
+  
+  // Reference: https://www.shecodes.io/athena/368129-how-to-upload-and-preview-an-image-in-html-using-javascript
+  // Create a FileReader object
+  const reader = new FileReader();
+
+  // Set up the reader's onload event handler
+  reader.onload = function(e) {
+    // Get the image data URL
+    const imageDataUrl = e.target.result;
+
+    // Display the uploaded image
+    const imagePreview = document.getElementById("adminImagePreview");
+    imagePreview.src = imageDataUrl;
+  };
+
+  // Read the selected file as Data URL
+  reader.readAsDataURL(imageFile);
+});
+
+// Function to add a new flavor into the database
+async function addFlavorToDatabase(newFlavorName) {
+  try {
+
+    // Prepare the payload as an array since your controller expects a List<Flavor>
+    const response = await fetch('http://localhost:8080/api/admin/flavor/save', {
+      method: 'POST',
+      headers: {
+        'Authorization': token ? `Bearer ${token}` : '',
+        'Content-Type': 'application/json'
       },
-    ],
-  },
-  options: {
-    responsive: true,                                 // Ensures the chart scales to fit different screen sizes
-    maintainAspectRatio: false,                       // Allows chart resizing without maintaining strict aspect ratio
-    scales: { y: { beginAtZero: true } },             // Ensures Y-axis starts from zero instead of an arbitrary value
-  },
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-  // Select the logout button inside the admin welcome section.
-  const logoutButton = document.querySelector("#adminWelcome .logout-container button");
-
-  // Check if the button exists in the DOM.
-  if (logoutButton) {
-    logoutButton.addEventListener("click", () => {
-      // Remove the token from localStorage.
-      localStorage.removeItem("usertoken");
-      // Redirect to index.html.
-      window.location.href = "index.html";
+      body: JSON.stringify([{ name: newFlavorName }])
     });
+    if (!response.ok) {
+      throw new Error(`Failed to add flavor: ${response.status}`);
+    }
+   
+    const savedFlavors = await response.json();
+
+    const newFlavor = savedFlavors[0];
+    flavorOptions.push(newFlavor);
+
+    selectedFlavors.push(newFlavor.name);
+    return newFlavor;
+  } catch (error) {
+    console.error("Error adding new flavor:", error);
+    return null;
   }
-});
+}
 
-/*----------------
-  UPON PAGE LOAD
------------------*/
-// Initialize the products array.
-window.addEventListener("load", function () {
-
-
-  // Removes any saved image from localStorage to prevent unintended preloaded images
-  document.getElementById("adminImagePreview").src = "";
-  localStorage.removeItem("adminSavedImage");
-
-  // Retrieve stored flavors from localStorage (if available)
-  const storedFlavors = localStorage.getItem("adminFlavorOptions");
-
-  selectedFlavors = []; // Always start with an empty array for selected flavors to ensure a fresh selection
-
-  if (storedFlavors) {
-    // If flavors exist in localStorage, parse them into an array for use
-    flavorOptions = JSON.parse(storedFlavors);
+// Function to remove a flavor from the database
+async function removeFlavorFromDatabase(flavor) {
+  try {
+    console.log("Removing flavor:", flavor);
+    console.log("Flavor ID:", flavor.id);
+    const response = await fetch(`http://localhost:8080/api/admin/flavor/${flavor.id}`, {
+      method: 'DELETE',
+      headers: {
+    'Authorization': token ? `Bearer ${token}` : ''
   }
-  renderFlavorOptions();
-  updateFlavorsButtonText();
-
-  // Check if products exist in local storage.
-  const storedProducts = localStorage.getItem("adminProducts");
-  if (storedProducts) {
-    // If stored products exist, load them into the products array
-    products = JSON.parse(storedProducts);
-  } else {
-    // If no stored products, initialize with productData from product.js
-    products = productData;
-    localStorage.setItem("adminProducts", JSON.stringify(products));
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to delete flavor: ${response.status}`);
+    }
+    // On successful deletion, remove the flavor from our local variables!!!!
+    flavorOptions = flavorOptions.filter(f => f.id !== flavor.id);
+    selectedFlavors = selectedFlavors.filter(name => name !== flavor.name);
+  } catch (error) {
+    console.error("Error deleting flavor:", error);
   }
-  renderProducts();
-});
+}
 
-// Dynamically generate and display a list of flavor options—each represented as a checkbox with a label and a remove button in the dropdown menu
+// Dynamically generate and display a list of flavor options from the database
 function renderFlavorOptions() {
   const container = document.getElementById("adminDropdownFlavorOptions");
-  if (!container) return;
+  if (!container) {
+    console.error("Flavor dropdown container not found.");
+    return;
+  }
 
-  // Clear previous options before injecting new ones to avoid duplicate elements
+  // Clear previous options before injecting new ones to avoid duplicates
   container.innerHTML = "";
 
-  // Loop through the flavorOptions array and dynamically create elements for each flavor
+  // Loop through the flavorOptions array and create elements for each flavor
   flavorOptions.forEach((flavor) => {
-    const li = document.createElement("li"); // Ensure flavors are rendered as <li>
-    li.classList.add("mb-1");                // While adding it into the li, ensure theres a spacing of 0.25rem at the bottom
-    li.dataset.flavor = flavor;              // Storing flavour dynamically in DOM
+    const flavorName = flavor.name;
+    const flavorId = flavor.id;
 
-    // Create a flex container to align elements horizontally in the dropdown menu
+    const li = document.createElement("li");
+    li.classList.add("mb-1");
+    li.dataset.flavorId = flavorId;
+
+    // Create a flex container to align checkbox/label and remove button in one row
     const div = document.createElement("div");
-    div.classList.add("d-flex", "align-items-center", "justify-content-between"); // To display each flavour with it's checkbox and X button in a single row. 
+    div.classList.add("d-flex", "align-items-center", "justify-content-between");
 
-    // Create a wrapper for the checkbox and label
+    // Create a container for the checkbox and its label
     const checkboxContainer = document.createElement("div");
     checkboxContainer.classList.add("form-check");
 
     // Create the checkbox input element
     const checkbox = document.createElement("input");
-    checkbox.classList.add("form-check-input", "flavor-checkbox");  // Add styling classes for consistency
-    checkbox.type = "checkbox";                                     // Set the input type as checkbox
-    checkbox.value = flavor;                                        // Assign the flavor name as the value
-    checkbox.id = `adminChk-${flavor}`;                             // Give the checkbox a unique ID
+    checkbox.classList.add("form-check-input", "flavor-checkbox");
+    checkbox.type = "checkbox";
+
+    // Set the underlying value to the flavorId
+    checkbox.value = flavorId;
+    checkbox.id = `adminChk-${flavorId}`;
 
     // Create a label element for the checkbox
     const label = document.createElement("label");
-    label.classList.add("form-check-label");                       // Style the label
-    label.setAttribute("for", `adminChk-${flavor}`);               // Associating the label with per checkbox
-    label.innerText = flavor;                                      // Set the label text to the flavor name
+    label.classList.add("form-check-label");
 
-    // Append the checkbox and label to the checkbox container
+    // Shows the flavor name to the user, not the id.
+    label.setAttribute("for", `adminChk-${flavorId}`);
+    label.innerText = flavorName;
+
+    // Append the checkbox and label into the checkbox container
     checkboxContainer.appendChild(checkbox);
     checkboxContainer.appendChild(label);
 
-    // Create a remove button allowing users to delete a flavor option
+    // Create a remove button to allow deletion of the flavor option
     const removeBtn = document.createElement("button");
     removeBtn.type = "button";
     removeBtn.classList.add("btn", "btn-sm", "remove-flavor");
-    removeBtn.innerHTML = "&times;";                                  // Display an "×" icon for removal
+    removeBtn.innerHTML = "&times;";
     removeBtn.style.cssText = "margin-left:5px; background: none; border: none; color: #6c757d;";
-    removeBtn.onclick = (event) => removeFlavorOption(flavor, event); // Display an "×" icon for removal
+    removeBtn.onclick = async (event) => {
+      event.stopPropagation(); // Prevent the dropdown from closing
+      await removeFlavorFromDatabase(flavor);
+      renderFlavorOptions();
+      updateFlavorsButtonText();
+    };
 
     // Append the checkbox container and remove button to the flex container
     div.appendChild(checkboxContainer);
@@ -146,454 +215,676 @@ function renderFlavorOptions() {
     container.appendChild(li);
   });
 
-  // Ensure checkboxes remain checked for flavors that are already selected
+  // Ensure checkboxes reflect selected flavors and bind change events to update selections
   document.querySelectorAll(".flavor-checkbox").forEach((chk) => {
-    chk.checked = selectedFlavors.includes(chk.value);      // Pre-check checkboxes that matches selected flavors
-    chk.addEventListener("change", updateSelectedFlavors); // Attach an event listener to track any selection changes
+    chk.checked = selectedFlavors.includes(parseInt(chk.value)); 
+    chk.addEventListener("change", updateSelectedFlavors);
   });
-
-  saveFlavorsToLocalStorage();
-}
-
-/*-----------------
-  FLAVORS HANDLING
-------------------*/
-// Retrieve stored flavors from localStorage OR use default options
-let flavorOptions = JSON.parse(localStorage.getItem("adminFlavorOptions")) || [
-  "Vanilla",
-  "Chocolate",
-  "Caramel",
-  "Hazelnut",
-];
-let selectedFlavors = []; // Always start with no selected flavors
-
-// Saves current flavor options and selected flavors into localStorage
-function saveFlavorsToLocalStorage() {
-  localStorage.setItem("adminFlavorOptions", JSON.stringify(flavorOptions));
-  localStorage.setItem("adminSelectedFlavors", JSON.stringify(selectedFlavors));
 }
 
 // Updates the selected flavors based on checkbox selections.
 function updateSelectedFlavors() {
-  selectedFlavors = [];                     // Reset the selected flavors array
+  selectedFlavors = []; // Reset the selected flavors
   document.querySelectorAll(".flavor-checkbox").forEach((chk) => {
     if (chk.checked) {
-      selectedFlavors.push(chk.value);      // Add checked flavor to the array
+      selectedFlavors.push(chk.value);
     }
   });
-  updateFlavorsButtonText();                // Update dropdown button text
-  saveFlavorsToLocalStorage();              // Store selected flavors in localStorage
+  updateFlavorsButtonText();
 }
 
-//Updates the text of the flavors dropdown button.
+// Updates the text of the flavors dropdown button.
 function updateFlavorsButtonText() {
-  const btn = document.getElementById("adminFlavorsDropdownButton");
-  btn.innerText = selectedFlavors.length
-    ? selectedFlavors.join(", ")
-    : "Select Flavors";                     // Show flavors or default text
+  const btn = document.getElementById("adminFlavorsButton");
+  if (btn) {
+    // Map selected flavor IDs to their names
+    const flavorNames = selectedFlavors.map(id => {
+      const flavor = flavorOptions.find(f => f.id === id);
+      return flavor ? flavor.name : id;
+    });
+    btn.innerText = flavorNames.length > 0 
+      ? flavorNames.join(', ')
+      : "Select flavors";
+  }
 }
 
-// Adds a new flavor upon user presses "Enter" in the input field.
+// Add a new flavor when the user presses "Enter" 
 document
   .getElementById("adminNewFlavorInput")
-  .addEventListener("keydown", function (e) {
+  .addEventListener("keydown", async function (e) {
     if (e.key === "Enter") {
-      // Checks if the Enter key was pressed
-      e.preventDefault();                      // Add a new flavor dynamically rather than submit the entire form
-      const newFlavor = e.target.value.trim(); // Remove extra spaces
-      if (newFlavor !== "" && !flavorOptions.includes(newFlavor)) {
-        flavorOptions.push(newFlavor);         // Add new flavor to options
-        selectedFlavors.push(newFlavor);       // Automatically select newly added flavor
+      e.preventDefault();
+      const newFlavorName = e.target.value.trim();
+      if (newFlavorName !== "" && !flavorOptions.some(f => f.name === newFlavorName)) {
+        await addFlavorToDatabase(newFlavorName);
       }
-      renderFlavorOptions();                   // Refresh the flavor options dropdown
-      updateFlavorsButtonText();               // Update dropdown button text
-      e.target.value = "";                     // Clear input field
-      saveFlavorsToLocalStorage();             // Save updated flavors to localStorage
+      renderFlavorOptions();
+      updateFlavorsButtonText();
+      e.target.value = "";
     }
   });
 
-// Removes a flavor from the available options and selected flavors.
-function removeFlavorOption(flavor, event) {
-  event.stopPropagation();                    // Prevents dropdown from closing when clicking the remove button
+// When the page loads, fetch the flavor options from the database and display them.
+window.addEventListener("load", async function () {
 
-  // Remove the flavor from the array
-  flavorOptions = flavorOptions.filter(f => f !== flavor);
-  selectedFlavors = selectedFlavors.filter(f => f !== flavor);
+  // Clear any previous image preview if needed 
+  document.getElementById("adminImagePreview").src = IMG_PLACEHOLDER;
 
-  // Instantly remove the flavor element from the dropdown
-  const itemToRemove = document.querySelector(`li[data-flavor="${flavor}"]`);
-  if (itemToRemove) {
-    itemToRemove.remove();
-  }
+  // Reset selected flavors array
+  selectedFlavors = [];
 
+  // Load flavor options from the database
+  await loadFlavorOptionsFromAPI();
+  
+  // Render the flavor checkboxes in the dropdown with the fresh data from the database
+  renderFlavorOptions();
   updateFlavorsButtonText();
-  saveFlavorsToLocalStorage();
+
+});
+
+
+/*------------------
+  SALES ORDERS CHART
+--------------------*/
+// Function to fetch orders data from the backend and build arrays for Chart.js.
+async function loadSalesChartData() {
+  try {
+    const response = await fetch('http://localhost:8080/api/admin/orders/monthly-orders', {
+      headers: {
+        'Authorization': token ? `Bearer ${token}` : ''
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    // Data returned from backend should be in the format
+    // { "January": 25, "February": 50, ... }
+    const data = await response.json();
+
+      // Array of month names in the proper sequence.
+      const monthsInOrder = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+      ];
+  
+      // Map the order counts based on the fixed month order.
+      // If the data for a month is missing, default the value to 0.
+      const labels = monthsInOrder;
+      const orders = monthsInOrder.map(month => data[month] || 0);
+
+    // Create the Chart.js chart using these arrays
+    const adminCtx = document.getElementById("adminSalesChart").getContext("2d");
+    const salesChart = new Chart(adminCtx, {
+      type: "line", // Using a line chart
+      data: {
+        labels: labels,         // X-axis labels (months)
+        datasets: [
+          {
+            label: "Orders",    // The dataset's label for the legend
+            data: orders,       // Y-axis data points (order count for each month)
+            borderColor: "#808080", // Grey line
+            backgroundColor: "rgba(128,128,128,0.1)", // Light grey fill under the line
+            fill: true,           // Enable fill under the line
+            tension: 0.4,         // Slight curvature for a smoother line
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: { 
+          y: { beginAtZero: true }
+        }
+      }
+    });
+
+  } catch (error) {
+    console.error("Error loading sales chart data:", error);
+  }
 }
+// Call the function to load data and render chart
+loadSalesChartData();
+
+
+/*----------------
+ LOGOUT FUNCTION
+-----------------*/
+document.addEventListener("DOMContentLoaded", () => {
+
+  // Select the logout button inside the admin welcome section.
+  const logoutButton = document.querySelector("#adminWelcome .logout-container button");
+
+  // Check if the button exists
+  if (logoutButton) {
+    logoutButton.addEventListener("click", () => {
+
+      // Remove the token from localStorage.
+      localStorage.removeItem("usertoken");
+
+      // Redirect to index.html.
+      window.location.href = "index.html";
+    });
+  }
+});
+
+window.addEventListener("load", async function () {
+
+  // Load products from backend API
+  try {
+    products = await fetchProducts();
+    renderProducts();
+  } catch (error) {
+    Swal.fire({
+      title: "Error!",
+      text: "Failed to load products from server",
+      icon: "error"
+    });
+    products = [];
+  }
+});
+
 
 /*-------------------------
   PRODUCT LISTING HANDLING
-  -------------------------*/
-// Render the product listing table dynamically based on stored product data
+-------------------------*/
+async function fetchProducts() {
+  return await makeApiRequest(PRODUCTS_ENDPOINT);
+}
+
+// renderProducts to work with API data
 function renderProducts() {
   const tbody = document.getElementById("adminProductTableBody");
-
-  // Clear existing rows efficiently
   tbody.replaceChildren();
 
-  // Loop through products and create new table rows dynamically
-  products.forEach((product, index) => {
+  products.forEach((product) => {
     const tr = document.createElement("tr");
 
-    // Create table data for image
-    const tdImage = document.createElement("td");
+    const imageTd = document.createElement("td");
     const img = document.createElement("img");
-    img.src = product.image;
-    img.alt = product.name;
-    img.classList.add("img-fluid");
-    img.width = 50;
-    tdImage.appendChild(img);
+    img.classList.add("border", "border-1", "border-secondary-subtle", "rounded-2");
+    img.src = product.imageURL ? API_IMAGE_URL.concat(product.imageURL) : IMG_PLACEHOLDER;
+    img.alt = "Product Image";
+    img.style.height = "60px";
+    imageTd.appendChild(img);
+    tr.appendChild(imageTd);
 
-    // Create table data for name
-    const tdName = document.createElement("td");
-    tdName.textContent = product.name;
+    // Name
+    const nameTd = document.createElement("td");
+    nameTd.textContent = product.name;
+    tr.appendChild(nameTd);
 
-    // Create table data for description
-    const tdDescription = document.createElement("td");
-    tdDescription.textContent = product.description;
+    // Description
+    const descTd = document.createElement("td");
+    descTd.textContent = product.description;
+    tr.appendChild(descTd);
 
-    // Create table data for price
-    const tdPrice = document.createElement("td");
-    tdPrice.textContent = `$${product.price.toFixed(2)}`;
+    // Price
+    const priceTd = document.createElement("td");
+    priceTd.textContent = `$${product.price.toFixed(2)}`;
+    tr.appendChild(priceTd);
 
-    // Create table data for quantity
-    const tdQuantity = document.createElement("td");
-    tdQuantity.textContent = product.quantity;
+    // Quantity
+    const qtyTd = document.createElement("td");
+    qtyTd.textContent = product.inventoryCount ?? "N/A";
+    tr.appendChild(qtyTd);
 
-    // Create table data for flavors
-    const tdFlavors = document.createElement("td");
-    tdFlavors.textContent = Array.isArray(product.flavors)
-      ? product.flavors.join(", ")
-      : "No flavors";
+    // Flavors
+    const flavorTd = document.createElement("td");
+    if (Array.isArray(product.flavors) && product.flavors.length > 0) {
+      // Handle if flavors are objects or strings
+      const flavorNames = product.flavors.map(f => typeof f === 'string' ? f : f.name);
+      flavorTd.textContent = flavorNames.join(", ");
+    } else {
+      flavorTd.textContent = "None";
+    }
+    tr.appendChild(flavorTd);
 
-    // Create table data for actions (Edit & Delete buttons)
-    const tdActions = document.createElement("td");
-
+    // Actions
+    const actionTd = document.createElement("td");
+    
     const editBtn = document.createElement("button");
-    editBtn.classList.add("btn", "action-btn");
+    editBtn.classList.add("btn", "action-btn", "btn-sm", "btn-outline-primary", "me-1");
     editBtn.textContent = "Edit";
-    editBtn.onclick = () => editProduct(index); // Attach event
+    editBtn.onclick = () => editProduct(product.id ?? product.id);
+    actionTd.appendChild(editBtn);
 
     const deleteBtn = document.createElement("button");
-    deleteBtn.classList.add("btn", "action-btn");
+    deleteBtn.classList.add("btn", "action-btn", "btn-sm", "btn-outline-danger");
     deleteBtn.textContent = "Delete";
-    deleteBtn.onclick = () => deleteProduct(index); // Attach event
+    deleteBtn.onclick = () => deleteProduct(product.id ?? product.id);
+    actionTd.appendChild(deleteBtn);
 
-    tdActions.appendChild(editBtn);
-    tdActions.appendChild(deleteBtn);
+    tr.appendChild(actionTd);
 
-    // Append all table data elements to the row
-    tr.appendChild(tdImage);
-    tr.appendChild(tdName);
-    tr.appendChild(tdDescription);
-    tr.appendChild(tdPrice);
-    tr.appendChild(tdQuantity);
-    tr.appendChild(tdFlavors);
-    tr.appendChild(tdActions);
-
-    // Append the row to the table body
     tbody.appendChild(tr);
   });
+}
 
-  // Store the updated product list in localStorage for persistence
-  localStorage.setItem("adminProducts", JSON.stringify(products));
+async function loadProductsFromAPI() {
+  try {
+    const token = localStorage.getItem("usertoken");
+    const response = await fetch(PRODUCTS_ENDPOINT, {
+      method: "GET",
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token ? `Bearer ${token}` : ''
+      }
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to fetch products: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    return [];
+  }
 }
 
 /*-------------------
   PRODUCT MANAGEMENT 
 --------------------*/
-const initialProducts = [
-  // Initialize product data as an array of objects
-  {
-    id: 1,
-    name: "Product 1",
-    description: "Description of product 1",
-    price: 66.66,
-    image: "./images/cuphead.png",
-    quantity: 100,
-    flavors: ["Vanilla", "Chocolate", "Caramel", "Hazelnut"],
-  },
-];
-let products = []; // Initialize an empty products array (will be populated later)
-
-// TODO -- Preparing for backend integration
-// Fetching product data fetching with delay
-/* function fetchProducts() {
-   return new Promise((resolve) => {
-     setTimeout(() => resolve(initialProducts), 500);  // Uses a Promise with a `setTimeout` to delay retrieval by 500ms
-   });
- } */
-
-// Dynamically populates the product list inside the table
-function renderProducts() {
-  const tbody = document.getElementById("adminProductTableBody");
-
-  // Efficiently clear previous entries
-  tbody.replaceChildren();
-
-  // Loop through products and create new table rows dynamically
-  products.forEach((product, index) => {
-    const tr = document.createElement("tr");
-
-    // Create table data for image
-    const tdImage = document.createElement("td");
-    const img = document.createElement("img");
-    img.src = product.image;
-    img.alt = product.name;
-    img.classList.add("img-fluid");
-    img.width = 50;
-    tdImage.appendChild(img);
-
-    // Create table data for name
-    const tdName = document.createElement("td");
-    tdName.textContent = product.name;
-
-    // Create table data for description
-    const tdDescription = document.createElement("td");
-    tdDescription.textContent = product.description;
-
-    // Create table data for price
-    const tdPrice = document.createElement("td");
-    tdPrice.textContent = `$${product.price.toFixed(2)}`;
-
-    // Create table data for quantity
-    const tdQuantity = document.createElement("td");
-    tdQuantity.textContent = product.quantity;
-
-    // Create table data for flavors
-    const tdFlavors = document.createElement("td");
-    tdFlavors.textContent = Array.isArray(product.flavors)
-      ? product.flavors.join(", ")
-      : "No flavors";
-
-    // Create table data for actions (Edit & Delete buttons)
-    const tdActions = document.createElement("td");
-
-    const editBtn = document.createElement("button");
-    editBtn.classList.add("btn", "action-btn");
-    editBtn.textContent = "Edit";
-    editBtn.onclick = () => editProduct(index); // Attach event
-
-    const deleteBtn = document.createElement("button");
-    deleteBtn.classList.add("btn", "action-btn");
-    deleteBtn.textContent = "Delete";
-    deleteBtn.onclick = () => deleteProduct(index); // Attach event
-
-    tdActions.appendChild(editBtn);
-    tdActions.appendChild(deleteBtn);
-
-    // Append all table data elements to the row
-    tr.appendChild(tdImage);
-    tr.appendChild(tdName);
-    tr.appendChild(tdDescription);
-    tr.appendChild(tdPrice);
-    tr.appendChild(tdQuantity);
-    tr.appendChild(tdFlavors);
-    tr.appendChild(tdActions);
-
-    // Append the row to the table body
-    tbody.appendChild(tr);
-  });
-
-  // Store the updated product list in localStorage for persistence
-  localStorage.setItem("adminProducts", JSON.stringify(products));
+async function deleteProductFromDatabase(productId) {
+  try {
+    const token = localStorage.getItem("usertoken");
+    const response = await fetch(`${PRODUCTS_ENDPOINT}/${productId}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': token ? `Bearer ${token}` : '',
+      }
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to delete product: ${response.status}`);
+    }
+    // Return true if deletion was successful
+    return true;
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    return null;
+  }
 }
 
-// Customized Delete pop up
-function deleteProduct(index) {
-  Swal.fire({
-    title: "Are you sure you want to delete this product?",              // Confirmation message for deletion
-    icon: "warning",                                                     // Displays a warning icon for emphasis
-    showCancelButton: true,                                              // Sets cancel button text to "Cancel"
-    confirmButtonText: "Yes",                                            // Sets confirmation button text to "Yes"
-    cancelButtonText: "Cancel",                                          // Sets abort button text to "Cancel"
-    confirmButtonColor: "#d33",                                          // Red --> confirmation button
-    cancelButtonColor: "#3085d6",                                        // Blue --> cancel button
-  }).then((result) => {
-    if (result.isConfirmed) {
-      // Checks if the user clicked "Yes"
-      products.splice(index, 1);                                         // Remove the selected product from the array
-      renderProducts();                                                  // Updates the product list in the UI
-      localStorage.setItem("adminProducts", JSON.stringify(products));   // Save changes
-      Swal.fire("Deleted!", "The product has been removed.", "success"); // Show deletion completed message
-    }
+async function deleteProduct(productId) {
+  const result = await Swal.fire({
+    title: "Are you sure you want to delete this product?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes",
+    cancelButtonText: "Cancel",
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6"
   });
+
+  if (!result.isConfirmed) {
+    return null;
+  }
+
+  try {
+    const deletionSuccess = await deleteProductFromDatabase(productId);
+    if (!deletionSuccess) {
+      throw new Error("Product deletion failed");
+    }
+    
+    // Re-fetch updated products list from the database
+    products = await loadProductsFromAPI();
+    
+    // Re-render the product table
+    renderProducts();
+    
+    await Swal.fire("Deleted!", "The product has been removed.", "success");
+    return true;
+  } catch (error) {
+    console.error("Error during product deletion:", error);
+    await Swal.fire("Error!", "Failed to delete product.", "error");
+    return null;
+  }
 }
 
 /*-------------------------------------
     PRODUCT FORM (ADD/EDIT) HANDLING
 --------------------------------------*/
-// To reset the form 
+// List of products stored locally needs to be fetched initially from your API.
+let products = [];
+
+// Function to reset the product form
 function resetProductForm() {
-  document.getElementById("adminProductForm").reset();                  // Resets all input fields
-  document.getElementById("adminImagePreview").src = "";                // Clears the preview image
-  document.getElementById("adminProductIndex").value = "-1";            // Resets index for new entries
-  document.getElementById("adminFormTitle").innerText = "Add Product";  // Resets form title
-  document.getElementById("adminSubmitButton").innerText = "Add";       // Changes button text
+  document.getElementById("adminProductForm").reset();
+  document.getElementById("adminProductIndex").value = ""; // Clear ID completely
+  selectedFlavors = [];
+  updateFlavorsButtonText();
   
-  selectedFlavors = [];                                                 // Clears selected flavors array
-  updateFlavorsButtonText();                                            // Updates the dropdown button text
-  renderFlavorOptions();                                                // Refreshes available flavors list
+  // Reset image preview
+  document.getElementById("adminImagePreview").src = IMG_PLACEHOLDER;
+  document.getElementById("adminProductImage").value = "";
+  console.log("image src after reset: ", document.getElementById("adminImagePreview").src);
+  // Set form to "create" mode
+  document.getElementById("adminFormTitle").innerText = "Add New Product";
+  document.getElementById("adminSubmitButton").innerText = "Create Product";
 }
 
-document.getElementById("adminProductForm").addEventListener("submit", function (e) {
-  e.preventDefault();                                                   // Prevent page reload
+/*---------------------------
+  CREATE PRODUCT API
+---------------------------*/
+async function createProduct(formData) {
+  
+  try {
+    const token = localStorage.getItem("usertoken");
+    
+    if (!token) {
+      throw new Error("Authentication token missing - please login again");
+    }
 
-  // Get trimmed input values to remove unwanted spaces
-  const name = document.getElementById("adminProductName").value.trim();
-  const description = document.getElementById("adminProductDescription").value.trim();
-  const priceInput = document.getElementById("adminProductPrice").value.trim();
-  const quantityInput = document.getElementById("adminProductQuantity").value.trim();
-
-  // Convert numeric input values
-  const price = parseFloat(priceInput);
-  const quantity = parseInt(quantityInput);
-
-  // Check for negative values
-  if (price < 0 || quantity < 0) {
-    Swal.fire({
-      title: "Invalid Input!",
-      text: "Price and quantity cannot be negative.",
-      icon: "error",
-      confirmButtonColor: "#d33"
+    const response = await fetch(PRODUCTS_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+      body: formData
     });
-    return; // Stop execution if values are negative
-  }
 
-  // Check if all fields are filled and valid
-  if (!name || !description || priceInput === "" || quantityInput === "" || isNaN(price) || isNaN(quantity) || selectedFlavors.length === 0) {
-    Swal.fire({
-      title: "Incomplete Form!",
-      text: "Please fill in all fields and select at least one flavor before adding.",
-      icon: "error",
-      confirmButtonColor: "#d33"
+    // First check for 403 specifically
+    if (response.status === 403) {
+      throw new Error("Access denied - you don't have permission");
+    }
+
+    // Then check for other errors
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText || `Request failed with status ${response.status}`);
+    }
+
+    // Only try to parse JSON if response has content
+    const responseBody = await response.text();
+    return responseBody ? JSON.parse(responseBody) : {};
+
+  } catch (error) {
+    console.error("Error in createProduct:", error);
+    throw error;
+  }
+}
+
+/*-------------------------------------
+      IMAGE & PRODUCT HELPER FUNCTIONS
+--------------------------------------*/
+async function uploadProductImage(productId, imageFile) {
+  try {
+    const token = localStorage.getItem("usertoken");
+    const formData = new FormData();
+    formData.append('image', imageFile);
+
+    const response = await fetch(`${PRODUCTS_ENDPOINT}/${productId}/image`, {
+      method: 'POST',
+      headers: {
+        'Authorization': token ? `Bearer ${token}` : ''
+      },
+      body: formData
     });
-    return; // Stop further execution
+
+    if (!response.ok) {
+      throw new Error('Image upload failed');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error uploading product image:", error);
+    throw error;
   }
+}
 
-  // Image file selection & validation
-  const fileInput = document.getElementById("adminProductImage");
-  const file = fileInput.files[0]; // Retrieve selected file
+/*---------------------------
+  UPDATE PRODUCT API
+---------------------------*/
 
-  // Get product index from form input
-  const productIndex = document.getElementById("adminProductIndex").value;
-  const isEditing = productIndex !== "-1" && productIndex !== "";
+async function updateProduct(productId, formData) {
+  try {
+    // First validate the productId exists and isn't empty
+    if (!productId || productId.trim() === "") {
+      throw new Error("Product ID is required for update");
+    }
 
-  if (!isEditing && !file) {
-    Swal.fire({
-      title: "Missing Image!",
-      text: "Please upload an image before adding the product.",
-      icon: "error",
-      confirmButtonColor: "#d33"
+    const token = localStorage.getItem("usertoken");
+    
+    console.log("Updating product with ID:", productId, "Data:", formData.get("product"));
+    console.log("Updating product with ID:", productId, "Data:", formData.get("image"));
+
+    const response = await fetch(`${PRODUCTS_ENDPOINT}/${productId}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': token ? `Bearer ${token}` : '',
+      },
+      body:formData
     });
-    return;
-  }
 
-  // Function to update or add a product with image data
-  function updateOrAddProduct(imageSrc) {
-    if (isEditing) {
-      products[productIndex] = {
-        ...products[productIndex],     // Preserve existing properties
-        image: imageSrc,
-        name: name,
-        description: description,
-        price: price,
-        quantity: quantity,
-        flavors: [...selectedFlavors], // Store selected flavors
-      };
-    } else {
-      products.push({
-        id: products.length + 1,       // Assign a new product ID
-        image: imageSrc,
-        name: name,
-        description: description,
-        price: price,
-        quantity: quantity,
-        flavors: [...selectedFlavors],
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to update product: ${response.status} - ${errorText}`);
+    }
+
+    const data = await response.json();
+    console.log("Product updated:", data);
+
+    // Re-fetch updated products list from the database
+    products = await loadProductsFromAPI(); 
+
+    // Re-render the product table
+    renderProducts();
+
+    return data;
+  } catch (error) {
+    console.error("Error updating product:", error);
+    throw error; // Re-throw to allow calling code to handle it
+  }
+}
+
+async function fetchProduct(productId) {
+  try {
+    return await makeApiRequest(`${PRODUCTS_ENDPOINT}/${productId}`);
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    return null;
+  }
+}
+
+async function updateProductFlavors(productId, flavorsArray) {
+  try {
+    console.log("Updating product flavors for product id:", productId, "with flavors:", flavorsArray);
+    
+    // Retrieve the token from localStorage
+    const token = localStorage.getItem("usertoken");
+    
+    // Make the PUT request to the new endpoint for updating flavors.
+    const response = await fetch(`${PRODUCTS_ENDPOINT}/${productId}/flavors`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': token ? `Bearer ${token}` : '',
+        'Content-Type': 'application/json'
+      },
+      // Expecting flavorsArray to be an array of flavor IDs, e.g. [1, 2, 3]
+      body: JSON.stringify(flavorsArray)
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Failed to update product flavors: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    console.log("Product flavors updated:", data);
+    return data;
+  } catch (error) {
+    console.error("Error updating product flavors:", error);
+    throw error;
+  }
+}
+
+async function editProduct(productId) {
+  try {
+    // Fetch the basic product details.
+    const product = await fetchProduct(productId);
+    
+    document.getElementById("adminProductSKU").value = product.sku || "";
+    document.getElementById("adminProductName").value = product.name || "";
+    document.getElementById("adminProductDescription").value = product.description || "";
+    document.getElementById("adminProductPrice").value = product.price || "";
+    document.getElementById("adminProductQuantity").value = product.inventory ?? product.inventoryCount ?? "";
+    document.getElementById("adminImagePreview").src = product.imageURL ? API_IMAGE_URL.concat(product.imageURL) : IMG_PLACEHOLDER;
+    document.getElementById("adminProductIndex").value = product.id || product._id || "";
+    
+    // Update form labels for edit mode.
+    document.getElementById("adminFormTitle").innerText = "Edit Product";
+    document.getElementById("adminSubmitButton").innerText = "Update";
+    
+    // Fetch the product's associated flavors
+    const fetchedFlavors = await fetchProductFlavors(product.id);
+    
+    selectedFlavors = [];
+    selectedFlavors = fetchedFlavors.map(flavor => flavor.id);
+    
+    // TODO - please confirm what this condition does
+    if (product.flavors && Array.isArray(product.flavors)) {
+      product.flavors.forEach(flavor => {
+          if (!selectedFlavors.includes(flavor.id)) {
+            selectedFlavors.push(flavor.id);
+          }
       });
     }
-    renderProducts();                // Refresh product listing table
-    resetProductForm();              // Reset form fields for next entry
+
+    // Render the flavor dropdown/options.
+    renderFlavorOptions();
+
+    // After rendering, looping through the checkboxes and mark the ones that are selected.
+    document.querySelectorAll(".form-check-input.flavor-checkbox").forEach(chk => {
+      chk.checked = selectedFlavors.includes(parseInt(chk.value));
+      console.log("Checkbox value:", chk.value, "Checked:", chk.checked);
+    });
+   
+    // Scroll the form into view.
+    document.getElementById("adminProductForm").scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  } catch (error) {
+    Swal.fire("Error!", "Failed to load product for editing.", "error");
+    console.error("Error editing product:", error);
   }
+}
+ console.log("Product Data being sent:", productData);
+function collectProductFormData() { //TODO
+  // Get the basic product fields from the form.
+  const sku = document.getElementById("adminProductSKU").value;
+  const name = document.getElementById("adminProductName").value;
+  const description = document.getElementById("adminProductDescription").value;
+  
+  // Parse price and inventory as numbers.
+  const price = parseFloat(document.getElementById("adminProductPrice").value);
+  const inventory = parseInt(document.getElementById("adminProductQuantity").value, 10);
+  
+  // Get the image URL from the preview. (NOT NEEDED)
+  // const imageurl = document.getElementById("adminImagePreview").src;
+  
+  // Collect the flavor IDs from the checked checkboxes.
+  const flavorCheckboxes = document.querySelectorAll(".flavor-checkbox");
+  const flavors = Array.from(flavorCheckboxes)
+    .filter(chk => chk.checked)
+    .map(chk => parseInt(chk.value, 10)); // Convert flavor IDs to numbers.
 
-  // Handle image selection: Read file as data URL
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = function (ev) {
-      updateOrAddProduct(ev.target.result);
-    };
-    reader.readAsDataURL(file);
-  } else {
-    updateOrAddProduct(products[productIndex].image);
-  }
-});
-
-// Function triggers whenever the user selects a file
-document
-  .getElementById("adminProductImage")
-  .addEventListener("change", function (e) {
-    const file = e.target.files[0];                                  // Get the selected file from the input
-
-    if (file) {
-      const reader = new FileReader();                               // Create a FileReader instance to read the file
-
-      reader.onload = function (ev) {
-        // Execute once the file read is completed
-        const imageUrl = ev.target.result;                           // Get the Data URL (base64 encoded image)
-        document.getElementById("adminImagePreview").src = imageUrl; // Update the image preview element's source so that the image displays
-        localStorage.setItem("adminSavedImage", imageUrl);           // Save the Data URL in localStorage under the key "adminSavedImage"
-      };
-      reader.readAsDataURL(file);
-    }
-  });
-
-// Edit an existing product by pre-filling the form with its details
-// Retrieves product data based on the provided `index`
-function editProduct(index) {
-  const product = products[index];
-
-  // Fill form with selected product details
-  document.getElementById("adminProductName").value = product.name;
-  document.getElementById("adminProductDescription").value =
-    product.description;
-  document.getElementById("adminProductPrice").value = product.price;
-  document.getElementById("adminProductQuantity").value = product.quantity;
-  document.getElementById("adminImagePreview").src = product.image;
-  document.getElementById("adminProductIndex").value = index;
-
-  // Update form labels to indicate edit mode
-  document.getElementById("adminFormTitle").innerText = "Edit Product";
-  document.getElementById("adminSubmitButton").innerText = "Update";
-
-  product.flavors.forEach((flavor) => {
-    if (!flavorOptions.includes(flavor)) {
-      flavorOptions.push(flavor);
-    }
-    if (!selectedFlavors.includes(flavor)) {
-      selectedFlavors.push(flavor);
-    }
-  });
-
-  // Ensuring the flavors are included & selected
-  renderFlavorOptions();
-  document.querySelectorAll(".flavor-checkbox").forEach((chk) => {
-    chk.checked = selectedFlavors.includes(chk.value);
-  });
-  updateFlavorsButtonText();
-  document.getElementById("adminProductForm").scrollIntoView({ behavior: "smooth", block: "start" });
+  console.log("Selected flavors:", flavors);
+  // Return the collected data in the desired JSON format.
+  return {
+    sku: sku,
+    name: name,
+    description: description,
+    price: price,
+    inventoryCount: inventory,
+    // imageURL: imageurl, (NOT NEEDED)
+    flavors: flavors
+  };
 }
 
-//Clear Inputs on Page load/reload 
-window.addEventListener("load", function () {
-  document.getElementById("adminProductForm").reset();   // Clears input fields
-  document.getElementById("adminImagePreview").src = ""; // Clears image preview
+// * DONE ADDING PRODUCT
+// When the form is submitted, collect and log the JSON payload.
+document.getElementById("adminSubmitButton").addEventListener("click", async (e) => {
+  e.preventDefault();
+  
+  try {
+    const productData = collectProductFormData();
+    const productId = document.getElementById("adminProductIndex").value;
+
+    // Validate required fields
+    if (!productData.name || !productData.price) {
+      throw new Error("Product name and price are required");
+    }
+
+    // Determine if we're creating or updating
+    const isNewProduct = !productId || productId.trim() === "" || productId === "-1";
+
+    // create a FormData object to store "product" (productData) and "image" (image)
+    let formData = new FormData();
+    formData.append("product", JSON.stringify(productData));
+
+    // Handle image upload if needed
+    const fileInput = document.getElementById("adminProductImage");
+    formData.append("image", fileInput.files[0]);
+
+    // Check whether there's an adminProductIndex
+    const productIndexExists = document.getElementById("adminProductIndex").value;
+    let returnedProduct = null;
+
+    if(!productIndexExists)
+      // CREATE new product
+      returnedProduct = await createProduct(formData);
+    else
+      // UPDATE existing product
+      returnedProduct = await updateProduct(productId, formData);
+      
+    if (returnedProduct && !productIndexExists) {  
+      Swal.fire("Success!", "Product created successfully!", "success");
+    } 
+    
+    if(returnedProduct && productIndexExists){
+      Swal.fire("Success!", "Product updated successfully!", "success");
+    }
+    
+    // Reset form and refresh list
+    resetProductForm();
+    products = await loadProductsFromAPI();
+    renderProducts();
+
+  } catch (error) {
+    console.error("Product operation failed:", error);
+    Swal.fire("Error!", error.message || "Operation failed", "error");
+  }
 });
+
+/* To fetch product flavors. */
+async function fetchProductFlavors(productId) {
+
+  // Retrieve the token from localStorage (or elsewhere as appropriate).
+  let token = localStorage.getItem("usertoken");
+  
+  if (!token || token.trim() === "") {
+    throw new Error("JWT token is missing");
+  }
+  
+  // If token starts with "Bearer ", remove that part to ensure consistency.
+  token = token.replace("Bearer ", "");
+
+  console.log("Fetching flavors for product id:", productId);
+  try {
+    const response = await fetch(`http://localhost:8080/api/admin/flavor/product/${productId}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to fetch product flavors: ${response.status}`);
+    }
+    const data = await response.json();
+    console.log("Fetched product flavors:", data);
+    return data;
+  } catch (error) {
+    console.error("Error fetching product flavors:", error);
+    return [];
+  }
+}
