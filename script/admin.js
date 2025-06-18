@@ -369,6 +369,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+
 window.addEventListener("load", async function () {
 
   // Load products from backend API
@@ -547,6 +548,73 @@ async function deleteProduct(productId) {
 --------------------------------------*/
 // List of products stored locally needs to be fetched initially from your API.
 let products = [];
+
+// TODO - WHETHER WE NEED TO REMOVE
+// document.getElementById("adminProductForm").addEventListener("submit", async function (e) {
+//   e.preventDefault();
+
+//   try {
+//     const productData = collectProductFormData();
+//     const productId = document.getElementById("adminProductIndex").value;
+
+//     // Validate required fields
+//     if (!productData.name || !productData.price) {
+//       throw new Error("Product name and price are required");
+//     }
+//     let formData = new FormData();
+//     formData.append("product", JSON.stringify(productData));
+//     console.log("form data is:" , formData);
+    
+//     const fileInput = document.getElementById("adminProductImage");
+    
+//     if (fileInput.files[0]) {
+//       formData.append("image", fileInput.files[0]);
+//     }
+    
+//     let result;
+//     if (productId && productId !== "") {
+//       alert("I am edited");
+//       result = await updateProduct(productId, productData);
+//     } else {
+//       alert("I'm being created");
+//       result = await createProduct(formData);
+//     }
+
+    // Handle image upload if needed
+    // const fileInput = document.getElementById("adminProductImage");
+    
+    // if (fileInput.files[0]) {
+    //   await uploadProductImage(result.id, fileInput.files[0]);
+    //   // Update product with image URL if needed
+    //   await updateProduct(result.id, { imageUrl: `/uploads/products/${fileInput.files[0].name}` });
+    // }
+
+//     Swal.fire("Success!", `Product ${productId ? "updated" : "created"} successfully!`, "success");
+//     resetProductForm();
+//     loadProducts(); // Refresh product list if you have one
+    
+//   } catch (error) {
+//     console.error("Form submission error:", error);
+//     Swal.fire({
+//       title: "Error!",
+//       text: error.message || "Failed to process product",
+//       icon: "error"
+//     });
+//   }
+// });
+
+// Function to collect product data
+// function collectProductFormData() {
+//   return {
+//     sku: document.getElementById("adminProductSKU").value.trim(),
+//     name: document.getElementById("adminProductName").value.trim(),
+//     description: document.getElementById("adminProductDescription").value.trim(),
+//     price: parseFloat(document.getElementById("adminProductPrice").value.trim()),
+//     inventory: parseInt(document.getElementById("adminProductQuantity").value.trim()), // Changed from inventoryCount
+//     imageUrl: "", // Initialize empty, will be updated after image upload
+//     flavors: selectedFlavors.map(flavor => ({ id: flavor.id })) // Send just flavor IDs
+//   };
+// }
 
 // Function to reset the product form
 function resetProductForm() {
@@ -805,10 +873,10 @@ function collectProductFormData() { //TODO
 // When the form is submitted, collect and log the JSON payload.
 document.getElementById("adminSubmitButton").addEventListener("click", async (e) => {
   e.preventDefault();
-  
+
   try {
     const productData = collectProductFormData();
-    const productId = document.getElementById("adminProductIndex").value;
+    const productId = document.getElementById("adminProductIndex").value.trim();
 
     // Validate required fields
     if (!productData.name || !productData.price) {
@@ -816,7 +884,7 @@ document.getElementById("adminSubmitButton").addEventListener("click", async (e)
     }
 
     // Determine if we're creating or updating
-    const isNewProduct = !productId || productId.trim() === "" || productId === "-1";
+    const isNewProduct = !productId || productId === "-1";
 
     // create a FormData object to store "product" (productData) and "image" (image)
     let formData = new FormData();
@@ -824,27 +892,26 @@ document.getElementById("adminSubmitButton").addEventListener("click", async (e)
 
     // Handle image upload if needed
     const fileInput = document.getElementById("adminProductImage");
-    formData.append("image", fileInput.files[0]);
+    if (fileInput.files.length > 0) {
+      formData.append("image", fileInput.files[0]);
+    }
 
-    // Check whether there's an adminProductIndex
-    const productIndexExists = document.getElementById("adminProductIndex").value;
     let returnedProduct = null;
 
-    if(!productIndexExists)
+    if (isNewProduct) {
       // CREATE new product
       returnedProduct = await createProduct(formData);
-    else
+    } else {
       // UPDATE existing product
       returnedProduct = await updateProduct(productId, formData);
-      
-    if (returnedProduct && !productIndexExists) {  
+    }
+
+    if (returnedProduct && isNewProduct) {
       Swal.fire("Success!", "Product created successfully!", "success");
-    } 
-    
-    if(returnedProduct && productIndexExists){
+    } else if (returnedProduct && !isNewProduct) {
       Swal.fire("Success!", "Product updated successfully!", "success");
     }
-    
+
     // Reset form and refresh list
     resetProductForm();
     products = await loadProductsFromAPI();
@@ -855,6 +922,7 @@ document.getElementById("adminSubmitButton").addEventListener("click", async (e)
     Swal.fire("Error!", error.message || "Operation failed", "error");
   }
 });
+
 
 /* To fetch product flavors. */
 async function fetchProductFlavors(productId) {

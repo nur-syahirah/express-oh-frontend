@@ -7,7 +7,7 @@ import {
 } from './cart.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('Cart page loaded. Cart:', JSON.parse(localStorage.getItem('cart')));
+  console.log('Cart page loaded. Cart:', JSON.parse(localStorage.getItem('cart')));
 
   const cartContainer = document.getElementById('cart-items');
   const totalElement = document.getElementById('cart-total');
@@ -76,61 +76,101 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Checkout
+  // Checkout modal logic
+  const checkoutModal = new bootstrap.Modal(document.getElementById('checkoutModal'));
+  const summaryList = document.getElementById('checkout-summary');
+  const summaryTotal = document.getElementById('checkout-total');
+  const checkoutForm = document.getElementById('checkout-form');
+  // const checkoutButton already declared above
+
+  // Open modal on checkout button click
   checkoutButton.addEventListener('click', () => {
-    alert('Thank you for your purchase!');
-    clearCart();
-    renderCart();
-  });
-});
-const checkoutModal = new bootstrap.Modal(document.getElementById('checkoutModal'));
-const summaryList = document.getElementById('checkout-summary');
-const summaryTotal = document.getElementById('checkout-total');
-const checkoutForm = document.getElementById('checkout-form');
-const checkoutButton = document.getElementById('checkout-btn'); // Make sure this exists
+    const cartItems = getCartItems();
+    summaryList.innerHTML = '';
 
-// Open modal on checkout
-checkoutButton.addEventListener('click', () => {
-  const cartItems = getCartItems();
-  summaryList.innerHTML = '';
+    if (cartItems.length === 0) {
+      alert('Your cart is empty.');
+      return;
+    }
 
-  if (cartItems.length === 0) {
-    alert('Your cart is empty.');
-    return;
-  }
+    cartItems.forEach(item => {
+      const li = document.createElement('li');
+      li.className = 'list-group-item d-flex justify-content-between align-items-center';
+      li.innerHTML = `${item.name} × ${item.quantity}<span>$${(item.price * item.quantity).toFixed(2)}</span>`;
+      summaryList.appendChild(li);
+    });
 
-  cartItems.forEach(item => {
-    const li = document.createElement('li');
-    li.className = 'list-group-item d-flex justify-content-between align-items-center';
-    li.innerHTML = `${item.name} × ${item.quantity}<span>$${(item.price * item.quantity).toFixed(2)}</span>`;
-    summaryList.appendChild(li);
+    summaryTotal.textContent = calculateTotal().toFixed(2);
+    checkoutModal.show();
   });
 
-  summaryTotal.textContent = calculateTotal().toFixed(2);
-  checkoutModal.show();
-});
+  // Handle form submission - Send order to backend
+  checkoutForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-// Handle form submission
-checkoutForm.addEventListener('submit', (e) => {
-  e.preventDefault();
+    // Disable submit button to prevent duplicates
+    const submitBtn = checkoutForm.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Placing order...';
 
-  const name = document.getElementById('checkout-name').value.trim();
-  const email = document.getElementById('checkout-email').value.trim();
-  const address = document.getElementById('checkout-address').value.trim();
-  const cardNumber = document.getElementById('card-number').value.trim();
-  const cardExpiry = document.getElementById('card-expiry').value.trim();
-  const cardCVC = document.getElementById('card-cvc').value.trim();
+    const name = document.getElementById('checkout-name').value.trim();
+    const email = document.getElementById('checkout-email').value.trim();
+    const address = document.getElementById('checkout-address').value.trim();
+    const cardNumber = document.getElementById('card-number').value.trim();
+    const cardExpiry = document.getElementById('card-expiry').value.trim();
+    const cardCVC = document.getElementById('card-cvc').value.trim();
 
-  if (!name || !email || !address || !cardNumber || !cardExpiry || !cardCVC) {
-    alert('Please fill in all required fields.');
-    return;
-  }
+    if (!name || !email || !address || !cardNumber || !cardExpiry || !cardCVC) {
+      alert('Please fill in all required fields.');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Place Order';
+      return;
+    }
 
-  // Simple (not secure) validation could go here if needed
+    const cartItems = getCartItems();
 
-  alert(`Thank you for your purchase, ${name}!`);
-  clearCart();
-  checkoutModal.hide();
-  renderCart();
-  checkoutForm.reset();
+    if (cartItems.length === 0) {
+      alert('Your cart is empty.');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Place Order';
+      return;
+    }
+
+    const orderPayload = {
+      products: cartItems.map(item => ({
+        productId: item.id,
+        quantity: item.quantity
+      }))
+    };
+
+    try {
+      const token = localStorage.getItem('usertoken');
+
+      const response = await fetch('http://localhost:8080/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify(orderPayload)
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Order failed: ${errorText}`);
+      }
+
+      alert(`Thank you for your purchase, ${name}! Your order was placed successfully.`);
+      clearCart();
+      checkoutModal.hide();
+      renderCart();
+      checkoutForm.reset();
+
+    } catch (error) {
+      alert(error.message);
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Place Order';
+    }
+  });
 });
