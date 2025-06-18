@@ -1,42 +1,126 @@
-import { capitalizeWords, maskCardNumber } from './utils.js';
+import { capitalizeWords, maskCardNumber, parseJwt } from './utils.js';
 
-async function fetchUserData() {
-  return {
-    firstName: "John",
-    middleName: "M",
-    lastName: "Doe",
-    email: "john.doe@example.com",
-    address: "123 Roast Lane<br>Brewtown, BT 45678",
-    cardDetails: {
-      cardholderName: "John M Doe",
-      cardNumber: "4111111111111111",
-      expiryDate: "12/26",
-      cvv: "123"
-    },
-    orders: [
-      {
-        number: "#10234",
-        date: "2025-06-01",
-        items: [
-          "2x Colombian Medium Roast (250g)",
-          "1x Brazil Dark Roast (1kg)"
-        ],
-        total: "$36.00",
-        status: "delivered"
-      },
-      {
-        number: "#10210",
-        date: "2025-05-25",
-        items: [
-          "1x Ethiopian Light Roast (500g)",
-          "1x Kenya AA Medium Roast (250g)"
-        ],
-        total: "$28.50",
-        status: "processing"
-      }
-    ]
-  };
+function logUserDetails() {
+  const token = localStorage.getItem('usertoken'); // Use your actual token key here
+  if (!token) {
+    console.log("No JWT token found in localStorage.");
+    return;
+  }
+  
+  try {
+    const userDetails = parseJwt(token);
+    console.log("Decoded user details from JWT:", userDetails);
+  } catch (error) {
+    console.error("Failed to parse JWT token:", error);
+  }
 }
+
+// Call it on page load or when appropriate
+document.addEventListener('DOMContentLoaded', () => {
+  logUserDetails();
+});
+async function fetchUserData() {
+  console.log("🔍 fetchUserData() called");
+  try {
+    const token = localStorage.getItem('usertoken');
+    let userEmail = null;
+
+    if (token) {
+      const payload = parseJwt(token);
+      console.log("JWT Payload:", payload); // optional: inspect the token content
+      userEmail = payload?.sub || null;     // updated to use 'sub'
+    }
+
+    const response = await fetch('http://localhost:8080/api/user/profile', {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'  // optional, safe to include
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch profile from API');
+    }
+
+    const profile = await response.json();
+
+    return {
+      firstName: profile.firstName || "John",
+      middleName: "M",
+      lastName: profile.lastName || "Doe",
+      email: profile.email || userEmail || "john.doe@example.com",
+      address: profile.address || "123 Roast Lane<br>Brewtown, BT 45678",
+      cardDetails: {
+        cardholderName: profile.cardName || "John M Doe",
+        cardNumber: profile.cardNumber || "4111111111111111",
+        expiryDate: profile.cardExpiry || "12/26",
+        cvv: profile.cardCvv || "123"
+      },
+      orders: profile.orders || [
+        {
+          number: "#10234",
+          date: "2025-06-01",
+          items: [
+            "2x Colombian Medium Roast (250g)",
+            "1x Brazil Dark Roast (1kg)"
+          ],
+          total: "$36.00",
+          status: "delivered"
+        },
+        {
+          number: "#10210",
+          date: "2025-05-25",
+          items: [
+            "1x Ethiopian Light Roast (500g)",
+            "1x Kenya AA Medium Roast (250g)"
+          ],
+          total: "$28.50",
+          status: "processing"
+        }
+      ]
+    };
+
+  } catch (error) {
+    console.error(error);
+    return {
+      firstName: "John",
+      middleName: "M",
+      lastName: "Doe",
+      email: "john.doe@example.com",
+      address: "123 Roast Lane<br>Brewtown, BT 45678",
+      cardDetails: {
+        cardholderName: "John M Doe",
+        cardNumber: "4111111111111111",
+        expiryDate: "12/26",
+        cvv: "123"
+      },
+      orders: [
+        {
+          number: "#10234",
+          date: "2025-06-01",
+          items: [
+            "2x Colombian Medium Roast (250g)",
+            "1x Brazil Dark Roast (1kg)"
+          ],
+          total: "$36.00",
+          status: "delivered"
+        },
+        {
+          number: "#10210",
+          date: "2025-05-25",
+          items: [
+            "1x Ethiopian Light Roast (500g)",
+            "1x Kenya AA Medium Roast (250g)"
+          ],
+          total: "$28.50",
+          status: "processing"
+        }
+      ]
+    };
+  }
+}
+
+
 
 function mapStatus(status) {
   const statusMap = {
@@ -139,8 +223,8 @@ function renderAccountPage(user) {
                   <input type="text" class="form-control text-capitalize" id="lastName" name="lastName" value="${user.lastName || ''}">
                 </div>
                 <div class="col-12">
-                  <label for="email" class="form-label">Email *</label>
-                  <input type="email" class="form-control" id="email" name="email" required value="${user.email}">
+                  <label class="form-label">Email</label>
+                  <input type="email" class="form-control" value="${user.email}" disabled>
                 </div>
                 <div class="col-12">
                   <label for="address" class="form-label">Address *</label>
@@ -217,7 +301,6 @@ function renderAccountPage(user) {
       firstName: capitalizeWords(formData.get("firstName").trim()),
       middleName: capitalizeWords(formData.get("middleName").trim() || ""),
       lastName: capitalizeWords(formData.get("lastName").trim() || ""),
-      email: formData.get("email").trim(),
       address: formData.get("address").trim().replace(/\n/g, "<br>"),
       cardDetails: updatedCard,
       orders: user.orders
@@ -231,5 +314,6 @@ function renderAccountPage(user) {
 
 document.addEventListener("DOMContentLoaded", async () => {
   const userData = await fetchUserData();
+  console.log("✅ User data:", userData);
   renderAccountPage(userData);
 });
