@@ -18,7 +18,7 @@ const _ABOUT_URL = "about.html";
 const _LOGIN_URL = "loginmain.html";
 const _CART_URL = "cart.html"; 
 const _ADMIN_URL = "admin.html";         
-const _PROFILE_URL = "profile.html";
+const _PROFILE_URL = "user.html";
 
 // endpoint routes
 const _ENDPOINT_REGISTER = "http://localhost:8080/api/auth/signup";
