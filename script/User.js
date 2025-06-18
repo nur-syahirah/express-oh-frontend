@@ -1,24 +1,5 @@
 import { capitalizeWords, maskCardNumber, parseJwt } from './utils.js';
 
-function logUserDetails() {
-  const token = localStorage.getItem('usertoken'); // Use your actual token key here
-  if (!token) {
-    console.log("No JWT token found in localStorage.");
-    return;
-  }
-  
-  try {
-    const userDetails = parseJwt(token);
-    console.log("Decoded user details from JWT:", userDetails);
-  } catch (error) {
-    console.error("Failed to parse JWT token:", error);
-  }
-}
-
-// Call it on page load or when appropriate
-document.addEventListener('DOMContentLoaded', () => {
-  logUserDetails();
-});
 async function fetchUserData() {
   console.log("🔍 fetchUserData() called");
   try {
@@ -154,6 +135,7 @@ function renderAccountPage(user) {
           <h5 class="fw-semibold">Profile Info</h5>
           <p><strong>Name:</strong> ${fullName}</p>
           <p><strong>Email:</strong> ${user.email}</p>
+          <p><strong>Phone:</strong> ${user.phone || "Not provided"}</p>
           <p><strong>Address:</strong><br>${user.address}</p>
           <p><strong>Cardholder Name:</strong> ${cardholderNameDisplay}</p>
           <p><strong>Card Number:</strong> ${cardNumberMasked}</p>
@@ -222,7 +204,21 @@ function renderAccountPage(user) {
                   <label for="lastName" class="form-label">Last Name (Optional)</label>
                   <input type="text" class="form-control text-capitalize" id="lastName" name="lastName" value="${user.lastName || ''}">
                 </div>
-                <div class="col-12">
+                <div class="col-md-6">
+                  <label for="phone" class="form-label">Phone Number *</label>
+                  <input 
+                    type="tel" 
+                    class="form-control" 
+                    id="phone" 
+                    name="phone" 
+                    required 
+                    pattern="\\d{8}" 
+                    title="Enter an 8-digit phone number" 
+                    value="${user.phone || ''}" 
+                    placeholder="e.g. 91234567"
+                  >
+                </div>
+                <div class="col-md-6">
                   <label class="form-label">Email</label>
                   <input type="email" class="form-control" value="${user.email}" disabled>
                 </div>
@@ -275,13 +271,20 @@ function renderAccountPage(user) {
     const newCardNum = formData.get("cardNumber").replace(/\D/g, "");
     const newExp = formData.get("expiryDate").trim();
     const newCVV = formData.get("cvv").trim();
+    const newPhone = formData.get("phone").trim();
 
     const allFilled = newCardName && newCardNum && newExp && newCVV;
     const noneFilled = !newCardName && !newCardNum && !newExp && !newCVV;
 
-    // ✅ Validate CVV (must be 3 or 4 digits if filled)
+    // Validate CVV (must be 3 or 4 digits if filled)
     if (newCVV && !/^\d{3,4}$/.test(newCVV)) {
       alert("CVV must be 3 or 4 digits.");
+      return;
+    }
+
+    // Validate phone (8 digits local phone)
+    if (!/^\d{8}$/.test(newPhone)) {
+      alert("Please enter a valid 8-digit phone number.");
       return;
     }
 
@@ -301,16 +304,19 @@ function renderAccountPage(user) {
       firstName: capitalizeWords(formData.get("firstName").trim()),
       middleName: capitalizeWords(formData.get("middleName").trim() || ""),
       lastName: capitalizeWords(formData.get("lastName").trim() || ""),
+      phone: newPhone,
       address: formData.get("address").trim().replace(/\n/g, "<br>"),
       cardDetails: updatedCard,
       orders: user.orders
     };
+
     const modalElement = document.getElementById("editProfileModal");
     const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
     modal.hide();
     renderAccountPage(updatedUser);
   });
 }
+
 
 document.addEventListener("DOMContentLoaded", async () => {
   const userData = await fetchUserData();
