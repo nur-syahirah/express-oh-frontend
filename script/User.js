@@ -2,16 +2,10 @@ import { capitalizeWords, maskCardNumber, parseJwt } from './utils.js';
 
 const BACKEND_URL = "http://localhost:8080";
 
-async function fetchUserData() {
+async function fetchUserProfile() {
+  const token = localStorage.getItem('usertoken');
+  console.log("[fetchUserProfile] Sending request...");
   try {
-    const token = localStorage.getItem('usertoken');
-    let userEmail = null;
-
-    if (token) {
-      const payload = parseJwt(token);
-      userEmail = payload?.sub || null;
-    }
-
     const profileResponse = await fetch(`${BACKEND_URL}/api/user/profile`, {
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -19,59 +13,18 @@ async function fetchUserData() {
       }
     });
 
-    if (!profileResponse.ok) {
-      throw new Error('Failed to fetch profile from API');
-    }
+    if (!profileResponse.ok) throw new Error('Failed to fetch profile');
 
     const profile = await profileResponse.json();
-
-    const cardResponse = await fetch(`${BACKEND_URL}/api/user/profile/cardinfo`, {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
-
-    let cardDetails = null;
-    if (cardResponse.ok) {
-      const cardData = await cardResponse.json();
-      cardDetails = {
-        cardholderName: cardData.cardName || "Not available",
-        cardNumber: cardData.maskedCardNumber || "Not available",
-        expiryDate: cardData.expiryDate || "Not available",
-        cvv: "•••"
-      };
-    }
-
-    // Fetch order summary list
-    const orderResponse = await fetch(`${BACKEND_URL}/api/user/profile/orders`, {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
-
-    let orders = [];
-    if (orderResponse.ok) {
-      const orderData = await orderResponse.json();
-
-      orders = orderData.map(order => ({
-        id: order.id,
-        date: new Date(order.orderDate).toLocaleDateString(),
-        items: order.products.map(p => `${p.product.name} (x${p.quantity})`),
-        total: `$${parseFloat(order.totalCost).toFixed(2)}`,
-        status: "processing" // Placeholder, backend status integration pending
-      }));
-    }
+    console.log("[fetchUserProfile] Profile received:", profile);
 
     return {
       firstName: profile.firstName || "Not available",
       lastName: profile.lastName || "",
-      email: profile.email || userEmail || "Not available",
+      email: profile.email || null,
       address: profile.address || "Not available",
       phone: profile.phone || "Not available",
-      cardDetails,
-      orders
     };
-
   } catch (error) {
     console.error(error);
     return {
@@ -79,11 +32,88 @@ async function fetchUserData() {
       lastName: "",
       email: "Not available",
       address: "Not available",
-      phone: "Not available",
-      cardDetails: null,
-      orders: []
+      phone: "Not available"
     };
   }
+}
+
+async function fetchUserCardDetails() {
+  const token = localStorage.getItem('usertoken');
+  console.log("[fetchUserCardDetails] Sending request...");
+  try {
+    const cardResponse = await fetch(`${BACKEND_URL}/api/user/profile/cardinfo`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (!cardResponse.ok) throw new Error('Failed to fetch card details');
+    const cardData = await cardResponse.json();
+    console.log("[fetchUserCardDetails] Card data received:", cardData);
+    return {
+      cardholderName: cardData.cardName || "Not available",
+      cardNumber: cardData.maskedCardNumber || "Not available",
+      expiryDate: cardData.expiryDate || "Not available",
+      cvv: "•••"
+    };
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+async function fetchUserOrders() {
+  const token = localStorage.getItem('usertoken');
+  console.log("[fetchUserOrders] Sending request...");
+  try {
+    const ordersResponse = await fetch(`${BACKEND_URL}/api/user/profile/orders`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    if (!ordersResponse.ok) throw new Error('Failed to fetch orders');
+    const orders = await ordersResponse.json();
+    console.log("[fetchUserOrders] Raw orders data:", orders);
+
+    // Map backend order structure to frontend structure and flatten products
+    const mappedOrders = orders.map(order => {
+      const items = (order.products || []).map(product =>
+        product.quantity && product.productName
+          ? `${product.quantity} x ${product.productName}`
+          : product.productName || "Unknown item"
+      );
+      const mappedOrder = {
+        orderId: order.orderId,
+        orderDate: order.orderDate,
+        totalCost: order.totalCost,
+        products: order.products || [],
+        items,  // flattened items list
+        status: order.status || "unknown"
+      };
+      console.log("[fetchUserOrders] Mapped order:", mappedOrder);
+      return mappedOrder;
+    });
+
+    return mappedOrders;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+}
+
+async function fetchUserData() {
+  console.log("[fetchUserData] Fetching profile, card details, and orders in parallel...");
+  const [profile, cardDetails, orders] = await Promise.all([
+    fetchUserProfile(),
+    fetchUserCardDetails(),
+    fetchUserOrders()
+  ]);
+
+  const combinedData = {
+    ...profile,
+    cardDetails,
+    orders
+  };
+  console.log("[fetchUserData] Combined user data:", combinedData);
+  return combinedData;
 }
 
 function mapStatus(status) {
@@ -97,13 +127,17 @@ function mapStatus(status) {
 }
 
 function renderAccountPage(user) {
+  console.log("[renderAccountPage] Rendering with user data:", user);
+
   const main = document.getElementById("main");
   const fullName = [user.firstName, user.lastName]
     .filter(n => n && n.trim() !== "")
     .join(" ");
 
   const cardholderNameDisplay = user.cardDetails?.cardholderName || "Not provided";
-  const cardNumberMasked = user.cardDetails?.cardNumber || "Not provided";
+  const cardNumberMasked = user.cardDetails?.cardNumber
+    ? user.cardDetails.cardNumber
+    : "Not provided";
   const expiryDateDisplay = user.cardDetails?.expiryDate || "Not provided";
 
   main.innerHTML = `
@@ -113,7 +147,7 @@ function renderAccountPage(user) {
         <div class="col-md-6 mb-3">
           <h5 class="fw-semibold">Profile Info</h5>
           <p><strong>Name:</strong> ${fullName}</p>
-          <p><strong>Email:</strong> ${user.email}</p>
+          <p><strong>Email:</strong> ${user.email || "Not provided"}</p>
           <p><strong>Phone:</strong> ${user.phone || "Not provided"}</p>
           <p><strong>Address:</strong><br>${user.address}</p>
           <p><strong>Cardholder Name:</strong> ${cardholderNameDisplay}</p>
@@ -139,17 +173,16 @@ function renderAccountPage(user) {
           </thead>
           <tbody>
             ${user.orders.map(order => {
+              // Using the flattened items list for display
+              const itemsList = order.items.map(item => `<li>${item}</li>`).join("");
+
               const statusInfo = mapStatus(order.status);
               return `
                 <tr>
-                  <td>${order.id}</td>
-                  <td>${order.date}</td>
-                  <td>
-                    <ul class="mb-0">
-                      ${order.items.map(item => `<li>${item}</li>`).join("")}
-                    </ul>
-                  </td>
-                  <td>${order.total}</td>
+                  <td>${order.orderId}</td>
+                  <td>${new Date(order.orderDate).toLocaleString()}</td>
+                  <td><ul class="mb-0">${itemsList}</ul></td>
+                  <td>${order.totalCost.toFixed(2)}</td>
                   <td><span class="badge ${statusInfo.class}">${statusInfo.text}</span></td>
                 </tr>
               `;
@@ -184,7 +217,7 @@ function renderAccountPage(user) {
                 </div>
                 <div class="col-md-6">
                   <label class="form-label">Email</label>
-                  <input type="email" class="form-control" value="${user.email}" disabled>
+                  <input type="email" class="form-control" value="${user.email || ''}" disabled>
                 </div>
                 <div class="col-12">
                   <label for="address" class="form-label">Address *</label>
@@ -260,7 +293,8 @@ function renderAccountPage(user) {
 
       if (!response.ok) throw new Error("Failed to update profile");
 
-      bootstrap.Modal.getOrCreateInstance(document.getElementById("editProfileModal")).hide();
+      const modalElement = document.getElementById("editProfileModal");
+      bootstrap.Modal.getOrCreateInstance(modalElement).hide();
 
       const newUserData = await fetchUserData();
       renderAccountPage(newUserData);
@@ -272,6 +306,7 @@ function renderAccountPage(user) {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+  console.log("[DOMContentLoaded] Initializing user data fetch and render...");
   const userData = await fetchUserData();
   renderAccountPage(userData);
 });
