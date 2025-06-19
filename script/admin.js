@@ -4,7 +4,7 @@
 const API_BASE_URL = 'http://localhost:8080/api/admin';
 const API_IMAGE_URL = 'http://localhost:8080';
 const PRODUCTS_ENDPOINT = `${API_BASE_URL}/products`;
-const IMG_PLACEHOLDER = "../images/cuphead.png";
+const IMG_PLACEHOLDER = "../images/cuphead.jpeg";
 const token = localStorage.getItem("usertoken");
 
 
@@ -836,7 +836,7 @@ async function editProduct(productId) {
     console.error("Error editing product:", error);
   }
 }
- console.log("Product Data being sent:" , productData);
+//  console.log("Product Data being sent:", productData);
 function collectProductFormData() { //TODO
   // Get the basic product fields from the form.
   const sku = document.getElementById("adminProductSKU").value;
@@ -873,10 +873,10 @@ function collectProductFormData() { //TODO
 // When the form is submitted, collect and log the JSON payload.
 document.getElementById("adminSubmitButton").addEventListener("click", async (e) => {
   e.preventDefault();
-
+  
   try {
     const productData = collectProductFormData();
-    const productId = document.getElementById("adminProductIndex").value.trim();
+    const productId = document.getElementById("adminProductIndex").value;
 
     // Validate required fields
     if (!productData.name || !productData.price) {
@@ -884,7 +884,7 @@ document.getElementById("adminSubmitButton").addEventListener("click", async (e)
     }
 
     // Determine if we're creating or updating
-    const isNewProduct = !productId || productId === "-1";
+    const isNewProduct = !productId || productId.trim() === "" || productId === "-1";
 
     // create a FormData object to store "product" (productData) and "image" (image)
     let formData = new FormData();
@@ -892,26 +892,27 @@ document.getElementById("adminSubmitButton").addEventListener("click", async (e)
 
     // Handle image upload if needed
     const fileInput = document.getElementById("adminProductImage");
-    if (fileInput.files.length > 0) {
-      formData.append("image", fileInput.files[0]);
-    }
+    formData.append("image", fileInput.files[0]);
 
+    // Check whether there's an adminProductIndex
+    const productIndexExists = document.getElementById("adminProductIndex").value;
     let returnedProduct = null;
 
-    if (isNewProduct) {
+    if(!productIndexExists)
       // CREATE new product
       returnedProduct = await createProduct(formData);
-    } else {
+    else
       // UPDATE existing product
       returnedProduct = await updateProduct(productId, formData);
-    }
-
-    if (returnedProduct && isNewProduct) {
+      
+    if (returnedProduct && !productIndexExists) {  
       Swal.fire("Success!", "Product created successfully!", "success");
-    } else if (returnedProduct && !isNewProduct) {
+    } 
+    
+    if(returnedProduct && productIndexExists){
       Swal.fire("Success!", "Product updated successfully!", "success");
     }
-
+    
     // Reset form and refresh list
     resetProductForm();
     products = await loadProductsFromAPI();
@@ -922,7 +923,6 @@ document.getElementById("adminSubmitButton").addEventListener("click", async (e)
     Swal.fire("Error!", error.message || "Operation failed", "error");
   }
 });
-
 
 /* To fetch product flavors. */
 async function fetchProductFlavors(productId) {
@@ -956,3 +956,4 @@ async function fetchProductFlavors(productId) {
     return [];
   }
 }
+
