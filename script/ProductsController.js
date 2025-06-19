@@ -9,11 +9,18 @@ function addItemCard(item) {
   productCard.className = "card h-100";
   columnWrapper.appendChild(productCard);
 
+  // Create an image wrapper with a fixed size
+  const productCardImageContainer = document.createElement("div");
+  productCardImageContainer.className = "card-img-container";
+  productCard.appendChild(productCardImageContainer);
+
+  // Create the image element itself
   const productCardImage = document.createElement("img");
+
   productCardImage.src = "http://localhost:8080" + item.imageURL;
   productCardImage.alt = item.name;
   productCardImage.className = "card-img-top";
-  productCard.appendChild(productCardImage);
+  productCardImageContainer.appendChild(productCardImage);
 
   const productCardBody = document.createElement("div");
   productCardBody.className = "card-body";

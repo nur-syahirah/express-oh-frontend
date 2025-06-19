@@ -836,7 +836,7 @@ async function editProduct(productId) {
     console.error("Error editing product:", error);
   }
 }
- console.log("Product Data being sent:", productData);
+ console.log("Product Data being sent:" , productData);
 function collectProductFormData() { //TODO
   // Get the basic product fields from the form.
   const sku = document.getElementById("adminProductSKU").value;

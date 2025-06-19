@@ -87,14 +87,14 @@
       <form id="adminProductForm">
 
       <!-- Hidden field for product index; "-1" means new product -->
-      <input type="hidden" id="adminProductIndex" value="-1" />
+      <input type="hidden" id="adminProductIndex" value="" />
       <div class="row">
 
       <!-- Left Column: Image Upload and Preview (≈2/5 of width) -->
-      <div class="col-md-5 mb-3">
+      <div class="col-md-5 mb-3 d-block justify-content-center align-items-center">
         <!-- Product image preview: initially empty -->
-        <img id="adminImagePreview" src="" alt="Product Preview" class="img-fluid" />
-        <input type="file" id="adminProductImage" class="form-control mt-2" accept="image/*" />
+        <img id="adminImagePreview" src="" alt="Product Preview" class="img-fluid rounded-4 border border-2 border-secondary-subtle d-block mx-auto" />
+        <input type="file" id="adminProductImage" class="form-control mt-4 d-block" accept="image/*" />
       </div>
 
       <!-- Right Column: Product Details (≈3/5 of width) -->
@@ -191,7 +191,7 @@
   <div class="footer-container">
     <footer class="footer-col">
       <div class="row justify-content-center">
-        <div id="foot-left-col" class="col-md-7 mb-3">
+        <div id="foot-left-col" class="col-md-7 mb-3 border-subtle">
           <a href="index.html" style="text-decoration: none;">
             <h4 class="logo">Express-Oh!</h4>
           </a>
@@ -212,13 +212,13 @@
             <h5>Quick Links</h5>
             <ul class="nav flex-column">
               <li class="nav-item mb-2">
-                <a href="#" class="nav-link p-0 text-white">Shop</a>
+                <a href="products.html" class="nav-link p-0 text-white">Shop</a>
               </li>
               <li class="nav-item mb-2">
-                <a href="#" class="nav-link p-0 text-white">Contact Us</a>
+                <a href="about.html" class="nav-link p-0 text-white">Contact Us</a>
               </li>
               <li class="nav-item mb-2">
-                <a href="#" class="nav-link p-0 text-white">Login</a>
+                <a href="loginmain.html" class="nav-link p-0 text-white">Login</a>
               </li>
             </ul>
           </div>
@@ -250,7 +250,6 @@
   <script src="script/form-validate.js"></script> <!-- * For validating inputs (NEW)-->
 
   <!-- Custom Script -->
-  <script src="./script/product.js"></script>
   <script src= "script/ProductsController.js"></script>
   <script src= "script/cart.js"></script>
 

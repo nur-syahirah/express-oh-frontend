@@ -1,41 +1,116 @@
-import { capitalizeWords, maskCardNumber } from './utils.js';
+import { capitalizeWords, maskCardNumber, parseJwt } from './utils.js';
 
 async function fetchUserData() {
-  return {
-    firstName: "John",
-    middleName: "M",
-    lastName: "Doe",
-    email: "john.doe@example.com",
-    address: "123 Roast Lane<br>Brewtown, BT 45678",
-    cardDetails: {
-      cardholderName: "John M Doe",
-      cardNumber: "4111111111111111",
-      expiryDate: "12/26",
-      cvv: "123"
-    },
-    orders: [
-      {
-        number: "#10234",
-        date: "2025-06-01",
-        items: [
-          "2x Colombian Medium Roast (250g)",
-          "1x Brazil Dark Roast (1kg)"
-        ],
-        total: "$36.00",
-        status: "delivered"
-      },
-      {
-        number: "#10210",
-        date: "2025-05-25",
-        items: [
-          "1x Ethiopian Light Roast (500g)",
-          "1x Kenya AA Medium Roast (250g)"
-        ],
-        total: "$28.50",
-        status: "processing"
+  console.log("🔍 fetchUserData() called");
+  try {
+    const token = localStorage.getItem('usertoken');
+    let userEmail = null;
+
+    if (token) {
+      const payload = parseJwt(token);
+      console.log("JWT Payload:", payload);
+      userEmail = payload?.sub || null;
+    }
+
+    // Fetch user profile (without full card info)
+    const profileResponse = await fetch('http://localhost:8080/api/user/profile', {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
       }
-    ]
-  };
+    });
+
+    if (!profileResponse.ok) {
+      throw new Error('Failed to fetch profile from API');
+    }
+
+    const profile = await profileResponse.json();
+
+    // Fetch masked card info from new endpoint
+    const cardResponse = await fetch('http://localhost:8080/api/user/profile/cardinfo', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    let cardDetails = null;
+    if (cardResponse.ok) {
+      const cardData = await cardResponse.json();
+      cardDetails = {
+        cardholderName: cardData.cardName || "Not available",
+        cardNumber: cardData.maskedCardNumber || "Not available",
+        expiryDate: cardData.expiryDate || "Not available",  // if expiryDate is included in response
+        cvv: "•••" // Never expose CVV
+      };
+    }
+
+    return {
+      firstName: profile.firstName || "Not available",
+      middleName: profile.middleName || "",
+      lastName: profile.lastName || "",
+      email: profile.email || userEmail || "Not available",
+      address: profile.address || "Not available",
+      phone: profile.phone || "Not available",
+      cardDetails,
+      orders: profile.orders || [
+        {
+          number: "#10234",
+          date: "2025-06-01",
+          items: [
+            "2x Colombian Medium Roast (250g)",
+            "1x Brazil Dark Roast (1kg)"
+          ],
+          total: "$36.00",
+          status: "delivered"
+        },
+        {
+          number: "#10210",
+          date: "2025-05-25",
+          items: [
+            "1x Ethiopian Light Roast (500g)",
+            "1x Kenya AA Medium Roast (250g)"
+          ],
+          total: "$28.50",
+          status: "processing"
+        }
+      ]
+    };
+
+  } catch (error) {
+    console.error(error);
+    // fallback user data with orders
+    return {
+      firstName: "Not available",
+      middleName: "",
+      lastName: "",
+      email: "Not available",
+      address: "Not available",
+      phone: "Not available",
+      cardDetails: null,
+      orders: [
+        {
+          number: "#10234",
+          date: "2025-06-01",
+          items: [
+            "2x Colombian Medium Roast (250g)",
+            "1x Brazil Dark Roast (1kg)"
+          ],
+          total: "$36.00",
+          status: "delivered"
+        },
+        {
+          number: "#10210",
+          date: "2025-05-25",
+          items: [
+            "1x Ethiopian Light Roast (500g)",
+            "1x Kenya AA Medium Roast (250g)"
+          ],
+          total: "$28.50",
+          status: "processing"
+        }
+      ]
+    };
+  }
 }
 
 function mapStatus(status) {
@@ -48,19 +123,19 @@ function mapStatus(status) {
   return statusMap[status] || { text: "Unknown", class: "bg-dark" };
 }
 
+const BACKEND_URL = "http://localhost:8080"; // Change this to match your backend port
+
 function renderAccountPage(user) {
   const main = document.getElementById("main");
   const fullName = [user.firstName, user.middleName, user.lastName]
     .filter(n => n && n.trim() !== "")
     .join(" ");
 
+  const cardholderNameDisplay = user.cardDetails?.cardholderName || "Not provided";
   const cardNumberMasked = user.cardDetails?.cardNumber
     ? maskCardNumber(user.cardDetails.cardNumber)
     : "Not provided";
-
-  const cardholderNameDisplay = user.cardDetails?.cardholderName || "Not provided";
   const expiryDateDisplay = user.cardDetails?.expiryDate || "Not provided";
-  const cvvDisplay = user.cardDetails?.cvv ? "•••" : "Not provided";
 
   main.innerHTML = `
     <div class="bg-white p-4 rounded shadow-sm w-100">
@@ -70,11 +145,12 @@ function renderAccountPage(user) {
           <h5 class="fw-semibold">Profile Info</h5>
           <p><strong>Name:</strong> ${fullName}</p>
           <p><strong>Email:</strong> ${user.email}</p>
+          <p><strong>Phone:</strong> ${user.phone || "Not provided"}</p>
           <p><strong>Address:</strong><br>${user.address}</p>
           <p><strong>Cardholder Name:</strong> ${cardholderNameDisplay}</p>
           <p><strong>Card Number:</strong> ${cardNumberMasked}</p>
           <p><strong>Expiry Date:</strong> ${expiryDateDisplay}</p>
-          <p><strong>CVV:</strong> ${cvvDisplay}</p>
+          <!-- CVV not displayed -->
           <button id="editProfileBtn" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#editProfileModal">Edit Profile</button>
         </div>
       </div>
@@ -138,9 +214,13 @@ function renderAccountPage(user) {
                   <label for="lastName" class="form-label">Last Name (Optional)</label>
                   <input type="text" class="form-control text-capitalize" id="lastName" name="lastName" value="${user.lastName || ''}">
                 </div>
-                <div class="col-12">
-                  <label for="email" class="form-label">Email *</label>
-                  <input type="email" class="form-control" id="email" name="email" required value="${user.email}">
+                <div class="col-md-6">
+                  <label for="phone" class="form-label">Phone (local, no area code)</label>
+                  <input type="text" class="form-control" id="phone" name="phone" maxlength="8" placeholder="e.g. 91234567" value="${user.phone || ''}">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Email</label>
+                  <input type="email" class="form-control" value="${user.email}" disabled>
                 </div>
                 <div class="col-12">
                   <label for="address" class="form-label">Address *</label>
@@ -169,7 +249,6 @@ function renderAccountPage(user) {
                   <input type="text" class="form-control" id="cvv" name="cvv" maxlength="4" placeholder="123" value="${user.cardDetails?.cvv || ''}">
                 </div>
               </div>
-
             </form>
           </div>
           <div class="modal-footer">
@@ -181,9 +260,8 @@ function renderAccountPage(user) {
     </div>
   `;
 
-  // Form submission handler
   const editProfileForm = document.getElementById("editProfileForm");
-  editProfileForm.addEventListener("submit", event => {
+  editProfileForm.addEventListener("submit", async event => {
     event.preventDefault();
     const formData = new FormData(editProfileForm);
 
@@ -192,44 +270,67 @@ function renderAccountPage(user) {
     const newExp = formData.get("expiryDate").trim();
     const newCVV = formData.get("cvv").trim();
 
-    const allFilled = newCardName && newCardNum && newExp && newCVV;
-    const noneFilled = !newCardName && !newCardNum && !newExp && !newCVV;
-
-    // ✅ Validate CVV (must be 3 or 4 digits if filled)
+    // Validate CVV format if present
     if (newCVV && !/^\d{3,4}$/.test(newCVV)) {
-      alert("CVV must be 3 or 4 digits.");
+      console.error("CVV must be 3 or 4 digits.");
       return;
     }
 
-    let updatedCard = null;
-    if (allFilled) {
-      updatedCard = {
-        cardholderName: capitalizeWords(newCardName),
-        cardNumber: newCardNum,
-        expiryDate: newExp,
-        cvv: newCVV
-      };
-    } else if (!noneFilled) {
-      updatedCard = user.cardDetails || null;
-    }
+    // Determine if any card details should be sent
+    const allCardFieldsEmpty = [newCardName, newCardNum, newExp, newCVV].every(value => value === "");
 
     const updatedUser = {
       firstName: capitalizeWords(formData.get("firstName").trim()),
       middleName: capitalizeWords(formData.get("middleName").trim() || ""),
       lastName: capitalizeWords(formData.get("lastName").trim() || ""),
-      email: formData.get("email").trim(),
+      phone: formData.get("phone").trim(),
       address: formData.get("address").trim().replace(/\n/g, "<br>"),
-      cardDetails: updatedCard,
-      orders: user.orders
+      orders: user.orders // keep this if your frontend UI needs it after response
     };
-    const modalElement = document.getElementById("editProfileModal");
-    const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
-    modal.hide();
-    renderAccountPage(updatedUser);
+
+    // Only include card fields if something was entered
+    if (!allCardFieldsEmpty) {
+      updatedUser.cardName = newCardName;
+      updatedUser.cardNumber = newCardNum;
+      updatedUser.cardExpiry = newExp;
+      updatedUser.cardCvv = newCVV;
+    }
+
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/user/profile`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("usertoken") || ""}`
+        },
+        body: JSON.stringify(updatedUser)
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to update profile: ${errorText}`);
+      }
+
+      const savedProfile = await response.json();
+      console.log("Saved profile response:", savedProfile);
+
+      const modalElement = document.getElementById("editProfileModal");
+      const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+      modal.hide();
+
+      renderAccountPage({
+        ...user,
+        ...savedProfile
+      });
+    } catch (error) {
+      console.error(error.message);
+    }
   });
+
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
   const userData = await fetchUserData();
+  console.log("✅ User data:", userData);
   renderAccountPage(userData);
 });
