@@ -1,19 +1,18 @@
 import { capitalizeWords, maskCardNumber, parseJwt } from './utils.js';
 
+const BACKEND_URL = "http://localhost:8080";
+
 async function fetchUserData() {
-  console.log("🔍 fetchUserData() called");
   try {
     const token = localStorage.getItem('usertoken');
     let userEmail = null;
 
     if (token) {
       const payload = parseJwt(token);
-      console.log("JWT Payload:", payload);
       userEmail = payload?.sub || null;
     }
 
-    // Fetch user profile (without full card info)
-    const profileResponse = await fetch('http://localhost:8080/api/user/profile', {
+    const profileResponse = await fetch(`${BACKEND_URL}/api/user/profile`, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
@@ -26,8 +25,7 @@ async function fetchUserData() {
 
     const profile = await profileResponse.json();
 
-    // Fetch masked card info from new endpoint
-    const cardResponse = await fetch('http://localhost:8080/api/user/profile/cardinfo', {
+    const cardResponse = await fetch(`${BACKEND_URL}/api/user/profile/cardinfo`, {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -39,76 +37,31 @@ async function fetchUserData() {
       cardDetails = {
         cardholderName: cardData.cardName || "Not available",
         cardNumber: cardData.maskedCardNumber || "Not available",
-        expiryDate: cardData.expiryDate || "Not available",  // if expiryDate is included in response
-        cvv: "•••" // Never expose CVV
+        expiryDate: cardData.expiryDate || "Not available",
+        cvv: "•••"
       };
     }
 
     return {
       firstName: profile.firstName || "Not available",
-      middleName: profile.middleName || "",
       lastName: profile.lastName || "",
       email: profile.email || userEmail || "Not available",
       address: profile.address || "Not available",
       phone: profile.phone || "Not available",
       cardDetails,
-      orders: profile.orders || [
-        {
-          number: "#10234",
-          date: "2025-06-01",
-          items: [
-            "2x Colombian Medium Roast (250g)",
-            "1x Brazil Dark Roast (1kg)"
-          ],
-          total: "$36.00",
-          status: "delivered"
-        },
-        {
-          number: "#10210",
-          date: "2025-05-25",
-          items: [
-            "1x Ethiopian Light Roast (500g)",
-            "1x Kenya AA Medium Roast (250g)"
-          ],
-          total: "$28.50",
-          status: "processing"
-        }
-      ]
+      orders: profile.orders || []
     };
 
   } catch (error) {
     console.error(error);
-    // fallback user data with orders
     return {
       firstName: "Not available",
-      middleName: "",
       lastName: "",
       email: "Not available",
       address: "Not available",
       phone: "Not available",
       cardDetails: null,
-      orders: [
-        {
-          number: "#10234",
-          date: "2025-06-01",
-          items: [
-            "2x Colombian Medium Roast (250g)",
-            "1x Brazil Dark Roast (1kg)"
-          ],
-          total: "$36.00",
-          status: "delivered"
-        },
-        {
-          number: "#10210",
-          date: "2025-05-25",
-          items: [
-            "1x Ethiopian Light Roast (500g)",
-            "1x Kenya AA Medium Roast (250g)"
-          ],
-          total: "$28.50",
-          status: "processing"
-        }
-      ]
+      orders: []
     };
   }
 }
@@ -123,17 +76,15 @@ function mapStatus(status) {
   return statusMap[status] || { text: "Unknown", class: "bg-dark" };
 }
 
-const BACKEND_URL = "http://localhost:8080"; // Change this to match your backend port
-
 function renderAccountPage(user) {
   const main = document.getElementById("main");
-  const fullName = [user.firstName, user.middleName, user.lastName]
+  const fullName = [user.firstName, user.lastName]
     .filter(n => n && n.trim() !== "")
     .join(" ");
 
   const cardholderNameDisplay = user.cardDetails?.cardholderName || "Not provided";
   const cardNumberMasked = user.cardDetails?.cardNumber
-    ? maskCardNumber(user.cardDetails.cardNumber)
+    ? user.cardDetails.cardNumber
     : "Not provided";
   const expiryDateDisplay = user.cardDetails?.expiryDate || "Not provided";
 
@@ -150,7 +101,6 @@ function renderAccountPage(user) {
           <p><strong>Cardholder Name:</strong> ${cardholderNameDisplay}</p>
           <p><strong>Card Number:</strong> ${cardNumberMasked}</p>
           <p><strong>Expiry Date:</strong> ${expiryDateDisplay}</p>
-          <!-- CVV not displayed -->
           <button id="editProfileBtn" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#editProfileModal">Edit Profile</button>
         </div>
       </div>
@@ -202,21 +152,17 @@ function renderAccountPage(user) {
           <div class="modal-body">
             <form id="editProfileForm">
               <div class="row g-3">
-                <div class="col-md-4">
+                <div class="col-md-6">
                   <label for="firstName" class="form-label">First Name *</label>
                   <input type="text" class="form-control text-capitalize" id="firstName" name="firstName" required value="${user.firstName}">
                 </div>
-                <div class="col-md-4">
-                  <label for="middleName" class="form-label">Middle Name (Optional)</label>
-                  <input type="text" class="form-control text-capitalize" id="middleName" name="middleName" value="${user.middleName || ''}">
-                </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                   <label for="lastName" class="form-label">Last Name (Optional)</label>
                   <input type="text" class="form-control text-capitalize" id="lastName" name="lastName" value="${user.lastName || ''}">
                 </div>
                 <div class="col-md-6">
-                  <label for="phone" class="form-label">Phone (local, no area code)</label>
-                  <input type="text" class="form-control" id="phone" name="phone" maxlength="8" placeholder="e.g. 91234567" value="${user.phone || ''}">
+                  <label for="phone" class="form-label">Phone</label>
+                  <input type="text" class="form-control" id="phone" name="phone" maxlength="8" value="${user.phone || ''}">
                 </div>
                 <div class="col-md-6">
                   <label class="form-label">Email</label>
@@ -238,15 +184,15 @@ function renderAccountPage(user) {
                 </div>
                 <div class="col-md-3">
                   <label for="cardNumber" class="form-label">Card Number</label>
-                  <input type="text" class="form-control" id="cardNumber" name="cardNumber" maxlength="19" placeholder="1234 5678 9012 3456" value="${user.cardDetails?.cardNumber || ''}">
+                  <input type="text" class="form-control" id="cardNumber" name="cardNumber" maxlength="19" value="${user.cardDetails?.cardNumber || ''}">
                 </div>
                 <div class="col-md-3">
-                  <label for="expiryDate" class="form-label">Expiry Date (MM/YY)</label>
-                  <input type="text" class="form-control" id="expiryDate" name="expiryDate" maxlength="5" placeholder="MM/YY" value="${user.cardDetails?.expiryDate || ''}">
+                  <label for="expiryDate" class="form-label">Expiry Date</label>
+                  <input type="text" class="form-control" id="expiryDate" name="expiryDate" maxlength="5" value="${user.cardDetails?.expiryDate || ''}">
                 </div>
                 <div class="col-md-3">
                   <label for="cvv" class="form-label">CVV</label>
-                  <input type="text" class="form-control" id="cvv" name="cvv" maxlength="4" placeholder="123" value="${user.cardDetails?.cvv || ''}">
+                  <input type="text" class="form-control" id="cvv" name="cvv" maxlength="4" value="${user.cardDetails?.cvv || ''}">
                 </div>
               </div>
             </form>
@@ -260,35 +206,23 @@ function renderAccountPage(user) {
     </div>
   `;
 
-  const editProfileForm = document.getElementById("editProfileForm");
-  editProfileForm.addEventListener("submit", async event => {
+  document.getElementById("editProfileForm").addEventListener("submit", async event => {
     event.preventDefault();
-    const formData = new FormData(editProfileForm);
+    const formData = new FormData(event.target);
+
+    const updatedUser = {
+      firstName: capitalizeWords(formData.get("firstName").trim()),
+      lastName: capitalizeWords(formData.get("lastName").trim() || ""),
+      phone: formData.get("phone").trim(),
+      address: formData.get("address").trim().replace(/\n/g, "<br>")
+    };
 
     const newCardName = formData.get("cardholderName").trim();
     const newCardNum = formData.get("cardNumber").replace(/\D/g, "");
     const newExp = formData.get("expiryDate").trim();
     const newCVV = formData.get("cvv").trim();
+    const allCardFieldsEmpty = [newCardName, newCardNum, newExp, newCVV].every(v => v === "");
 
-    // Validate CVV format if present
-    if (newCVV && !/^\d{3,4}$/.test(newCVV)) {
-      console.error("CVV must be 3 or 4 digits.");
-      return;
-    }
-
-    // Determine if any card details should be sent
-    const allCardFieldsEmpty = [newCardName, newCardNum, newExp, newCVV].every(value => value === "");
-
-    const updatedUser = {
-      firstName: capitalizeWords(formData.get("firstName").trim()),
-      middleName: capitalizeWords(formData.get("middleName").trim() || ""),
-      lastName: capitalizeWords(formData.get("lastName").trim() || ""),
-      phone: formData.get("phone").trim(),
-      address: formData.get("address").trim().replace(/\n/g, "<br>"),
-      orders: user.orders // keep this if your frontend UI needs it after response
-    };
-
-    // Only include card fields if something was entered
     if (!allCardFieldsEmpty) {
       updatedUser.cardName = newCardName;
       updatedUser.cardNumber = newCardNum;
@@ -306,31 +240,21 @@ function renderAccountPage(user) {
         body: JSON.stringify(updatedUser)
       });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Failed to update profile: ${errorText}`);
-      }
-
-      const savedProfile = await response.json();
-      console.log("Saved profile response:", savedProfile);
+      if (!response.ok) throw new Error("Failed to update profile");
 
       const modalElement = document.getElementById("editProfileModal");
-      const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
-      modal.hide();
+      bootstrap.Modal.getOrCreateInstance(modalElement).hide();
 
-      renderAccountPage({
-        ...user,
-        ...savedProfile
-      });
+      const newUserData = await fetchUserData();
+      renderAccountPage(newUserData);
+
     } catch (error) {
-      console.error(error.message);
+      console.error("❌", error);
     }
   });
-
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
   const userData = await fetchUserData();
-  console.log("✅ User data:", userData);
   renderAccountPage(userData);
 });
