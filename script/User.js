@@ -42,6 +42,26 @@ async function fetchUserData() {
       };
     }
 
+    // Fetch order summary list
+    const orderResponse = await fetch(`${BACKEND_URL}/api/user/profile/orders`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    let orders = [];
+    if (orderResponse.ok) {
+      const orderData = await orderResponse.json();
+
+      orders = orderData.map(order => ({
+        id: order.id,
+        date: new Date(order.orderDate).toLocaleDateString(),
+        items: order.products.map(p => `${p.product.name} (x${p.quantity})`),
+        total: `$${parseFloat(order.totalCost).toFixed(2)}`,
+        status: "processing" // Placeholder, backend status integration pending
+      }));
+    }
+
     return {
       firstName: profile.firstName || "Not available",
       lastName: profile.lastName || "",
@@ -49,7 +69,7 @@ async function fetchUserData() {
       address: profile.address || "Not available",
       phone: profile.phone || "Not available",
       cardDetails,
-      orders: profile.orders || []
+      orders
     };
 
   } catch (error) {
@@ -83,9 +103,7 @@ function renderAccountPage(user) {
     .join(" ");
 
   const cardholderNameDisplay = user.cardDetails?.cardholderName || "Not provided";
-  const cardNumberMasked = user.cardDetails?.cardNumber
-    ? user.cardDetails.cardNumber
-    : "Not provided";
+  const cardNumberMasked = user.cardDetails?.cardNumber || "Not provided";
   const expiryDateDisplay = user.cardDetails?.expiryDate || "Not provided";
 
   main.innerHTML = `
@@ -124,7 +142,7 @@ function renderAccountPage(user) {
               const statusInfo = mapStatus(order.status);
               return `
                 <tr>
-                  <td>${order.number}</td>
+                  <td>${order.id}</td>
                   <td>${order.date}</td>
                   <td>
                     <ul class="mb-0">
@@ -242,8 +260,7 @@ function renderAccountPage(user) {
 
       if (!response.ok) throw new Error("Failed to update profile");
 
-      const modalElement = document.getElementById("editProfileModal");
-      bootstrap.Modal.getOrCreateInstance(modalElement).hide();
+      bootstrap.Modal.getOrCreateInstance(document.getElementById("editProfileModal")).hide();
 
       const newUserData = await fetchUserData();
       renderAccountPage(newUserData);
