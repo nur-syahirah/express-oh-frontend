@@ -4,7 +4,7 @@
 const API_BASE_URL = 'http://localhost:8080/api/admin';
 const API_IMAGE_URL = 'http://localhost:8080';
 const PRODUCTS_ENDPOINT = `${API_BASE_URL}/products`;
-const IMG_PLACEHOLDER = "../images/cuphead.png";
+const IMG_PLACEHOLDER = "../images/cuphead.jpeg";
 const token = localStorage.getItem("usertoken");
 
 
@@ -836,7 +836,7 @@ async function editProduct(productId) {
     console.error("Error editing product:", error);
   }
 }
- console.log("Product Data being sent:", productData);
+//  console.log("Product Data being sent:", productData);
 function collectProductFormData() { //TODO
   // Get the basic product fields from the form.
   const sku = document.getElementById("adminProductSKU").value;
