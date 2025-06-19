@@ -3,14 +3,12 @@ import { capitalizeWords, maskCardNumber, parseJwt } from './utils.js';
 const BACKEND_URL = "http://localhost:8080";
 
 async function fetchUserData() {
-  console.log("🔍 fetchUserData() called");
   try {
     const token = localStorage.getItem('usertoken');
     let userEmail = null;
 
     if (token) {
       const payload = parseJwt(token);
-      console.log("JWT Payload:", payload);
       userEmail = payload?.sub || null;
     }
 
@@ -46,7 +44,6 @@ async function fetchUserData() {
 
     return {
       firstName: profile.firstName || "Not available",
-      middleName: profile.middleName || "",
       lastName: profile.lastName || "",
       email: profile.email || userEmail || "Not available",
       address: profile.address || "Not available",
@@ -59,7 +56,6 @@ async function fetchUserData() {
     console.error(error);
     return {
       firstName: "Not available",
-      middleName: "",
       lastName: "",
       email: "Not available",
       address: "Not available",
@@ -82,7 +78,7 @@ function mapStatus(status) {
 
 function renderAccountPage(user) {
   const main = document.getElementById("main");
-  const fullName = [user.firstName, user.middleName, user.lastName]
+  const fullName = [user.firstName, user.lastName]
     .filter(n => n && n.trim() !== "")
     .join(" ");
 
@@ -156,15 +152,11 @@ function renderAccountPage(user) {
           <div class="modal-body">
             <form id="editProfileForm">
               <div class="row g-3">
-                <div class="col-md-4">
+                <div class="col-md-6">
                   <label for="firstName" class="form-label">First Name *</label>
                   <input type="text" class="form-control text-capitalize" id="firstName" name="firstName" required value="${user.firstName}">
                 </div>
-                <div class="col-md-4">
-                  <label for="middleName" class="form-label">Middle Name (Optional)</label>
-                  <input type="text" class="form-control text-capitalize" id="middleName" name="middleName" value="${user.middleName || ''}">
-                </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                   <label for="lastName" class="form-label">Last Name (Optional)</label>
                   <input type="text" class="form-control text-capitalize" id="lastName" name="lastName" value="${user.lastName || ''}">
                 </div>
@@ -220,7 +212,6 @@ function renderAccountPage(user) {
 
     const updatedUser = {
       firstName: capitalizeWords(formData.get("firstName").trim()),
-      middleName: capitalizeWords(formData.get("middleName").trim() || ""),
       lastName: capitalizeWords(formData.get("lastName").trim() || ""),
       phone: formData.get("phone").trim(),
       address: formData.get("address").trim().replace(/\n/g, "<br>")
@@ -249,15 +240,11 @@ function renderAccountPage(user) {
         body: JSON.stringify(updatedUser)
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to update profile");
-      }
+      if (!response.ok) throw new Error("Failed to update profile");
 
       const modalElement = document.getElementById("editProfileModal");
-      const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
-      modal.hide();
+      bootstrap.Modal.getOrCreateInstance(modalElement).hide();
 
-      // ✅ Re-fetch full updated data from backend (including masked card)
       const newUserData = await fetchUserData();
       renderAccountPage(newUserData);
 
@@ -269,6 +256,5 @@ function renderAccountPage(user) {
 
 document.addEventListener("DOMContentLoaded", async () => {
   const userData = await fetchUserData();
-  console.log("✅ User data:", userData);
   renderAccountPage(userData);
 });
