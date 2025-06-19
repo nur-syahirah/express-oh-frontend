@@ -2,6 +2,37 @@
 // Cart Helper Functions
 // ---------------------
 
+const backendUrl = "http://localhost:8080";
+
+// Migrate old cart entries to fix image URLs by prepending backend URL if needed
+function migrateCartImages() {
+  const cart = localStorage.getItem('cart');
+  if (!cart) return;
+
+  let cartItems = JSON.parse(cart);
+  let changed = false;
+
+  cartItems = cartItems.map(item => {
+    if (item.image && !item.image.startsWith('http')) {
+      const normalizedPath = item.image.startsWith('/') ? item.image : `/${item.image}`;
+      const newImage = `${backendUrl}${normalizedPath}`;
+      if (item.image !== newImage) {
+        item.image = newImage;
+        changed = true;
+      }
+    }
+    return item;
+  });
+
+  if (changed) {
+    localStorage.setItem('cart', JSON.stringify(cartItems));
+    console.log('Cart image URLs updated with backend URL.');
+  }
+}
+
+// Run migration immediately on script load
+migrateCartImages();
+
 export function getCartItems() {
   const cart = localStorage.getItem('cart');
   return cart ? JSON.parse(cart) : [];
@@ -18,7 +49,13 @@ export function addToCart(product, quantity = 1) {
   if (existingItem) {
     existingItem.quantity += quantity;
   } else {
-    cart.push({ ...product, quantity });
+    cart.push({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.imageURL, 
+      quantity
+    });
   }
 
   saveCartItems(cart);
@@ -70,10 +107,13 @@ export function renderCart() {
     const col = document.createElement('div');
     col.className = 'col-md-6';
 
+    // image URL is already fixed by migrateCartImages
+    const imageSrc = item.image;
+
     col.innerHTML = `
       <div class="card cart-item p-2">
         <div class="d-flex align-items-center">
-          <img src="${item.image}" alt="${item.name}" class="me-3" />
+          <img src="${imageSrc}" alt="${item.name}" class="me-3" style="width: 100px; height: auto;" />
           <div>
             <h5>${item.name}</h5>
             <p>$${item.price.toFixed(2)}</p>
