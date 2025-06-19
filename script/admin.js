@@ -873,10 +873,10 @@ function collectProductFormData() { //TODO
 // When the form is submitted, collect and log the JSON payload.
 document.getElementById("adminSubmitButton").addEventListener("click", async (e) => {
   e.preventDefault();
-  
+
   try {
     const productData = collectProductFormData();
-    const productId = document.getElementById("adminProductIndex").value;
+    const productId = document.getElementById("adminProductIndex").value.trim();
 
     // Validate required fields
     if (!productData.name || !productData.price) {
@@ -884,7 +884,7 @@ document.getElementById("adminSubmitButton").addEventListener("click", async (e)
     }
 
     // Determine if we're creating or updating
-    const isNewProduct = !productId || productId.trim() === "" || productId === "-1";
+    const isNewProduct = !productId || productId === "-1";
 
     // create a FormData object to store "product" (productData) and "image" (image)
     let formData = new FormData();
@@ -892,27 +892,26 @@ document.getElementById("adminSubmitButton").addEventListener("click", async (e)
 
     // Handle image upload if needed
     const fileInput = document.getElementById("adminProductImage");
-    formData.append("image", fileInput.files[0]);
+    if (fileInput.files.length > 0) {
+      formData.append("image", fileInput.files[0]);
+    }
 
-    // Check whether there's an adminProductIndex
-    const productIndexExists = document.getElementById("adminProductIndex").value;
     let returnedProduct = null;
 
-    if(!productIndexExists)
+    if (isNewProduct) {
       // CREATE new product
       returnedProduct = await createProduct(formData);
-    else
+    } else {
       // UPDATE existing product
       returnedProduct = await updateProduct(productId, formData);
-      
-    if (returnedProduct && !productIndexExists) {  
+    }
+
+    if (returnedProduct && isNewProduct) {
       Swal.fire("Success!", "Product created successfully!", "success");
-    } 
-    
-    if(returnedProduct && productIndexExists){
+    } else if (returnedProduct && !isNewProduct) {
       Swal.fire("Success!", "Product updated successfully!", "success");
     }
-    
+
     // Reset form and refresh list
     resetProductForm();
     products = await loadProductsFromAPI();
@@ -923,6 +922,7 @@ document.getElementById("adminSubmitButton").addEventListener("click", async (e)
     Swal.fire("Error!", error.message || "Operation failed", "error");
   }
 });
+
 
 /* To fetch product flavors. */
 async function fetchProductFlavors(productId) {

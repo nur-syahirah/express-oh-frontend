@@ -16,8 +16,8 @@ function addItemCard(item) {
 
   // Create the image element itself
   const productCardImage = document.createElement("img");
-  productCardImage.src = 'http://localhost:8080' + item.imageURL;
-  console.log("Image URL:", item.imageURL);
+
+  productCardImage.src = "http://localhost:8080" + item.imageURL;
   productCardImage.alt = item.name;
   productCardImage.className = "card-img-top";
   productCardImageContainer.appendChild(productCardImage);
