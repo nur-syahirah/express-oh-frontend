@@ -100,7 +100,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Prepare checkout modal with order summary and user info
   async function prepareCheckoutModal() {
-    // Clear previous summary
     checkoutSummary.innerHTML = '';
     let total = 0;
 
@@ -119,7 +118,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     checkoutTotal.textContent = total.toFixed(2);
 
-    // Prefill user info if logged in
     const profile = await fetchUserProfile();
 
     if (profile) {
@@ -132,7 +130,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       checkoutAddressInput.value = '';
     }
 
-    // Handle card info option toggle
     const cardInfo = await fetchCardInfo();
 
     if (cardInfo && cardInfo.maskedCardNumber) {
@@ -211,7 +208,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     checkoutModal.show();
   });
 
-  // Checkout form submit handler
+  // Checkout form submit handler with POST request to backend
   const checkoutForm = document.getElementById('checkout-form');
   checkoutForm.addEventListener('submit', async e => {
     e.preventDefault();
@@ -257,17 +254,48 @@ document.addEventListener("DOMContentLoaded", async () => {
       };
     }
 
-    // TODO: Send order data (cart, customerInfo, paymentInfo) to backend API
+    // Map cart items to products array expected by backend
+    const products = cart.map(item => ({
+      productId: item.id,
+      quantity: item.quantity,
+    }));
 
-    console.log("Submitting order:", { cart, customerInfo, paymentInfo });
+    // Get auth token
+    const token = localStorage.getItem('usertoken');
+    if (!token) {
+      alert("You must be logged in to place an order.");
+      return;
+    }
 
-    alert("Order placed successfully!");
+    // Prepare order payload
+    const orderPayload = { products };
 
-    // Clear cart both local variable and localStorage helper
-    cart = [];
-    clearCart();
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/orders`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(orderPayload)
+      });
 
-    renderCart();
-    checkoutModal.hide();
+      if (!response.ok) {
+        const errorText = await response.text();
+        alert(`Order failed: ${errorText}`);
+        return;
+      }
+
+      alert("Order placed successfully!");
+
+      // Clear cart on success
+      cart = [];
+      clearCart();
+      renderCart();
+      checkoutModal.hide();
+
+    } catch (error) {
+      alert(`Order submission error: ${error.message}`);
+    }
   });
 });
