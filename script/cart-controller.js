@@ -5,7 +5,7 @@ import {
   calculateTotal,
   clearCart
 } from './cart.js';
-
+  
 document.addEventListener('DOMContentLoaded', () => {
   console.log('Cart page loaded. Cart:', JSON.parse(localStorage.getItem('cart')));
 
