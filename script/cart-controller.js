@@ -5,13 +5,17 @@ import {
   calculateTotal,
   clearCart
 } from './cart.js';
-  
+
 document.addEventListener('DOMContentLoaded', () => {
   console.log('Cart page loaded. Cart:', JSON.parse(localStorage.getItem('cart')));
 
   const cartContainer = document.getElementById('cart-items');
   const totalElement = document.getElementById('cart-total');
   const checkoutButton = document.getElementById('checkout-btn');
+  const checkoutModal = new bootstrap.Modal(document.getElementById('checkoutModal'));
+  const summaryList = document.getElementById('checkout-summary');
+  const summaryTotal = document.getElementById('checkout-total');
+  const checkoutForm = document.getElementById('checkout-form');
 
   renderCart();
 
@@ -54,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
     checkoutButton.disabled = false;
   }
 
-  // Update quantity
+  // Quantity update
   cartContainer.addEventListener('input', e => {
     if (e.target.classList.contains('quantity-input')) {
       const productId = parseInt(e.target.dataset.id);
@@ -67,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Remove item
+  // Item removal
   cartContainer.addEventListener('click', e => {
     if (e.target.closest('.remove-btn')) {
       const productId = parseInt(e.target.closest('.remove-btn').dataset.id);
@@ -76,15 +80,31 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Checkout modal logic
-  const checkoutModal = new bootstrap.Modal(document.getElementById('checkoutModal'));
-  const summaryList = document.getElementById('checkout-summary');
-  const summaryTotal = document.getElementById('checkout-total');
-  const checkoutForm = document.getElementById('checkout-form');
-  // const checkoutButton already declared above
+  // Autofill user profile fields (name, email, address)
+  async function preloadUserProfile() {
+    try {
+      const token = localStorage.getItem('usertoken');
+      if (!token) return;
 
-  // Open modal on checkout button click
-  checkoutButton.addEventListener('click', () => {
+      const res = await fetch('http://localhost:8080/api/user/profile', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      if (!res.ok) throw new Error('Failed to fetch profile');
+      const data = await res.json();
+
+      // Fill in the fields
+      document.getElementById('checkout-name').value = `${data.firstName ?? ''} ${data.lastName ?? ''}`.trim();
+      document.getElementById('checkout-email').value = data.email ?? '';
+      document.getElementById('checkout-address').value = data.address ?? '';
+
+    } catch (err) {
+      console.error('Could not preload profile:', err.message);
+    }
+  }
+
+  // Show checkout modal
+  checkoutButton.addEventListener('click', async () => {
     const cartItems = getCartItems();
     summaryList.innerHTML = '';
 
@@ -101,14 +121,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     summaryTotal.textContent = calculateTotal().toFixed(2);
+
+    await preloadUserProfile(); // Prefill customer fields
     checkoutModal.show();
   });
 
-  // Handle form submission - Send order to backend
+  // Handle checkout form submission
   checkoutForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // Disable submit button to prevent duplicates
     const submitBtn = checkoutForm.querySelector('button[type="submit"]');
     submitBtn.disabled = true;
     submitBtn.textContent = 'Placing order...';
@@ -160,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error(`Order failed: ${errorText}`);
       }
 
-      alert(`Thank you for your purchase, ${name}! Your order was placed successfully.`);
+      alert(`Thank you for your purchase, ${name}!`);
       clearCart();
       checkoutModal.hide();
       renderCart();
