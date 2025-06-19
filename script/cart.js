@@ -46,6 +46,11 @@ export function addToCart(product, quantity = 1) {
   const cart = getCartItems();
   const existingItem = cart.find(item => item.id === product.id);
 
+  // Normalize image URL here before storing
+  const normalizedImage = product.imageURL && !product.imageURL.startsWith('http')
+    ? `${backendUrl}/${product.imageURL.replace(/^\/+/, '')}`
+    : product.imageURL;
+
   if (existingItem) {
     existingItem.quantity += quantity;
   } else {
@@ -53,7 +58,7 @@ export function addToCart(product, quantity = 1) {
       id: product.id,
       name: product.name,
       price: product.price,
-      image: product.imageURL, 
+      image: normalizedImage, 
       quantity
     });
   }
@@ -92,22 +97,25 @@ export function renderCart() {
   const cartContainer = document.getElementById('cart-items');
   const emptyMessage = document.getElementById('empty-cart-message');
   const totalEl = document.getElementById('cart-total');
+  const checkoutBtn = document.getElementById('checkout-btn');
 
   cartContainer.innerHTML = '';
 
   if (cartItems.length === 0) {
     emptyMessage.style.display = 'block';
     totalEl.textContent = '0.00';
+    if (checkoutBtn) checkoutBtn.disabled = true;
     return;
   } else {
     emptyMessage.style.display = 'none';
+    if (checkoutBtn) checkoutBtn.disabled = false;
   }
 
   cartItems.forEach(item => {
     const col = document.createElement('div');
     col.className = 'col-md-6';
 
-    // image URL is already fixed by migrateCartImages
+    // image URL is already fixed by migrateCartImages and addToCart
     const imageSrc = item.image;
 
     col.innerHTML = `

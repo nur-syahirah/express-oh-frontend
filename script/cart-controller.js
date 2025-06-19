@@ -1,197 +1,273 @@
-import {
-  getCartItems,
-  updateCartItem,
-  removeFromCart,
-  calculateTotal,
-  clearCart
+import { 
+  getCartItems, 
+  saveCartItems, 
+  renderCart as helperRenderCart, 
+  clearCart 
 } from './cart.js';
 
-document.addEventListener('DOMContentLoaded', () => {
-  console.log('Cart page loaded. Cart:', JSON.parse(localStorage.getItem('cart')));
+const BACKEND_URL = "http://localhost:8080";
 
-  const cartContainer = document.getElementById('cart-items');
-  const totalElement = document.getElementById('cart-total');
-  const checkoutButton = document.getElementById('checkout-btn');
-  const checkoutModal = new bootstrap.Modal(document.getElementById('checkoutModal'));
-  const summaryList = document.getElementById('checkout-summary');
-  const summaryTotal = document.getElementById('checkout-total');
-  const checkoutForm = document.getElementById('checkout-form');
+document.addEventListener("DOMContentLoaded", async () => {
+  const cartItemsContainer = document.getElementById('cart-items');
+  const cartTotalEl = document.getElementById('cart-total');
+  const checkoutBtn = document.getElementById('checkout-btn');
+  const checkoutModalEl = document.getElementById('checkoutModal');
+  const checkoutModal = new bootstrap.Modal(checkoutModalEl);
 
-  renderCart();
+  const checkoutSummary = document.getElementById('checkout-summary');
+  const checkoutTotal = document.getElementById('checkout-total');
 
+  // Customer info inputs
+  const checkoutNameInput = document.getElementById('checkout-name');
+  const checkoutEmailInput = document.getElementById('checkout-email');
+  const checkoutAddressInput = document.getElementById('checkout-address');
+
+  // Card inputs
+  const cardNumberInput = document.getElementById('card-number');
+  const cardExpiryInput = document.getElementById('card-expiry');
+  const cardCvcInput = document.getElementById('card-cvc');
+
+  // Initialize local cart variable from helper (normalized & migrated)
+  let cart = getCartItems();
+
+  // Render cart UI based on local cart variable
   function renderCart() {
-    const cartItems = getCartItems();
-    cartContainer.innerHTML = '';
+    cartItemsContainer.innerHTML = '';
 
-    if (cartItems.length === 0) {
-      cartContainer.innerHTML = '<p class="text-center">Your cart is empty.</p>';
-      totalElement.textContent = '$0.00';
-      checkoutButton.disabled = true;
+    if (cart.length === 0) {
+      document.getElementById('empty-cart-message').style.display = 'block';
+      checkoutBtn.disabled = true;
+      cartTotalEl.textContent = '0.00';
       return;
+    } else {
+      document.getElementById('empty-cart-message').style.display = 'none';
+      checkoutBtn.disabled = false;
     }
 
-    cartItems.forEach(item => {
-      const row = document.createElement('div');
-      row.className = 'row align-items-center border-bottom py-3';
+    let total = 0;
+    cart.forEach(item => {
+      const itemTotal = item.price * item.quantity;
+      total += itemTotal;
 
-      row.innerHTML = `
-        <div class="col-md-2 text-center">
-          <img src="${item.image}" alt="${item.name}" class="img-fluid rounded" style="max-height: 80px;">
-        </div>
-        <div class="col-md-3 text-center fw-semibold">${item.name}</div>
-        <div class="col-md-2 text-center">$${item.price.toFixed(2)}</div>
-        <div class="col-md-2 text-center">
-          <input type="number" class="form-control quantity-input" value="${item.quantity}" min="1" data-id="${item.id}">
-        </div>
-        <div class="col-md-2 text-center fw-semibold">$${(item.price * item.quantity).toFixed(2)}</div>
-        <div class="col-md-1 text-center">
-          <button class="btn btn-sm btn-outline-danger remove-btn" data-id="${item.id}">
-            <i class="fas fa-trash"></i>
-          </button>
+      const itemHtml = `
+        <div class="col-12 cart-item d-flex align-items-center gap-3 border p-3 rounded">
+          <img src="${item.image}" alt="${item.name}" class="img-thumbnail" />
+          <div class="flex-grow-1">
+            <h5>${item.name}</h5>
+            <p>Quantity: ${item.quantity}</p>
+            <p>Price: $${item.price.toFixed(2)}</p>
+          </div>
+          <div class="fw-bold fs-5">$${itemTotal.toFixed(2)}</div>
         </div>
       `;
-
-      cartContainer.appendChild(row);
+      cartItemsContainer.insertAdjacentHTML('beforeend', itemHtml);
     });
-
-    totalElement.textContent = `$${calculateTotal().toFixed(2)}`;
-    checkoutButton.disabled = false;
+    cartTotalEl.textContent = total.toFixed(2);
   }
 
-  // Quantity update
-  cartContainer.addEventListener('input', e => {
-    if (e.target.classList.contains('quantity-input')) {
-      const productId = parseInt(e.target.dataset.id);
-      const newQuantity = parseInt(e.target.value);
-
-      if (!isNaN(newQuantity) && newQuantity > 0) {
-        updateCartItem(productId, newQuantity);
-        renderCart();
-      }
-    }
-  });
-
-  // Item removal
-  cartContainer.addEventListener('click', e => {
-    if (e.target.closest('.remove-btn')) {
-      const productId = parseInt(e.target.closest('.remove-btn').dataset.id);
-      removeFromCart(productId);
-      renderCart();
-    }
-  });
-
-  // Autofill user profile fields (name, email, address)
-  async function preloadUserProfile() {
+  // Fetch user profile info to prefill checkout form
+  async function fetchUserProfile() {
     try {
       const token = localStorage.getItem('usertoken');
-      if (!token) return;
+      if (!token) return null;
 
-      const res = await fetch('http://localhost:8080/api/user/profile', {
+      const response = await fetch(`${BACKEND_URL}/api/user/profile`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
-
-      if (!res.ok) throw new Error('Failed to fetch profile');
-      const data = await res.json();
-
-      // Fill in the fields
-      document.getElementById('checkout-name').value = `${data.firstName ?? ''} ${data.lastName ?? ''}`.trim();
-      document.getElementById('checkout-email').value = data.email ?? '';
-      document.getElementById('checkout-address').value = data.address ?? '';
-
-    } catch (err) {
-      console.error('Could not preload profile:', err.message);
+      if (!response.ok) return null;
+      const profile = await response.json();
+      return profile;
+    } catch {
+      return null;
     }
   }
 
-  // Show checkout modal
-  checkoutButton.addEventListener('click', async () => {
-    const cartItems = getCartItems();
-    summaryList.innerHTML = '';
+  // Fetch saved card info (masked)
+  async function fetchCardInfo() {
+    try {
+      const token = localStorage.getItem('usertoken');
+      if (!token) return null;
 
-    if (cartItems.length === 0) {
-      alert('Your cart is empty.');
-      return;
+      const response = await fetch(`${BACKEND_URL}/api/user/profile/cardinfo`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!response.ok) return null;
+      return await response.json();
+    } catch {
+      return null;
     }
+  }
 
-    cartItems.forEach(item => {
+  // Prepare checkout modal with order summary and user info
+  async function prepareCheckoutModal() {
+    // Clear previous summary
+    checkoutSummary.innerHTML = '';
+    let total = 0;
+
+    cart.forEach(item => {
+      const itemTotal = item.price * item.quantity;
+      total += itemTotal;
       const li = document.createElement('li');
       li.className = 'list-group-item d-flex justify-content-between align-items-center';
-      li.innerHTML = `${item.name} × ${item.quantity}<span>$${(item.price * item.quantity).toFixed(2)}</span>`;
-      summaryList.appendChild(li);
+      li.textContent = `${item.name} x${item.quantity}`;
+      const span = document.createElement('span');
+      span.className = 'badge bg-primary rounded-pill';
+      span.textContent = `$${itemTotal.toFixed(2)}`;
+      li.appendChild(span);
+      checkoutSummary.appendChild(li);
     });
 
-    summaryTotal.textContent = calculateTotal().toFixed(2);
+    checkoutTotal.textContent = total.toFixed(2);
 
-    await preloadUserProfile(); // Prefill customer fields
+    // Prefill user info if logged in
+    const profile = await fetchUserProfile();
+
+    if (profile) {
+      checkoutNameInput.value = `${profile.firstName || ''} ${profile.lastName || ''}`.trim();
+      checkoutEmailInput.value = profile.email || '';
+      checkoutAddressInput.value = profile.address || '';
+    } else {
+      checkoutNameInput.value = '';
+      checkoutEmailInput.value = '';
+      checkoutAddressInput.value = '';
+    }
+
+    // Handle card info option toggle
+    const cardInfo = await fetchCardInfo();
+
+    if (cardInfo && cardInfo.maskedCardNumber) {
+      addCardOptionToggle(cardInfo);
+    } else {
+      clearCardInputs();
+      enableCardInputs(true);
+      removeCardOptionToggle();
+    }
+  }
+
+  function addCardOptionToggle(cardInfo) {
+    removeCardOptionToggle();
+
+    const container = document.createElement('div');
+    container.id = 'card-option-container';
+    container.className = 'mb-3';
+
+    container.innerHTML = `
+      <label class="form-label">Payment Method</label>
+      <div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="cardOption" id="useSavedCard" value="saved" checked>
+          <label class="form-check-label" for="useSavedCard">
+            Use Saved Card (${cardInfo.maskedCardNumber} - Exp: ${cardInfo.expiryDate})
+          </label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="cardOption" id="useNewCard" value="new">
+          <label class="form-check-label" for="useNewCard">Use Different Card</label>
+        </div>
+      </div>
+    `;
+
+    const cardNumberFormGroup = cardNumberInput.closest('.mb-3');
+    cardNumberFormGroup.parentNode.insertBefore(container, cardNumberFormGroup);
+
+    enableCardInputs(false);
+
+    document.getElementById('useSavedCard').addEventListener('change', () => {
+      enableCardInputs(false);
+    });
+    document.getElementById('useNewCard').addEventListener('change', () => {
+      enableCardInputs(true);
+    });
+  }
+
+  function removeCardOptionToggle() {
+    const existing = document.getElementById('card-option-container');
+    if (existing) existing.remove();
+  }
+
+  function enableCardInputs(enable) {
+    cardNumberInput.disabled = !enable;
+    cardExpiryInput.disabled = !enable;
+    cardCvcInput.disabled = !enable;
+
+    if (!enable) {
+      cardNumberInput.value = '';
+      cardExpiryInput.value = '';
+      cardCvcInput.value = '';
+    }
+  }
+
+  function clearCardInputs() {
+    cardNumberInput.value = '';
+    cardExpiryInput.value = '';
+    cardCvcInput.value = '';
+  }
+
+  // Initial render on page load
+  renderCart();
+
+  checkoutBtn.addEventListener('click', async () => {
+    await prepareCheckoutModal();
     checkoutModal.show();
   });
 
-  // Handle checkout form submission
-  checkoutForm.addEventListener('submit', async (e) => {
+  // Checkout form submit handler
+  const checkoutForm = document.getElementById('checkout-form');
+  checkoutForm.addEventListener('submit', async e => {
     e.preventDefault();
 
-    const submitBtn = checkoutForm.querySelector('button[type="submit"]');
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Placing order...';
-
-    const name = document.getElementById('checkout-name').value.trim();
-    const email = document.getElementById('checkout-email').value.trim();
-    const address = document.getElementById('checkout-address').value.trim();
-    const cardNumber = document.getElementById('card-number').value.trim();
-    const cardExpiry = document.getElementById('card-expiry').value.trim();
-    const cardCVC = document.getElementById('card-cvc').value.trim();
-
-    if (!name || !email || !address || !cardNumber || !cardExpiry || !cardCVC) {
-      alert('Please fill in all required fields.');
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Place Order';
+    if (cart.length === 0) {
+      alert("Your cart is empty!");
+      checkoutModal.hide();
       return;
     }
 
-    const cartItems = getCartItems();
-
-    if (cartItems.length === 0) {
-      alert('Your cart is empty.');
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Place Order';
-      return;
-    }
-
-    const orderPayload = {
-      products: cartItems.map(item => ({
-        productId: item.id,
-        quantity: item.quantity
-      }))
+    // Collect customer info
+    const customerInfo = {
+      name: checkoutNameInput.value.trim(),
+      email: checkoutEmailInput.value.trim(),
+      address: checkoutAddressInput.value.trim(),
     };
 
-    try {
-      const token = localStorage.getItem('usertoken');
-
-      const response = await fetch('http://localhost:8080/api/orders', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
-        },
-        body: JSON.stringify(orderPayload)
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Order failed: ${errorText}`);
-      }
-
-      alert(`Thank you for your purchase, ${name}!`);
-      clearCart();
-      checkoutModal.hide();
-      renderCart();
-      checkoutForm.reset();
-
-    } catch (error) {
-      alert(error.message);
-    } finally {
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Place Order';
+    if (!customerInfo.name || !customerInfo.email || !customerInfo.address) {
+      alert("Please fill in all required customer information.");
+      return;
     }
+
+    // Payment info
+    const useSavedCard = document.getElementById('useSavedCard')?.checked ?? false;
+
+    let paymentInfo = null;
+    if (useSavedCard) {
+      paymentInfo = { savedCard: true };
+    } else {
+      const cardNum = cardNumberInput.value.trim();
+      const expiry = cardExpiryInput.value.trim();
+      const cvc = cardCvcInput.value.trim();
+
+      if (!cardNum || !expiry || !cvc) {
+        alert("Please fill in all card details.");
+        return;
+      }
+      paymentInfo = {
+        savedCard: false,
+        cardNumber: cardNum,
+        expiryDate: expiry,
+        cvc: cvc,
+      };
+    }
+
+    // TODO: Send order data (cart, customerInfo, paymentInfo) to backend API
+
+    console.log("Submitting order:", { cart, customerInfo, paymentInfo });
+
+    alert("Order placed successfully!");
+
+    // Clear cart both local variable and localStorage helper
+    cart = [];
+    clearCart();
+
+    renderCart();
+    checkoutModal.hide();
   });
 });
