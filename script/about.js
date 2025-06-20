@@ -42,25 +42,25 @@ function createTeamSection() {
     {
       name: 'Syahirah',
       role: 'Developer 1',
-      img: 'images/placeholder Syahirah.png',
+      img: 'images/Syahirah.jpeg',
       overlay: 'Created the administrative page and respective crud and tracking.'
     },
     {
       name: 'Keith',
       role: 'Developer 2',
-      img: 'images/placeholder Keith.png',
+      img: 'images/Keith.jpg',
       overlay: 'Created the landing, login and splash page'
     },
     {
       name: 'Chee Yong',
       role: 'Developer 3',
-      img: 'images/placeholder Chee Yong.png',
+      img: 'images/CheeYong.jpg',
       overlay: 'created the Shop, Cart & Payment pages'
     },
     {
       name: 'Ke Wei',
       role: 'Developer 4',
-      img: 'images/placeholder Ke Wei.png',
+      img: 'images/KeWei.jpg',
       overlay: 'created the about and user dashboard'
     },
   ];
