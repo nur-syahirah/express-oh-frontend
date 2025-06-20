@@ -18,19 +18,24 @@ document.addEventListener("DOMContentLoaded", async () => {
   const checkoutTotal = document.getElementById('checkout-total');
 
   // Customer info inputs
-  const checkoutNameInput = document.getElementById('checkout-name');
+  const firstNameInput = document.getElementById('checkout-first-name');
+  const lastNameInput = document.getElementById('checkout-last-name');
   const checkoutEmailInput = document.getElementById('checkout-email');
   const checkoutAddressInput = document.getElementById('checkout-address');
 
   // Card inputs
+  const cardNameInput = document.getElementById('cardholder-name');
   const cardNumberInput = document.getElementById('card-number');
   const cardExpiryInput = document.getElementById('card-expiry');
   const cardCvcInput = document.getElementById('card-cvc');
 
-  // Initialize local cart variable from helper (normalized & migrated)
   let cart = getCartItems();
 
-  // Render cart UI based on local cart variable
+  // Safely ensure global updateCartCount exists (fallback)
+  window.updateCartCount = window.updateCartCount || function() {
+    console.warn('updateCartCount() is not defined.');
+  };
+
   function renderCart() {
     cartItemsContainer.innerHTML = '';
 
@@ -38,6 +43,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.getElementById('empty-cart-message').style.display = 'block';
       checkoutBtn.disabled = true;
       cartTotalEl.textContent = '0.00';
+      window.updateCartCount();
       return;
     } else {
       document.getElementById('empty-cart-message').style.display = 'none';
@@ -63,31 +69,28 @@ document.addEventListener("DOMContentLoaded", async () => {
       cartItemsContainer.insertAdjacentHTML('beforeend', itemHtml);
     });
     cartTotalEl.textContent = total.toFixed(2);
+
+    window.updateCartCount();
   }
 
-  // Fetch user profile info to prefill checkout form
   async function fetchUserProfile() {
     try {
       const token = localStorage.getItem('usertoken');
       if (!token) return null;
-
       const response = await fetch(`${BACKEND_URL}/api/user/profile`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (!response.ok) return null;
-      const profile = await response.json();
-      return profile;
+      return await response.json();
     } catch {
       return null;
     }
   }
 
-  // Fetch saved card info (masked)
   async function fetchCardInfo() {
     try {
       const token = localStorage.getItem('usertoken');
       if (!token) return null;
-
       const response = await fetch(`${BACKEND_URL}/api/user/profile/cardinfo`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -98,7 +101,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  // Prepare checkout modal with order summary and user info
   async function prepareCheckoutModal() {
     checkoutSummary.innerHTML = '';
     let total = 0;
@@ -121,17 +123,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     const profile = await fetchUserProfile();
 
     if (profile) {
-      checkoutNameInput.value = `${profile.firstName || ''} ${profile.lastName || ''}`.trim();
+      firstNameInput.value = profile.firstName || '';
+      lastNameInput.value = profile.lastName || '';
       checkoutEmailInput.value = profile.email || '';
       checkoutAddressInput.value = profile.address || '';
     } else {
-      checkoutNameInput.value = '';
+      firstNameInput.value = '';
+      lastNameInput.value = '';
       checkoutEmailInput.value = '';
       checkoutAddressInput.value = '';
     }
 
     const cardInfo = await fetchCardInfo();
-
     if (cardInfo && cardInfo.maskedCardNumber) {
       addCardOptionToggle(cardInfo);
     } else {
@@ -147,7 +150,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     const container = document.createElement('div');
     container.id = 'card-option-container';
     container.className = 'mb-3';
-
     container.innerHTML = `
       <label class="form-label">Payment Method</label>
       <div>
@@ -163,18 +165,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         </div>
       </div>
     `;
-
     const cardNumberFormGroup = cardNumberInput.closest('.mb-3');
     cardNumberFormGroup.parentNode.insertBefore(container, cardNumberFormGroup);
 
     enableCardInputs(false);
 
-    document.getElementById('useSavedCard').addEventListener('change', () => {
-      enableCardInputs(false);
-    });
-    document.getElementById('useNewCard').addEventListener('change', () => {
-      enableCardInputs(true);
-    });
+    document.getElementById('useSavedCard').addEventListener('change', () => enableCardInputs(false));
+    document.getElementById('useNewCard').addEventListener('change', () => enableCardInputs(true));
   }
 
   function removeCardOptionToggle() {
@@ -183,11 +180,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function enableCardInputs(enable) {
+    cardNameInput.disabled = !enable;
     cardNumberInput.disabled = !enable;
     cardExpiryInput.disabled = !enable;
     cardCvcInput.disabled = !enable;
 
     if (!enable) {
+      cardNameInput.value = '';
       cardNumberInput.value = '';
       cardExpiryInput.value = '';
       cardCvcInput.value = '';
@@ -195,12 +194,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function clearCardInputs() {
+    cardNameInput.value = '';
     cardNumberInput.value = '';
     cardExpiryInput.value = '';
     cardCvcInput.value = '';
   }
 
-  // Initial render on page load
   renderCart();
 
   checkoutBtn.addEventListener('click', async () => {
@@ -208,9 +207,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     checkoutModal.show();
   });
 
-  // Checkout form submit handler with POST request to backend
-  const checkoutForm = document.getElementById('checkout-form');
-  checkoutForm.addEventListener('submit', async e => {
+  document.getElementById('checkout-form').addEventListener('submit', async e => {
     e.preventDefault();
 
     if (cart.length === 0) {
@@ -219,56 +216,76 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    // Collect customer info
     const customerInfo = {
-      name: checkoutNameInput.value.trim(),
+      firstName: firstNameInput.value.trim(),
+      lastName: lastNameInput.value.trim(),
       email: checkoutEmailInput.value.trim(),
       address: checkoutAddressInput.value.trim(),
     };
 
-    if (!customerInfo.name || !customerInfo.email || !customerInfo.address) {
+    if (!customerInfo.firstName || !customerInfo.email || !customerInfo.address) {
       alert("Please fill in all required customer information.");
       return;
     }
 
-    // Payment info
     const useSavedCard = document.getElementById('useSavedCard')?.checked ?? false;
 
     let paymentInfo = null;
     if (useSavedCard) {
       paymentInfo = { savedCard: true };
     } else {
+      const cardName = cardNameInput.value.trim();
       const cardNum = cardNumberInput.value.trim();
       const expiry = cardExpiryInput.value.trim();
       const cvc = cardCvcInput.value.trim();
 
-      if (!cardNum || !expiry || !cvc) {
+      if (!cardNum || !expiry || !cvc || !cardName) {
         alert("Please fill in all card details.");
         return;
       }
+
       paymentInfo = {
         savedCard: false,
         cardNumber: cardNum,
         expiryDate: expiry,
         cvc: cvc,
+        cardName: cardName
       };
     }
 
-    // Map cart items to products array expected by backend
     const products = cart.map(item => ({
       productId: item.id,
       quantity: item.quantity,
     }));
 
-    // Get auth token
     const token = localStorage.getItem('usertoken');
     if (!token) {
       alert("You must be logged in to place an order.");
       return;
     }
 
-    // Prepare order payload
-    const orderPayload = { products };
+    const profilePayload = {
+      ...customerInfo,
+      ...(paymentInfo.savedCard ? {} : {
+        cardName: paymentInfo.cardName,
+        cardNumber: paymentInfo.cardNumber,
+        cardExpiry: paymentInfo.expiryDate,
+        cardCvv: paymentInfo.cvc
+      })
+    };
+
+    try {
+      await fetch(`${BACKEND_URL}/api/user/profile`, {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(profilePayload)
+      });
+    } catch (err) {
+      console.warn("Profile update failed:", err);
+    }
 
     try {
       const response = await fetch(`${BACKEND_URL}/api/orders`, {
@@ -277,7 +294,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(orderPayload)
+        body: JSON.stringify({ products })
       });
 
       if (!response.ok) {
@@ -287,8 +304,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
 
       alert("Order placed successfully!");
-
-      // Clear cart on success
       cart = [];
       clearCart();
       renderCart();
