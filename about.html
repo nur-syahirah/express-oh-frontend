@@ -13,7 +13,7 @@
       crossorigin="anonymous"
     />
     <!-- Display Icon on webpage tab -->    
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
 
     <link rel="stylesheet" href="styles/style.css" />
 
@@ -34,27 +34,29 @@
       referrerpolicy="no-referrer"
     />
 
-    <link rel = "shortcut icon" type = "x-icon" href="./images/logo.png">
-
     <title>Express-Oh!</title>
   </head>
   <body>
-    <!-- Top Nav Bar -->
-    <header>  
-      <div id ="navbar-header" class="navbar top-nav-bar">
+    <!-------------- START OF TOP NAV BAR ---------------> 
+    <header>
+      <div id="navbar-header" class="navbar top-nav-bar">
         <div class="navContainer">
-          <a id = "nav-logo" class="navbar-brand text-white logo top-logo" href="./index.html">
-            Express-Oh!
-          </a>
+          <a
+            id="nav-logo"
+            class="navbar-brand text-white logo top-logo"
+            href="./index.html"
+            >Express-Oh!</a
+          >
           <!-- Right side: Links & Logos -->
-          <div class = "nav-icon  right-section"> 
-          <nav>
-            <!-- Dynamic Navigation -->
-          </nav>
+          <div class="nav-icon right-section">
+            <nav>
+              <!-- Dynamic Navigation -->
+            </nav>
           </div>
         </div>
       </div>
-    </header>  
+    </header>
+    <!-------------- END OF TOP NAV BAR --------------->
 
     <!-- Main -->
     <main id="mainAbout" class="container d-flex flex-column main-content-bg w-100">
@@ -62,9 +64,9 @@
     </main>
 
     <!-- Contact Form Section -->
-<section class="contact-section" id="contact-section">
-  <!-- Contact form will be inserted here dynamically -->
-</section>
+    <section class="contact-section" id="contact-section">
+      <!-- Contact form will be inserted here dynamically -->
+    </section>
 
     <!-- Footer -->
     <div class="footer-container">
@@ -77,58 +79,62 @@
             <p class="foot-text fw-medium">
               Premium coffee beans, expertly roasted
             </p>
-
-              <div class="socialIcons">             
-                 <h5>Follow Us</h5> 
-                <a href="https://www.facebook.com"><i class="fa-brands fa-facebook"></i></a>
-                <a href="https://www.youtube.com"><i class="fa-brands fa-youtube"></i></a>
-                <a href="https://www.linkedin.com"><i class="fa-brands fa-linkedin"></i></a>
-                <a href="https://www.instagram.com"><i class="fa-brands fa-instagram"></i></a>
+            <div class="socialIcons">
+              <h5>Follow Us</h5>
+              <a href="https://www.facebook.com"><i class="fa-brands fa-facebook"></i></a>
+              <a href="https://www.youtube.com"><i class="fa-brands fa-youtube"></i></a>
+              <a href="https://www.linkedin.com"><i class="fa-brands fa-linkedin"></i></a>
+              <a href="https://www.instagram.com"><i class="fa-brands fa-instagram"></i></a>
             </div>
           </div>
 
-            <div id = "foot-mid-col" class="col-6 col-md-3 foot-text">
-              <h5>Quick Links</h5>
-              <ul class="nav flex-column">
-                <li class="nav-item mb-2">
-                  <a href="products.html" class="nav-link p-0 text-white">Shop</a>
-                </li>
-                <li class="nav-item mb-2">
-                  <a href="about.html" class="nav-link p-0 text-white">Contact Us</a>
-                </li>
-                <li class="nav-item mb-2">
-                  <a href="loginmain.html" class="nav-link p-0 text-white">Login</a>
-                </li>
-              </ul>
-            </div>
-
-            <div id = "foot-right-col" class="col-6 col-md-3 foot-text">
-              <h5>Contacts</h5>
-                  <ul class="nav flex-column">
-                    <li class="nav-item mb-2"> <class="nav-link p-0 ">123 Coffee Street</li>
-                    <li class="nav-item mb-2"><class="nav-link p-0 ">Singapore</li>
-                    <li class="nav-item mb-2"><a href="mailto:info@expressoh.com" class="nav-link p-0 ">info@expressoh.com</a></li>
-                  </ul>
-                </div>
-            </div>
-          <div
-            class="d-flex flex-column flex-sm-row justify-content-center py-4 my-4 text-white foot-text">
-            <p>© 2025 Express-Oh! All rights reserved.</p>
+          <div id="foot-mid-col" class="col-6 col-md-3 foot-text">
+            <h5>Quick Links</h5>
+            <ul class="nav flex-column">
+              <li class="nav-item mb-2">
+                <a href="products.html" class="nav-link p-0 text-white">Shop</a>
+              </li>
+              <li class="nav-item mb-2">
+                <a href="about.html" class="nav-link p-0 text-white">Contact Us</a>
+              </li>
+              <li class="nav-item mb-2">
+                <a href="loginmain.html" class="nav-link p-0 text-white">Login</a>
+              </li>
+            </ul>
           </div>
-        </footer>
-      </div>
 
-    <!-- Scripts -->
-    <script src="./script/const.js"></script>         <!-- * For management of common variable values (NEW)-->
-    <script src="./script/auth.js"></script>          <!-- * For authentication (NEW) -->
-    <script src="./script/navbar.js"></script>
+          <div id="foot-right-col" class="col-6 col-md-3 foot-text">
+            <h5>Contacts</h5>
+            <ul class="nav flex-column">
+              <li class="nav-item mb-2 nav-link p-0">123 Coffee Street</li>
+              <li class="nav-item mb-2 nav-link p-0">Singapore</li>
+              <li class="nav-item mb-2">
+                <a href="mailto:info@expressoh.com" class="nav-link p-0">info@expressoh.com</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div
+          class="d-flex flex-column flex-sm-row justify-content-center py-4 my-4 text-white foot-text"
+        >
+          <p>© 2025 Express-Oh! All rights reserved.</p>
+        </div>
+      </footer>
+    </div>
 
+    <!-- Load Bootstrap JS first -->
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
       crossorigin="anonymous"
     ></script>
-    <!-- Ionic Framework for Icons -->
+
+    <!-- Your local scripts -->
+    <script src="./script/const.js"></script>
+    <script src="./script/auth.js"></script>
+    <script src="./script/navbar.js"></script>
+
+    <!-- Ionicons -->
     <script
       type="module"
       src="https://cdn.jsdelivr.net/npm/ionicons@latest/dist/ionicons/ionicons.esm.js"
@@ -137,8 +143,20 @@
       nomodule
       src="https://cdn.jsdelivr.net/npm/ionicons@latest/dist/ionicons/ionicons.js"
     ></script>
-    
-    <!-- Your separate JS file should be linked here -->
+
+    <!-- Page-specific script -->
     <script src="./script/about.js"></script>
+
+    <!-- Initialize Bootstrap tooltips globally -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const tooltipTriggerList = [].slice.call(
+          document.querySelectorAll("[data-bs-toggle='tooltip']")
+        );
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+          return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+      });
+    </script>
   </body>
 </html>

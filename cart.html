@@ -102,13 +102,19 @@
           <p class="fw-bold">Total: $<span id="checkout-total">0.00</span></p>
 
           <h6 class="mt-4">Customer Info</h6>
-          <div class="mb-3">
-            <label for="checkout-name" class="form-label">Name</label>
-            <input type="text" class="form-control" id="checkout-name" required>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="checkout-first-name" class="form-label">First Name</label>
+              <input type="text" class="form-control" id="checkout-first-name" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="checkout-last-name" class="form-label">Last Name</label>
+              <input type="text" class="form-control" id="checkout-last-name">
+            </div>
           </div>
           <div class="mb-3">
             <label for="checkout-email" class="form-label">Email</label>
-            <input type="email" class="form-control" id="checkout-email" required>
+            <input type="email" class="form-control" id="checkout-email" required readonly>
           </div>
           <div class="mb-3">
             <label for="checkout-address" class="form-label">Address</label>
@@ -116,6 +122,10 @@
           </div>
 
           <h6 class="mt-4">Card Details</h6>
+          <div class="mb-3">
+            <label for="cardholder-name" class="form-label">Cardholder Name</label>
+            <input type="text" class="form-control" id="cardholder-name" placeholder="John Tan" required>
+          </div>
           <div class="mb-3">
             <label for="card-number" class="form-label">Card Number</label>
             <input type="text" class="form-control" id="card-number" placeholder="1234 5678 9012 3456" required>
@@ -139,7 +149,6 @@
     </div>
   </div>
 </div>
-
     <!-- Footer -->
     <div class="footer-container">
       <footer class="footer-col">
