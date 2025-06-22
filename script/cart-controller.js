@@ -1,7 +1,6 @@
 import { 
   getCartItems, 
   saveCartItems, 
-  renderCart as helperRenderCart, 
   clearCart 
 } from './cart.js';
 
@@ -56,21 +55,71 @@ document.addEventListener("DOMContentLoaded", async () => {
       total += itemTotal;
 
       const itemHtml = `
-        <div class="col-12 cart-item d-flex align-items-center gap-3 border p-3 rounded">
-          <img src="${item.image}" alt="${item.name}" class="img-thumbnail" />
+        <div class="col-12 cart-item d-flex align-items-center gap-3 border p-3 rounded align-items-center">
+          <img src="${item.image}" alt="${item.name}" class="img-thumbnail" style="max-width: 80px;" />
           <div class="flex-grow-1">
             <h5>${item.name}</h5>
-            <p>Quantity: ${item.quantity}</p>
-            <p>Price: $${item.price.toFixed(2)}</p>
+            <label for="qty-${item.id}" class="form-label mb-1">Quantity:</label>
+            <input 
+              type="number" 
+              id="qty-${item.id}" 
+              class="form-control form-control-sm quantity-input" 
+              value="${item.quantity}" 
+              min="1" 
+              style="width: 70px;"
+            />
+            <p class="mt-2 mb-1">Price: $${item.price.toFixed(2)}</p>
           </div>
           <div class="fw-bold fs-5">$${itemTotal.toFixed(2)}</div>
+          <button class="btn btn-danger btn-sm remove-btn" data-id="${item.id}">Remove</button>
         </div>
       `;
       cartItemsContainer.insertAdjacentHTML('beforeend', itemHtml);
     });
     cartTotalEl.textContent = total.toFixed(2);
 
-    window.updateCartCount();
+    // Remove button handlers
+    document.querySelectorAll('.remove-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        const productId = parseInt(button.getAttribute('data-id'));
+        removeFromCart(productId);
+        renderCart();
+        window.updateCartCount();
+      });
+    });
+
+    // Quantity input change handlers
+    document.querySelectorAll('.quantity-input').forEach(input => {
+      input.addEventListener('change', (e) => {
+        const newQty = parseInt(e.target.value);
+        const productId = parseInt(e.target.id.replace('qty-', ''));
+
+        if (isNaN(newQty) || newQty < 1) {
+          alert('Quantity must be at least 1');
+          e.target.value = 1;
+          return;
+        }
+
+        updateCartItemQuantity(productId, newQty);
+        renderCart();
+        window.updateCartCount();
+      });
+    });
+  }
+
+  function removeFromCart(productId) {
+    cart = cart.filter(item => item.id !== productId);
+    saveCartItems(cart);
+    console.log(`Removed product ID ${productId} from cart.`);
+  }
+
+  function updateCartItemQuantity(productId, newQuantity) {
+    const item = cart.find(i => i.id === productId);
+    if (item) {
+      item.quantity = newQuantity;
+      saveCartItems(cart);
+      console.log(`Updated quantity for product ID ${productId} to ${newQuantity}`);
+    }
   }
 
   async function fetchUserProfile() {
