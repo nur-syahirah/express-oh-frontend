@@ -1,3 +1,51 @@
+// about.js
+
+// Function to parse JWT (you had this already)
+function parseJwt(usertoken) {
+  if (!usertoken) return null;
+  try {
+    const base64Url = usertoken.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join('')
+    );
+    return JSON.parse(jsonPayload);
+  } catch (e) {
+    console.error("Failed to parse JWT:", e);
+    return null;
+  }
+}
+
+// Fetch user profile for autofill on feedback form
+async function fetchFeedbackAutofill() {
+  const token = localStorage.getItem('usertoken');
+  if (!token) return null;
+
+  try {
+    const response = await fetch('http://localhost:8080/api/user/profile', {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!response.ok) throw new Error('Failed to fetch profile');
+
+    const profile = await response.json();
+    return {
+      firstName: profile.firstName || '',
+      lastName: profile.lastName || '',
+      email: profile.email || ''
+    };
+  } catch (error) {
+    console.error('Error fetching profile for autofill:', error);
+    return null;
+  }
+}
+
 function createHeroSection() {
   const hero = document.createElement('section');
   hero.className = 'hero mb-5';
@@ -6,7 +54,7 @@ function createHeroSection() {
   heroLogo.className = 'hero-logo';
   const h1 = document.createElement('h1');
   h1.textContent = 'About Us';
-  h1.style.backgroundColor = 'transparent'; // Inline style override
+  h1.style.backgroundColor = 'transparent';
   heroLogo.appendChild(h1);
 
   const lead = document.createElement('p');
@@ -160,20 +208,9 @@ function createTeamSection() {
   return teamSection;
 }
 
-function loadMainContent() {
-  const main = document.getElementById('mainAbout');
-  main.innerHTML = '';
-
-  const heroSection = createHeroSection();
-  const teamSection = createTeamSection();
-
-  main.append(heroSection, teamSection);
-}
-
-document.addEventListener('DOMContentLoaded', loadMainContent);
-
 function createContactForm() {
   const section = document.getElementById('contact-section');
+  section.innerHTML = ''; // clear existing content
 
   const h2 = document.createElement('h2');
   h2.textContent = 'Contact Us';
@@ -226,16 +263,16 @@ function createContactForm() {
     title: 'Please enter a valid email address.'
   });
 
-const [labelMessage, textareaMessage] = createInput({
-  tag: 'textarea',
-  id: 'message',
-  name: 'message',
-  rows: 5,
-  placeholder: 'Please give us your valuable feedback',
-  required: true,
-  pattern: "^(?!.*(--|/\\*|\\*/|['\";])).{10,}$",
-  title: 'Message must be at least 10 characters and must not contain characters like quotes, semicolons, or comment symbols.'
-});
+  const [labelMessage, textareaMessage] = createInput({
+    tag: 'textarea',
+    id: 'message',
+    name: 'message',
+    rows: 5,
+    placeholder: 'Please give us your valuable feedback',
+    required: true,
+    pattern: "^(?!.*(--|/\\*|\\*/|['\";])).{10,}$",
+    title: 'Message must be at least 10 characters and must not contain characters like quotes, semicolons, or comment symbols.'
+  });
 
   const btnSubmit = document.createElement('button');
   btnSubmit.type = 'submit';
@@ -244,94 +281,26 @@ const [labelMessage, textareaMessage] = createInput({
 
   form.append(labelName, inputName, labelEmail, inputEmail, labelMessage, textareaMessage, btnSubmit);
   section.append(h2, form);
-}
 
-function createToastContainer() {
-  if (document.getElementById('toast')) return;
-
-  const toast = document.createElement('div');
-  toast.id = 'toast';
-  Object.assign(toast.style, {
-    position: 'fixed',
-    bottom: '30px',
-    left: '50%',
-    transform: 'translateX(-50%)',
-    background: '#333',
-    color: '#fff',
-    padding: '1rem 1.5rem',
-    borderRadius: '8px',
-    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
-    display: 'none',
-    zIndex: '9999',
-    fontSize: '1rem',
-    maxWidth: '90%',
-    textAlign: 'center',
+  // Autofill contact form email and name from user profile
+  fetchFeedbackAutofill().then(profile => {
+    if (profile) {
+      if (inputName) inputName.value = `${profile.firstName} ${profile.lastName}`.trim();
+      if (inputEmail) inputEmail.value = profile.email;
+    }
   });
-
-  document.body.appendChild(toast);
 }
 
-function showToast(message, isSuccess = true) {
-  const toast = document.getElementById('toast');
-  if (!toast) return;
+function loadMainContent() {
+  const main = document.getElementById('mainAbout');
+  main.innerHTML = '';
 
-  toast.textContent = message;
-  toast.style.background = isSuccess ? '#28a745' : '#dc3545';
-  toast.style.display = 'block';
-  toast.style.opacity = '1';
+  const heroSection = createHeroSection();
+  const teamSection = createTeamSection();
 
-  setTimeout(() => {
-    toast.style.transition = 'opacity 0.5s ease';
-    toast.style.opacity = '0';
-    setTimeout(() => {
-      toast.style.display = 'none';
-      toast.style.transition = '';
-    }, 500);
-  }, 3000);
-}
+  main.append(heroSection, teamSection);
 
-document.addEventListener('DOMContentLoaded', () => {
-  createToastContainer();
   createContactForm();
+}
 
-  const form = document.getElementById('contactForm');
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-
-    const { name, email, message } = form;
-
-    if (!name.checkValidity()) {
-      showToast(name.title, false);
-      name.focus();
-      return;
-    }
-    if (!email.checkValidity()) {
-      showToast(email.title, false);
-      email.focus();
-      return;
-    }
-    if (!message.checkValidity()) {
-      showToast(message.title, false);
-      message.focus();
-      return;
-    }
-
-    const formData = new FormData(form);
-    fetch(form.action, {
-      method: 'POST',
-      body: formData,
-      headers: { Accept: 'application/json' },
-    })
-      .then((response) => {
-        if (response.ok) {
-          form.reset();
-          showToast('Thank you! Your message has been sent.');
-        } else {
-          showToast('Oops! Something went wrong.', false);
-        }
-      })
-      .catch(() => {
-        showToast('Network error. Please try again later.', false);
-      });
-  });
-});
+document.addEventListener('DOMContentLoaded', loadMainContent);
