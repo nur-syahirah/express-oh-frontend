@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
+
     <!-- Bootstrap's CSS -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css"
@@ -12,7 +12,7 @@
       crossorigin="anonymous"/>
 
     <!-- Display Icon on webpage tab -->
-    <link rel = "shortcut icon" type = "x-icon" href="./images/logo.png">
+    <link rel="shortcut icon" type="x-icon" href="./images/logo.png">
 
     <link rel="stylesheet" href="styles/style.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
@@ -20,57 +20,43 @@
     <!----- Fancy font's links ----->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Ceviche+One&family=Mali:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&family=Rock+Salt&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Ceviche+One&family=Mali:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&family=Rock+Salt&display=swap"
-      rel="stylesheet"
-    />
-    <link href="https://fonts.googleapis.com/css2?family=The+Girl+Next+Door&display=swap"       rel="stylesheet">
-
-    <!-- Global Google Font: Bubblegum Sans -->
-    <link href="https://fonts.googleapis.com/css2?family=Bubblegum+Sans&display=swap" rel="stylesheet" />
-
-    <!-- Google Font for "Hello Admin": The Girl Next Door -->
+    <link href="https://fonts.googleapis.com/css2?family=Ceviche+One&family=Mali:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&family=Rock+Salt&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=The+Girl+Next+Door&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Bubblegum+Sans&display=swap" rel="stylesheet" />
 
     <!----- Social Media Logo Link ----->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" 
     integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" 
     crossorigin="anonymous" referrerpolicy="no-referrer" />
-  
+
     <!-- Confirmation dialog using SweetAlert2-->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
+
     <!--Webpage Title-->    
     <title>Express-Oh!</title>
-    
   </head>
   <body>
 
-   <!-------------- START OF TOP NAV BAR --------------->
-   <header>  
-    <div id ="navbar-header" class="navbar top-nav-bar">
-      <div class="navContainer">
-        <a id = "nav-logo" class="navbar-brand text-white logo top-logo" href="./index.html">
-          Express-Oh!
-        </a>
-        <!-- Right side: Links & Logos -->
-        <div class = "nav-icon  right-section"> 
-        <nav>
-          <!-- Dynamic Navigation -->
-        </nav>
+    <!-------------- START OF TOP NAV BAR --------------->
+    <header>  
+      <div id="navbar-header" class="navbar top-nav-bar">
+        <div class="navContainer">
+          <a id="nav-logo" class="navbar-brand text-white logo top-logo" href="./index.html">
+            Express-Oh!
+          </a>
+          <!-- Right side: Links & Logos -->
+          <div class="nav-icon right-section"> 
+            <nav>
+              <!-- Dynamic Navigation -->
+            </nav>
+          </div>
         </div>
       </div>
-    </div>
-  </header>  
-  <!-------------- END OF TOP NAV BAR --------------->
+    </header>  
+    <!-------------- END OF TOP NAV BAR --------------->
 
-     <!-- start of hero banner -->
     <main id="main" class="mw-100">
-      <section class="hero-banner position-relative ">
+      <section class="hero-banner position-relative">
         <div class="hero-content position-relative z-1 mx-auto px-3 bg-transparent">
           <h1 class="hero-title font-girl-next-door text-white mb-4 lh-sm bg-transparent">Express-Oh! yourself with our flavorful creations.</h1>
           <a href="products.html" class="shop-now-btn rounded-pill text-uppercase fw-bold" style="text-decoration: none;">
@@ -83,59 +69,14 @@
           </div>
         </div>
       </section>
-      <!-- end of hero banner -->
-
 
       <!-- Start of featured products Section -->
       <section class="py-5 w-100 bg-transparent">
         <div class="container">
-            <h2 class="section-title text-dark mb-4">Featured Beans</h2> <!-- Changed text color -->
-            <div class="row">
-                <!-- Product 1 -->
-                <div class="col-md-4 mb-4">
-                  <div class="card product-card h-100"> <!-- Removed bg-white from HTML -->
-                    <img src="./images/coffee-beans.jpg" class="card-img-top img-fluid" alt="Espresso Blend">
-                    <div class="card-body">
-                      <h5 class="card-title product-title text-dark">Espresso Blend</h5> 
-                      <p class="card-text product-description">With notes of espresso, espresso, and espresso.</p>
-                      <div class="product-price text-dark">$18</div> 
-                      <div class="product-tags">Tags: Roasted | Singapore | Blend</div>
-                      <button class="add-to-cart-btn btn w-100">Add</button>
-                    </div>
-                  </div>
-                </div>
-                
-                <!-- Product 2 -->
-                <div class="col-md-4 mb-4">
-                  <div class="card product-card h-100"> 
-                    <img src="./images/coffee-beans.jpg" class="card-img-top img-fluid" alt="Espresso Blend">
-                    <div class="card-body">
-                      <h5 class="card-title product-title text-dark">Espresso Blend</h5>
-                      <p class="card-text product-description">With notes of espresso, espresso, and espresso.</p>
-                      <div class="product-price text-dark">$18</div> 
-                      <div class="product-tags">Tags: Roasted | Singapore | Blend</div>
-                      <button class="add-to-cart-btn btn w-100">Add</button>
-                    </div>
-                  </div>
-                </div>
-                
-                <!-- Product 3 -->
-                <div class="col-md-4 mb-4">
-                  <div class="card product-card h-100"> 
-                    <img src="./images/coffee-beans.jpg" class="card-img-top img-fluid" alt="Espresso Blend">
-                    <div class="card-body">
-                      <h5 class="card-title product-title text-dark">Espresso Blend</h5>
-                      <p class="card-text product-description">With notes of espresso, espresso, and espresso.</p>
-                      <div class="product-price text-dark">$18</div> 
-                      <div class="product-tags">Tags: Roasted | Singapore | Blend</div>
-                      <button class="add-to-cart-btn btn w-100">Add</button>
-                    </div>
-                  </div>
-                </div>
-            </div>
+          <h2 class="section-title text-dark mb-4">Featured Beans</h2>
+          <div id="product-list" class="row"></div>
         </div>
       </section>
-
       <!-- End of featured product section -->
 
       <!-- Features Section -->
@@ -146,7 +87,7 @@
             <div class="col-md-4">
               <div class="feature-item">
                 <div class="feature-icon">
-                  <i class="fas fa-fire"></i>            <!--font awesome image -->
+                  <i class="fas fa-fire"></i>
                 </div>
                 <h3 class="feature-title">Fresh Roasted</h3>
                 <p class="feature-description">Roasted to order and shipped within 24 hours</p>
@@ -155,7 +96,7 @@
             <div class="col-md-4">
               <div class="feature-item">
                 <div class="feature-icon">
-                  <i class="fas fa-hands-helping"></i>    <!--font awesome image -->
+                  <i class="fas fa-hands-helping"></i>
                 </div>
                 <h3 class="feature-title">Ethically Sourced</h3>
                 <p class="feature-description">Direct trade relationships with farmers</p>
@@ -164,7 +105,7 @@
             <div class="col-md-4">
               <div class="feature-item">
                 <div class="feature-icon">
-                  <i class="fas fa-award"></i>             <!--font awesome image -->
+                  <i class="fas fa-award"></i>
                 </div>
                 <h3 class="feature-title">Expert Selection</h3>
                 <p class="feature-description">Curated by certified Q-graders</p>
@@ -173,8 +114,33 @@
           </div>
         </div>
       </section>
-      <!-- End of features section -->
     </main>
+
+    <!-- Modal for Add to Cart -->
+    <div class="modal fade" id="addToCartModal" tabindex="-1" aria-labelledby="addToCartModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addToCartModalLabel">Add to Cart</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p><strong id="modal-product-name"></strong></p>
+            <p id="modal-product-description"></p>
+            <p id="modal-product-price"></p>
+            <div class="mb-3">
+              <label for="modal-quantity" class="form-label">Quantity</label>
+              <input type="number" class="form-control" id="modal-quantity" value="1" min="1" />
+            </div>
+            <input type="hidden" id="modal-product-id" />
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" id="modal-confirm-btn">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div class="footer-container">
       <footer class="footer-col">
@@ -183,71 +149,61 @@
             <a href="index.html" style="text-decoration: none;">
               <h4 class="logo">Express-Oh!</h4>
             </a>
-            <p class="foot-text fw-medium">
-              Premium coffee beans, expertly roasted
-            </p>
-
-              <div class="socialIcons">             
-                 <h5>Follow Us</h5> 
-                <a href="https://www.facebook.com"><i class="fa-brands fa-facebook"></i></a>
-                <a href="https://www.youtube.com"><i class="fa-brands fa-youtube"></i></a>
-                <a href="https://www.linkedin.com"><i class="fa-brands fa-linkedin"></i></a>
-                <a href="https://www.instagram.com"><i class="fa-brands fa-instagram"></i></a>
+            <p class="foot-text fw-medium">Premium coffee beans, expertly roasted</p>
+            <div class="socialIcons">             
+              <h5>Follow Us</h5> 
+              <a href="https://www.facebook.com"><i class="fa-brands fa-facebook"></i></a>
+              <a href="https://www.youtube.com"><i class="fa-brands fa-youtube"></i></a>
+              <a href="https://www.linkedin.com"><i class="fa-brands fa-linkedin"></i></a>
+              <a href="https://www.instagram.com"><i class="fa-brands fa-instagram"></i></a>
             </div>
           </div>
 
-            <div id = "foot-mid-col" class="col-6 col-md-3 foot-text">
-              <h5>Quick Links</h5>
-              <ul class="nav flex-column">
-                <li class="nav-item mb-2">
-                  <a href="products.html" class="nav-link p-0 text-white">Shop</a>
-                </li>
-                <li class="nav-item mb-2">
-                  <a href="about.html" class="nav-link p-0 text-white">Contact Us</a>
-                </li>
-                <li class="nav-item mb-2">
-                  <a href="loginmain.html" class="nav-link p-0 text-white">Login</a>
-                </li>
-              </ul>
-            </div>
-
-            <div id = "foot-right-col" class="col-6 col-md-3 foot-text">
-              <h5>Contacts</h5>
-                  <ul class="nav flex-column">
-                    <li class="nav-item mb-2"> <class="nav-link p-0" >123 Coffee Street</li>
-                    <li class="nav-item mb-2"><class="nav-link p-0" >Singapore</li>
-                    <li class="nav-item mb-2"><a href="mailto:info@expressoh.com" class="nav-link p-0 ">info@expressoh.com</a></li>
-                  </ul>
-                </div>
-            </div>
-          <div
-            class="d-flex flex-column flex-sm-row justify-content-center py-4 my-4 text-white foot-text">
-            <p>© 2025 Express-Oh! All rights reserved.</p>
+          <div id="foot-mid-col" class="col-6 col-md-3 foot-text">
+            <h5>Quick Links</h5>
+            <ul class="nav flex-column">
+              <li class="nav-item mb-2">
+                <a href="products.html" class="nav-link p-0 text-white">Shop</a>
+              </li>
+              <li class="nav-item mb-2">
+                <a href="about.html" class="nav-link p-0 text-white">Contact Us</a>
+              </li>
+              <li class="nav-item mb-2">
+                <a href="loginmain.html" class="nav-link p-0 text-white">Login</a>
+              </li>
+            </ul>
           </div>
-        </footer>
-      </div>
-    <!-- End of Footer -->
 
-    <!-- Custom script -->
+          <div id="foot-right-col" class="col-6 col-md-3 foot-text">
+            <h5>Contacts</h5>
+            <ul class="nav flex-column">
+              <li class="nav-item mb-2">123 Coffee Street</li>
+              <li class="nav-item mb-2">Singapore</li>
+              <li class="nav-item mb-2"><a href="mailto:info@expressoh.com" class="nav-link p-0">info@expressoh.com</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="d-flex flex-column flex-sm-row justify-content-center py-4 my-4 text-white foot-text">
+          <p>© 2025 Express-Oh! All rights reserved.</p>
+        </div>
+      </footer>
+    </div>
+
     <!-- JavaScript from Bootstrap -->
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
-      crossorigin="anonymous"
-    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
 
     <!-- Custom Script for authentication -->
-    <script src="script/Mock.js"></script>          <!-- TODO: to remove in production env. (NEW) -->
-    <script src="script/const.js"></script>         <!-- * For management of common variable values (NEW)-->
-    <script src="script/auth.js"></script>          <!-- * For authentication (NEW) -->
-    <script src="script/form-validate.js"></script> <!-- * For validating inputs (NEW)-->
-
-    <script src= "script/navbar.js"></script>
-    <script src= "script/ProductsController.js"></script>
-    <script src= "script/cart.js"></script>
+    <script src="script/Mock.js"></script>
+    <script src="script/const.js"></script>
+    <script src="script/auth.js"></script>
+    <script src="script/form-validate.js"></script>
+    <script src="script/navbar.js"></script>
+    <script src="script/cart.js"></script>
+    <script src="script/index.js"></script>
 
     <!-- Ionic Framework for Icons -->
     <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@latest/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@latest/dist/ionicons/ionicons.js"></script>
+
   </body>
 </html>
