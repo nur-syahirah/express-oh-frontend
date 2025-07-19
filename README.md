@@ -129,7 +129,7 @@ https://github.com/user-attachments/assets/0e99c244-15e8-4a16-9f2b-c060c289b1d5
 ## 📄 License
 
 This project is licensed under the **MIT License**.  
- © FSD08 Team 1 - ExpressOh!
+ © FSD06 Team 1 - ExpressOh!
 
 ---
 
