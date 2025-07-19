@@ -28,22 +28,44 @@ ExpressOh provides:
 
 ---
 
-## 🌟 Key Features
+## 🌟 Features
 
-- 🔐 **User & Admin Authentication**  
-  Secure JWT-based login system with role-based access control.
+### 🛠 Admin Features
 
-- 🖥️ **Single Admin Panel**  
-  Manage products, flavors, images, and orders in one unified view.
+- 🎛 **Admin Dashboard**  
+  Full CRUD functionality for managing products, flavors, and images in one place.
 
-- 🔄 **Asynchronous Operations**  
-  Perform CRUD and cart actions without full-page reloads.
+- 🍨 **Flavor Management**  
+  Dynamic dropdowns let you add or remove flavors on the fly—no reload required.
 
-- 🛒 **Seamless Shopping Experience**  
-  Browse roasts, add items to cart, update quantities, and checkout with ease.
+- 📷 **Image Uploads**  
+  Upload and associate product images using `multipart/form-data` with backend processing.
 
-- 🔍 **Ease of Navigation**  
-  Intuitive menus, searchable catalogs, and clear calls to action.
+- 📈 **Sales Chart**  
+  Interactive monthly orders line chart powered by `chart.js`.
+
+### 🔐 Security
+
+- JWT-based login/logout
+- Role-based access control for admin and users
+
+### 🛍 Customer Experience
+
+- 🛒 **Responsive UI**  
+  Built with Bootstrap and React for smooth, cross-device performance
+
+- 🛒 **Cart Counter Badge**  
+  Real-time cart updates for an intuitive shopping experience
+
+- 🧾 **Smooth Checkout Flow**  
+  Add-to-cart, quantity updates, and secure order submission without page reloads
+
+### ♿ Accessibility
+
+- Tooltips for better guidance
+- Focus states for keyboard navigation
+- Semantic HTML markup for screen reader support
+
 
 ---
 
