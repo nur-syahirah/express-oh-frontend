@@ -32,16 +32,16 @@ ExpressOh provides:
 
 ### 🛠 Admin Features
 
-- 🎛 **Admin Dashboard**  
+- **Admin Dashboard**  
   Full CRUD functionality for managing products, flavors, and images in one place.
 
-- 🍨 **Flavor Management**  
+- **Flavor Management**  
   Dynamic dropdowns let you add or remove flavors on the fly—no reload required.
 
-- 📷 **Image Uploads**  
+- **Image Uploads**  
   Upload and associate product images using `multipart/form-data` with backend processing.
 
-- 📈 **Sales Chart**  
+- **Sales Chart**  
   Interactive monthly orders line chart powered by `chart.js`.
 
 ### 🔐 Security
@@ -51,13 +51,13 @@ ExpressOh provides:
 
 ### 🛍 Customer Experience
 
-- 🛒 **Responsive UI**  
+- **Responsive UI**  
   Built with Bootstrap and React for smooth, cross-device performance
 
-- 🛒 **Cart Counter Badge**  
+- **Cart Counter Badge**  
   Real-time cart updates for an intuitive shopping experience
 
-- 🧾 **Smooth Checkout Flow**  
+- **Smooth Checkout Flow**  
   Add-to-cart, quantity updates, and secure order submission without page reloads
 
 ### ♿ Accessibility
