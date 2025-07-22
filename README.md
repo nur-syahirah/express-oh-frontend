@@ -1,6 +1,6 @@
 # ☕ ExpressOh
 
-**ExpressOh** is a full-stack coffee beans e-commerce platform built for simplicity and delight. Customers can browse and purchase specialty roasts through a clean, responsive UI. Admins manage products, flavors, images, and view sales analytics—all from a single, user-friendly dashboard. 
+**ExpressOh** is a full-stack e-commerce platform for specialty coffee beans, developed as a capstone project to demonstrate end-to-end application design and development. The platform was build to offer customers a seamless experience for browsing and purchasing curated roasts through a clean, responsive interface. Also, the administrators can efficiently manage inventory, product details, images, and access key sales analytics through a streamlined dashboard.
 
 ---
 
